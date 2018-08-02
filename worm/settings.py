@@ -90,7 +90,7 @@ PASSWORD = 'codethechange18'
 
 mongoengine.connect(
     DB_NAME, host=HOST, port=PORT, username=USERNAME, password=PASSWORD
-    )
+)
 
 
 # Password validation
@@ -103,7 +103,6 @@ AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
     },
-    
     {
         'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
     },
