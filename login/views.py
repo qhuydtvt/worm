@@ -22,3 +22,11 @@ def index(request):
   else:
     form = LoginForm()
     return render(request, 'login.html', {"form": form})
+
+
+def logout(request):
+  try:
+        del request.session['login_success']
+  except:
+        pass
+  return HttpResponseRedirect('/login')
