@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 """
 
 import os
-import mongoengine
+# import mongoengine
 
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -82,15 +82,15 @@ DATABASES = {
     }
 }
 
-HOST = 'ds223019.mlab.com'
-PORT = 23019
-DB_NAME = 'worm'
-USERNAME = 'admin'
-PASSWORD = 'codethechange18'
+# HOST = 'ds223019.mlab.com'
+# PORT = 23019
+# DB_NAME = 'worm'
+# USERNAME = 'admin'
+# PASSWORD = 'codethechange18'
 
-mongoengine.connect(
-    DB_NAME, host=HOST, port=PORT, username=USERNAME, password=PASSWORD
-)
+# mongoengine.connect(
+#     DB_NAME, host=HOST, port=PORT, username=USERNAME, password=PASSWORD
+# )
 
 
 # Password validation
