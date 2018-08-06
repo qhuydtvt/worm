@@ -15,7 +15,7 @@ def index(request):
 
       if r.json()['success'] == 1:
         request.session['login_success'] = r.headers['Set-Cookie']
-        return HttpResponseRedirect('/admin')
+        return HttpResponseRedirect('/')
       else:
         messages.warning(request, 'Username or password incorrect!')
         return render(request, 'login.html', {"form": form})
@@ -29,4 +29,4 @@ def logout(request):
         del request.session['login_success']
   except:
         pass
-  return HttpResponseRedirect('/login')
+  return HttpResponseRedirect('/')
