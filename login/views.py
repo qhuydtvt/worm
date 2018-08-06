@@ -1,8 +1,9 @@
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
 from .forms import LoginForm
-import requests as req
+# import requests as req
 from django.contrib import messages
+from tk_rest import TKRest
 
 
 def index(request):
@@ -11,7 +12,9 @@ def index(request):
     if form.is_valid():
       data = {"username": form.cleaned_data['username'],
               "password": form.cleaned_data['password']}
-      r = req.post('https://tk-lms.herokuapp.com/api/auth', data=data)
+      # r = req.post('https://tk-lms.herokuapp.com/api/auth', data=data)
+      r = TKRest('https://tk-lms.herokuapp.com/api')
+      r = r.auth.post(data)
 
       if r.json()['success'] == 1:
         request.session['login_success'] = r.headers['Set-Cookie']
