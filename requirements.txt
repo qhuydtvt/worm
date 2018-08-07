@@ -8,3 +8,5 @@ pylint
 flake8
 requests
 tk_rest
+gunicorn
+whitenoise
