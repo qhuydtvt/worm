@@ -27,7 +27,8 @@ SECRET_KEY = '%yz*_8ws2dbw0pkr%%=n!i!j!i3fp@duby222bwv6hd!kn4zph'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['worm-dev.herokuapp.com']
+ALLOWED_HOSTS = ['worm-dev.herokuapp.com',
+                 'localhost']
 
 
 # Application definition
