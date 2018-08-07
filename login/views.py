@@ -28,6 +28,6 @@ def index(request):
 def logout(request):
   try:
         del request.session['login_success']
-  except:
+  except BaseException:
         pass
   return HttpResponseRedirect('/')
