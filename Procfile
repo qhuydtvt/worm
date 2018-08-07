@@ -1,0 +1,1 @@
+web: gunicorn worm.wsgi --log-file -
