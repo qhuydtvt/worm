@@ -88,7 +88,17 @@ WSGI_APPLICATION = 'worm.wsgi.application'
 # DATABASES = {'default': {'ENGINE': 'django_mongodb_engine',
 #                          'NAME': 'worm'}}
 
-DATABASES = {'default': {'ENGINE': ''}}
+DATABASES = {
+    'default': {
+        'ENGINE': 'djongo',
+        'NAME': 'worm',
+        'HOST': 'ds223019.mlab.com',
+        'PORT': 23019,
+        'USER': 'admin',
+        'PASSWORD': 'codethechange18',
+        'AUTH_SOURCE': 'worm',
+    }
+}
 
 # HOST = 'ds223019.mlab.com'
 # PORT = 23019

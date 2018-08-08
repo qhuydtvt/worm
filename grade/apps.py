@@ -1,5 +1,5 @@
 from django.apps import AppConfig
 
 
-class TestApiConfig(AppConfig):
+class GradeConfig(AppConfig):
     name = 'grade'

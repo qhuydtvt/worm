@@ -10,3 +10,4 @@ requests
 tk_rest
 gunicorn
 whitenoise
+djongo
