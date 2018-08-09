@@ -18,5 +18,6 @@ from django.urls import include, path
 urlpatterns = [
     path('login/', include('login.urls')),
     path('', include('grade.urls')),
-    path('grade-submit/', include('grade_submit.urls'))
+    path('grade-submit/', include('grade_submit.urls')),
+    path('summary/', include('summary.urls'))
 ]

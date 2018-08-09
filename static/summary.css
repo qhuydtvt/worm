@@ -1,0 +1,32 @@
+div {
+  padding: 20px;
+}
+
+.center li {
+  text-align: justify;
+}
+
+article {
+  float: left;
+  padding: 20px;
+  width: 70%;
+  background-color: #f1f1f1;
+  height: 300px; /* only for demonstration, should be removed */
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+margin: 0;
+}
+
+.column {
+  float: left;
+  width: 33.33%;
+  padding: 15px;
+  font-family: 'Exo 2', sans-serif;
+}
+
+
