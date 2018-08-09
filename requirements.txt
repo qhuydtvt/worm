@@ -9,4 +9,4 @@ flake8
 requests
 tk_rest
 gunicorn
-whitenoise
+whitenoise==3.3.1

@@ -3,13 +3,192 @@
  <head>
    <title>students api</title>
    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  {% load static %}
+	<link rel="stylesheet" type="text/css" media="screen" href="{% static 'grade.css' %}" />
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
    
  </head>
 <body>
-<div>
-   <a class="apireq" href="/login/logout"> logout </a> 
-</div>
-  {% load static %}
-  <script type="text/javascript" src="{% static 'test_jquery.js' %}"></script>
+  
+    <div class = "text-right">
+        <button type="button" class="btn btn-secondary btn-sm">Log out</button>
+    </div>
+
+    <ul>
+        <li class="dropdown" style="list-style: none;">
+            <select class="btn btn-info dropdown-toggle">
+                <option selected>Choose...</option>
+                <option value="1">C4E19</option>
+                <option value="2">C4E20</option>
+                <option value="3">C4E21</option>
+                <option value="3">C4E22</option>
+
+            </select>
+        </li>
+    </ul>        
+
+  
+    <div class="container ">
+        <table class="table-bordered table-striped  ">
+            <tr>
+                <th>Họ và tên</th>
+                <th>Session 1</th>
+                <th>Session 2</th>
+                <th>Session 3</th>
+                <th>Session 4</th>
+                <th>Session 5</th>
+                <th>Session 6</th>
+                <th>Session 7</th>
+                <th>Session 8</th>
+                <th>Session 9</th>
+                <th>Session 10</th>
+            </tr>
+            <tr class="info">
+                <td>Hoàng Thah Huyền</td>
+                <td>7</td>
+                <td>9</td>
+                <td>10</td>
+                <td>7</td>
+                <td>5</td>
+                <td>4</td>
+                <td>7</td>
+                <td>4</td>
+                <td>8</td>
+                <td>9</td>
+            </tr>
+            <tr class="danger">
+                <td>Nguyễn Anh Quân</td>
+                <td>9.7</td>
+                <td>5</td>
+                <td>8</td>
+                <td>8</td>
+                <td>6</td>
+                <td>5</td>
+                <td>8</td>
+                <td>6</td>
+                <td>3</td>
+                <td>9</td>
+
+            <tr class="active">
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+
+            </tr> 
+            <tr class="active">
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                
+            </tr>   
+            
+            <tr class="active">
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+
+            </tr> 
+            <tr class="active">
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+
+            </tr> 
+            <tr class="active">
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+
+            </tr> 
+            <tr class="active">
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+
+            </tr> 
+            <tr class="active">
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                
+            </tr> 
+            <tr class="active">
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+
+            </tr> 
+        </table>
+    </div>
+    <br /><br />
+
+    <div  class="text-center" id="btn-big">
+        <button type="button" class="btn btn-info btn-lg" id="button-big">Grade</button>
+    </div>
+  
 </body>
 </html>
