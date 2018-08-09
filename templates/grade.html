@@ -1,18 +1,54 @@
 <!DOCTYPE html>
 <html>
  <head>
-   <title>Grade</title>
+   <title>students api</title>
    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-   
+  {% load static %}
+	<link rel="stylesheet" type="text/css" media="screen" href="{% static 'grade.css' %}" />
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
+    <script type="text/javascript" src="{% static 'test_jquery.js' %}"></script>
+    
  </head>
 <body>
-<div>
-   <a class="apireq" href="/login/logout"> logout </a>
-</div>
-<div id="quanml">
   
-</div>
-  {% load static %}
-  <script type="text/javascript" src="{% static 'test_jquery.js' %}"></script>
+    <div class = "text-right">
+        <a type="button" class="btn btn-llight btn-sm">Log out</a>
+    </div>
+
+    <ul>
+        <li class="dropdown" style="list-style: none;">
+            <select class="btn btn-info dropdown-toggle" id="course">
+                <option>loading...</option>
+            </select>
+        </li>
+    </ul>        
+
+  
+    <div class="container ">
+        <table class="table-bordered table-striped  ">
+            <tr>
+                <th>Họ và tên</th>
+                <th>Session 1</th>
+                <th>Session 2</th>
+                <th>Session 3</th>
+                <th>Session 4</th>
+                <th>Session 5</th>
+                <th>Session 6</th>
+                <th>Session 7</th>
+                <th>Session 8</th>
+                <th>Session 9</th>
+                <th>Session 10</th>
+            </tr>
+	    <tbody id="members">
+            	
+	    </tbody>
+        </table>
+    </div>
+    <br /><br />
+
+    <div  class="text-center" id="btn-big">
+        <a href='grade-submit'  type="button" class="btn btn-info btn-lg" id="button-big">Grade</a>
+    </div>
+  
 </body>
 </html>

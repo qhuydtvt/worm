@@ -14,4 +14,5 @@ def classroom_lms(request):
   r = TKRest('https://tk-lms.herokuapp.com/api')
   r = r.classrooms.get()
   data = r.json()
+
   return JsonResponse(data)
