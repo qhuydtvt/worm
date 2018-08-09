@@ -41,7 +41,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'login',
     'grade',
-    'worm'
+    'worm',
+    'grade_submit'
 
 ]
 
