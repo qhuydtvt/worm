@@ -42,8 +42,6 @@ INSTALLED_APPS = [
     'login',
     'grade',
     'worm',
-    'grade_submit'
-
 ]
 
 MIDDLEWARE = [

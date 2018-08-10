@@ -14,7 +14,6 @@ const GetMembers = async () => {
   const course_option = $("#course")
   const data = await getDataMember();
   course_option.empty()
-  console.log(data.data);
   const list = data.data;
   list.forEach((course) => {
     value = course._id
@@ -26,7 +25,6 @@ const GetMembers = async () => {
 
   $('#course').on('change', function() {
     var id = $(this).val();
-    console.log(id);
     $(members).empty();
     list.forEach((course) => {
       if (course._id === id){
@@ -56,7 +54,7 @@ const MembersTemplates = (member) => {
   return(
     `<tr class='info'>
       <td>${member}</td>
-      <td>8</td>
+      <td></td>
      </tr>
     `
   )
