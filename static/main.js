@@ -40,7 +40,7 @@ const GetMembers = async () => {
 
 const getDataMember = () => {
   const data = $.ajax({
-    url: "http://localhost:8000/classroom",
+    url: "/classroom",
     type: "GET",
   });
   return data
@@ -75,17 +75,17 @@ function getCookie(c_name) {
   return "";
 }
 
-const test_post = function()  {
-  const a = {a : 'leu leu'};
-  $.ajax({
-    type : 'POST',
-    url: '/classroom',
-    data: JSON.stringify(a),
-    contentType: 'application/json',
-    dataType: 'JSON',
-    headers: { "X-CSRFToken": getCookie("csrftoken") },
-    success : (res) => {
-      console.log(res);
-    }
-  })
-}
+// const test_post = function()  {
+//   const a = {a : 'leu leu'};
+//   $.ajax({
+//     type : 'POST',
+//     url: '/classroom',
+//     data: JSON.stringify(a),
+//     contentType: 'application/json',
+//     dataType: 'JSON',
+//     headers: { "X-CSRFToken": getCookie("csrftoken") },
+//     success : (res) => {
+//       console.log(res);
+//     }
+//   })
+// }
