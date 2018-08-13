@@ -1,49 +1,57 @@
 $(document).ready(()=>{
   GetMembers()
+  clickbutton()
+  GetPoint()
 });
 
 const clickbutton = () => {
-  $("#test").on('click',function() { 
+  $("#button-big").on('click',function() { 
     console.log("clicked");
-    
-    test_post();
   });
 }
+
 
 const GetMembers = async () => {
-  const course_option = $("#course")
   const data = await getDataMember();
-  course_option.empty()
   const list = data.data;
-  list.forEach((course) => {
-    value = course._id
-    course_name = course.course + " " + course.classroom
-    course_option.append(OptionTemplates(course_name, value))
-  })
-
-  const members = $("#members")
-
-  $('#course').on('change', function() {
-    var id = $(this).val();
-    $(members).empty();
-    list.forEach((course) => {
-      if (course._id === id){
-        course.members.forEach((member) => {
-          members.append(MembersTemplates(member.username))  
-        })
-      }
-    })
-  });
+  CourseOption(list);
+  MembersSessions(list);
 }
 
+const GetPoint = async () => {
+  const dataPoint = await getDataPoint();
+  const listPoint = dataPoint.data;
+
+  points = ('#each-member')
+  listPoint.forEach((classroom) => {
+    classroom.grades.forEach((session) => {
+
+    })
+    
+  })
+
+  
+}
+
+////////////////////////////////////////////////////////////// GET API
 const getDataMember = () => {
   const data = $.ajax({
     url: "/classroom",
     type: "GET",
   });
-  return data
+  return data;
 }
 
+const getDataPoint = () => {
+  const dataPoint = $.ajax({
+    url: "/database",
+    type: "GET",
+  });
+  return dataPoint;
+}
+
+
+///////////////////////////////////////////// TEMPLATE
 const OptionTemplates = (par, value) => {
   return (`
     <option value="${value}">${par}</option>
@@ -53,11 +61,63 @@ const OptionTemplates = (par, value) => {
 const MembersTemplates = (member) => {
   return(
     `<tr class='info'>
-      <td>${member}</td>
-      <td></td>
-     </tr>
+    <td>${member}</td>
+    </tr>
     `
   )
+}
+
+const PointTemplates = (point) => {
+  return(`
+    <td>${point}</td>
+    `)
+}
+
+const SessionsTemplates = (session) => {
+  return (
+    `
+    <th>${session}</th>
+    `
+  )
+}
+
+
+/////////////////////////////////////////////////// FUNCTION
+const CourseOption = (list) => {
+  const course_option = $("#course")
+  course_option.empty()
+  course_option.append(`<option value="choose"> choose...</option>`);
+  list.forEach((course) => {
+    value = course._id
+    course_name = course.course + " " + course.classroom
+    course_option.append(OptionTemplates(course_name, value))
+  })
+}
+
+
+const MembersSessions = (list) => {
+  const members = $("#members")
+  const session = $("#session")
+  $('#course').on('change', function () {
+    var id = $(this).val();
+    $(members).empty();
+    $(session).empty();
+    session.append(SessionsTemplates(""))
+    list.forEach((course) => {
+      if (course._id === id) {
+        course.members.forEach((member) => {
+          members.append(MembersTemplates(member.username))
+        });
+        for (i = 1; i <= course.session; i++) {
+          session.append(SessionsTemplates(i));
+        }
+      }
+      if (id === 'choose') {
+        $(session).empty();
+        $(members).empty();
+      }
+    });
+  });
 }
 
 function getCookie(c_name) {

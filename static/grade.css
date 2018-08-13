@@ -22,7 +22,10 @@ table {
 .dropdown:hover .dropdown-menu {
   display: block;
   }
-
+td,th {
+  width: 50px !important;
+  text-align: center !important; 
+}
 /* .button{
   text-align: center;
   height: 60;
