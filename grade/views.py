@@ -1,6 +1,8 @@
 from django.shortcuts import render
 from django.http import HttpResponseRedirect, JsonResponse
 from tk_rest import TKRest
+import requests as rq
+from random import randint
 
 
 def grade(request):
@@ -29,15 +31,16 @@ def savedb_classroom(request):
 
   for data in datas:
     numb_sessions = data['session']
-    for member in data['members']:
-      memb = {
-          "_id": member['_id'],
-          "name": member['username'],
-          "point": 8
-      }
-      members.append(memb)
-    
     for i in range(numb_sessions):
+      for member in data['members']:
+
+        memb = {
+            "_id": member['_id'],
+            "name": member['username'],
+            "point": randint(0, 10)
+        }
+        members.append(memb)
+      members = []
       sessions.append(members)
 
     classroom = {"classroom_id": data['_id'],
@@ -49,8 +52,7 @@ def savedb_classroom(request):
 
 
 def renderdb_classroom(request):
-  r = TKRest('https://tk-lms.herokuapp.com/api')
-  r = r.classrooms.get()
+  r = rq.get('http://localhost:8000/database')
   raw_data = r.json()
   datas = raw_data['data']
   dummy_class_grade = {"data": []}
@@ -59,23 +61,29 @@ def renderdb_classroom(request):
 
   points = []
   for data in datas:
-    numb_sessions = data['session']
-    for member in data['members']:
-      for i in range(numb_sessions):
-        points.append(8)
-      memb = {
+    for members in data['grades']:
+      for member in members:
+        memb = {
           "_id": member['_id'],
-          "name": member['username'],
-          "points": points
-      }
-      members.append(memb)
-      points = []
+          "name": member['name']
+        }
+        members.append(memb)
+      break
+      # for i in range(len()):
+      #   points.append(8)
+      # memb = {
+      #     "_id": member['_id'],
+      #     "name": member['username'],
+      #     "points": points
+      # }
+      # members.append(memb)
+      # points = []
 
     classroom = {"classroom_id": data['_id'],
                  "grades": members}
     dummy_class_grade['data'].append(classroom)
-    members = []
-    # points = []
+  #   members = []
+  #   # points = []
   return JsonResponse(dummy_class_grade)
 
 # teacher = {
