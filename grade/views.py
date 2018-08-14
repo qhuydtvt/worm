@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponseRedirect, JsonResponse
 from tk_rest import TKRest
+from random import randint
 
 
 def grade(request):
@@ -33,7 +34,7 @@ def savedb_classroom(request):
       memb = {
           "_id": member['_id'],
           "name": member['username'],
-          "point": 8
+          "point": randint(0, 10)
       }
       members.append(memb)
     
@@ -62,7 +63,7 @@ def renderdb_classroom(request):
     numb_sessions = data['session']
     for member in data['members']:
       for i in range(numb_sessions):
-        points.append(8)
+        points.append(randint(0, 10))
       memb = {
           "_id": member['_id'],
           "name": member['username'],

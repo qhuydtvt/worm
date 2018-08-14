@@ -1,7 +1,7 @@
 $(document).ready(()=>{
   GetMembers()
+  GetPoint()
   clickbutton()
-  // GetPoint()
 });
 
 const clickbutton = () => {
@@ -18,24 +18,24 @@ const GetMembers = async () => {
   MembersSessions(list);
 }
 
-// const GetPoint = async () => {
-//   const dataPoint = await getDataPoint();
-//   const listPoint = dataPoint.data;
-//   const pointss = $('.info')
-//   $('#course').on('change', function () {
-//     pointss.empty()
-//     listPoint.forEach((classroom) => {
-//       classroom.grades.forEach((member) => {
-//         member.points.forEach((eachPoint) => {
-//           pointss.append(PointTemplates(8))
-//         })
-//       })
-//     })
-//   })
-  
- 
-  
-// }
+const GetPoint = async () => {
+  const dataPoint = await getDataPoint();
+  const listPoint = dataPoint.data;
+  listPoint.forEach((classroom) => {
+    const currentClassroom = $('#course').val();
+    
+    if(classroom.classroom_id === currentClassroom) {
+      classroom.grades.forEach((member, index) => {
+        const pointss = $(`#grade-${index}`);
+        let pointList = `<td>${member.name}</td>`;
+        pointList += member.points.map((eachPoint) => {
+          return PointTemplates(eachPoint);
+        });
+        pointss.html(pointList);
+      })
+    }
+  })
+}
 
 ////////////////////////////////////////////////////////////// GET API
 const getDataMember = () => {
@@ -44,7 +44,7 @@ const getDataMember = () => {
     type: "GET",
   });
   return data;
-}
+} 
 
 const getDataPoint = () => {
   const dataPoint = $.ajax({
@@ -62,10 +62,10 @@ const OptionTemplates = (par, value) => {
 `)
 }
 
-const MembersTemplates = (member) => {
+const MembersTemplates = (member, index) => {
   return(
-    `<tr class='info'>
-    <td>${member}</td>   
+    `<tr id="grade-${index}">
+      <td>${member}</td>
     </tr>
     `
   )
@@ -109,8 +109,8 @@ const MembersSessions = (list) => {
     session.append(SessionsTemplates(""))
     list.forEach((course) => {
       if (course._id === id) {
-        course.members.forEach((member) => {
-          members.append(MembersTemplates(member.username))
+        course.members.forEach((member, index) => {
+          members.append(MembersTemplates(member.username, index))
         });
         for (i = 1; i <= course.session; i++) {
           session.append(SessionsTemplates(i));
@@ -121,7 +121,9 @@ const MembersSessions = (list) => {
         $(members).empty();
       }
     });
+    GetPoint();
   });
+
 }
 
 function getCookie(c_name) {
