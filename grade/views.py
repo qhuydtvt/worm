@@ -29,10 +29,7 @@ def savedb_classroom(request):
 
   for data in datas:
     numb_sessions = data['session']
-    print(numb_sessions)
-    # print(data['members'])
     for member in data['members']:
-      # print(member)
       memb = {
           "_id": member['_id'],
           "name": member['username'],
@@ -51,6 +48,35 @@ def savedb_classroom(request):
   return JsonResponse(dummy_class_grade)
 
 
+def renderdb_classroom(request):
+  r = TKRest('https://tk-lms.herokuapp.com/api')
+  r = r.classrooms.get()
+  raw_data = r.json()
+  datas = raw_data['data']
+  dummy_class_grade = {"data": []}
+
+  members = []
+
+  points = []
+  for data in datas:
+    numb_sessions = data['session']
+    for member in data['members']:
+      for i in range(numb_sessions):
+        points.append(8)
+      memb = {
+          "_id": member['_id'],
+          "name": member['username'],
+          "points": points
+      }
+      members.append(memb)
+      points = []
+
+    classroom = {"classroom_id": data['_id'],
+                 "grades": members}
+    dummy_class_grade['data'].append(classroom)
+    members = []
+    # points = []
+  return JsonResponse(dummy_class_grade)
 
 # teacher = {
 #   _id : "78678678",
@@ -60,3 +86,22 @@ def savedb_classroom(request):
 #   }
 # }
 
+# {
+#   "data": [
+#     {
+#       "classroom_id": "!@#@!#@!#@!#",
+#       "grades": [
+#         {
+#           "_id": "%%#$@#$!#$!#$",
+#           "name": "Quan",
+#           "sesions": []
+#         },
+#         {
+#           "_id": "%%#$@#$!#$!#$",
+#           "name": "Duc",
+#           "sesion": []
+#         },
+#       ]
+#     }
+#   ]
+# }

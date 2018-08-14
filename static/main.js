@@ -1,7 +1,7 @@
 $(document).ready(()=>{
   GetMembers()
   clickbutton()
-  GetPoint()
+  // GetPoint()
 });
 
 const clickbutton = () => {
@@ -18,20 +18,24 @@ const GetMembers = async () => {
   MembersSessions(list);
 }
 
-const GetPoint = async () => {
-  const dataPoint = await getDataPoint();
-  const listPoint = dataPoint.data;
-
-  points = ('#each-member')
-  listPoint.forEach((classroom) => {
-    classroom.grades.forEach((session) => {
-
-    })
-    
-  })
-
+// const GetPoint = async () => {
+//   const dataPoint = await getDataPoint();
+//   const listPoint = dataPoint.data;
+//   const pointss = $('.info')
+//   $('#course').on('change', function () {
+//     pointss.empty()
+//     listPoint.forEach((classroom) => {
+//       classroom.grades.forEach((member) => {
+//         member.points.forEach((eachPoint) => {
+//           pointss.append(PointTemplates(8))
+//         })
+//       })
+//     })
+//   })
   
-}
+ 
+  
+// }
 
 ////////////////////////////////////////////////////////////// GET API
 const getDataMember = () => {
@@ -44,7 +48,7 @@ const getDataMember = () => {
 
 const getDataPoint = () => {
   const dataPoint = $.ajax({
-    url: "/database",
+    url: "/render",
     type: "GET",
   });
   return dataPoint;
@@ -61,7 +65,7 @@ const OptionTemplates = (par, value) => {
 const MembersTemplates = (member) => {
   return(
     `<tr class='info'>
-    <td>${member}</td>
+    <td>${member}</td>   
     </tr>
     `
   )
