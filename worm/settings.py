@@ -27,8 +27,11 @@ SECRET_KEY = '%yz*_8ws2dbw0pkr%%=n!i!j!i3fp@duby222bwv6hd!kn4zph'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['worm-dev.herokuapp.com',
-                 'localhost']
+ALLOWED_HOSTS = [
+    'worm-dev.herokuapp.com',
+    'localhost',
+    '127.0.0.1',
+]
 
 
 # Application definition
@@ -51,7 +54,8 @@ MIDDLEWARE = [
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware'
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
 MIDDLEWARE_CLASSES = [
