@@ -59,7 +59,6 @@ def renderdb_classroom(request):
   
   for data in datas:
     members = data['grades'][0]
-    num_members = len(members)
     sessions = data['grades']
     for member in members:
       points = []
