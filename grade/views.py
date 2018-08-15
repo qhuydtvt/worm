@@ -40,13 +40,13 @@ def savedb_classroom(request):
             "point": randint(0, 10)
         }
         members.append(memb)
-      members = []
       sessions.append(members)
+      members = []
 
     classroom = {"classroom_id": data['_id'],
                  "grades": sessions}
     dummy_class_grade['data'].append(classroom)
-    members = []
+    # members = []
     sessions = []
   return JsonResponse(dummy_class_grade)
 
@@ -56,34 +56,26 @@ def renderdb_classroom(request):
   raw_data = r.json()
   datas = raw_data['data']
   dummy_class_grade = {"data": []}
-
-  members = []
-
-  points = []
+  
   for data in datas:
-    for members in data['grades']:
-      for member in members:
-        memb = {
-          "_id": member['_id'],
-          "name": member['name']
-        }
-        members.append(memb)
-      break
-      # for i in range(len()):
-      #   points.append(8)
-      # memb = {
-      #     "_id": member['_id'],
-      #     "name": member['username'],
-      #     "points": points
-      # }
-      # members.append(memb)
-      # points = []
+    members = data['grades'][0]
+    num_members = len(members)
+    sessions = data['grades']
+    for member in members:
+      points = []
+      for session in sessions:
 
-    classroom = {"classroom_id": data['_id'],
+        for memb in session:
+          if member["_id"] == memb["_id"]:
+            points.append(memb['point'])
+        continue
+      member['point'] = points
+            
+    classroom = {"classroom_id": data['classroom_id'],
                  "grades": members}
+
     dummy_class_grade['data'].append(classroom)
-  #   members = []
-  #   # points = []
+
   return JsonResponse(dummy_class_grade)
 
 # teacher = {
@@ -94,22 +86,3 @@ def renderdb_classroom(request):
 #   }
 # }
 
-# {
-#   "data": [
-#     {
-#       "classroom_id": "!@#@!#@!#@!#",
-#       "grades": [
-#         {
-#           "_id": "%%#$@#$!#$!#$",
-#           "name": "Quan",
-#           "sesions": []
-#         },
-#         {
-#           "_id": "%%#$@#$!#$!#$",
-#           "name": "Duc",
-#           "sesion": []
-#         },
-#       ]
-#     }
-#   ]
-# }
