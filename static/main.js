@@ -5,8 +5,10 @@ $(document).ready(()=>{
 });
 
 const clickbutton = () => {
-  $("#button-big").on('click',function() { 
-    console.log("clicked");
+  $('#button-big').on('click',function() {
+    for (i=0; i <6; i++){ 
+    $(`#grade-${i} > td:not(:first)`).replaceWith(`<td><input></input><td>`);
+    }
   });
 }
 
@@ -24,7 +26,7 @@ const GetPoint = async () => {
   listPoint.forEach((classroom) => {
     const currentClassroom = $('#course').val();
     
-    if(classroom.classroom_id === currentClassroom) {
+    if(classroom._id === currentClassroom) {
       classroom.grades.forEach((member, index) => {
         const pointss = $(`#grade-${index}`);
         let pointList = `<td>${member.name}</td>`;
