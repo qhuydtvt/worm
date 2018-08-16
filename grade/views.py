@@ -35,7 +35,7 @@ def savedb_classroom(request):
       for member in data['members']:
 
         memb = {
-            "_id": member['_id'],
+            "member_id": member['_id'],
             "name": member['username'],
             "point": randint(0, 10)
         }
@@ -43,7 +43,7 @@ def savedb_classroom(request):
       sessions.append(members)
       members = []
 
-    classroom = {"_id": data['_id'],
+    classroom = {"classroom_id": data['_id'],
                  "grades": sessions}
     dummy_class_grade['data'].append(classroom)
     # members = []
@@ -65,12 +65,12 @@ def renderdb_classroom(request):
       for session in sessions:
 
         for memb in session:
-          if member["_id"] == memb["_id"]:
+          if member["member_id"] == memb["member_id"]:
             points.append(memb['point'])
         continue
       member['point'] = points
             
-    classroom = {"_id": data['_id'],
+    classroom = {"classroom_id": data['classroom_id'],
                  "grades": members}
 
     dummy_class_grade['data'].append(classroom)
