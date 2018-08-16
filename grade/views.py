@@ -63,7 +63,6 @@ def renderdb_classroom(request):
     for member in members:
       points = []
       for session in sessions:
-
         for memb in session:
           if member["member_id"] == memb["member_id"]:
             points.append(memb['point'])

@@ -110,9 +110,88 @@ const CourseOption = (list) => {
 const updateGradeHeaders = (sessionMax) => {
   $("#sessions").empty();
   $("<th>Session</th>").appendTo("#sessions");
-  for(var session = 1; session < sessionMax; session++) {
+  for(var session = 1; session <= sessionMax; session++) {
     $(`<th>${session}</th>`).appendTo("#sessions");
   }
+};
+
+const updateMemberGrades = (memberGrades, sessionMax) => {
+  let gradeRow = $(`<tr></tr>`);
+  gradeRow.appendTo("#members");
+  $(`<td>${findMember(memberGrades.member_id).username}</td>`).appendTo(gradeRow);
+  for(var i = 0; i < sessionMax; i++) {
+    if (memberGrades.point.length - 1 > i) {
+      $(`<td>${memberGrades.point[i]}</td>`).appendTo(gradeRow);
+    } else {
+      $(`<td class="table-secondary"></td>`).appendTo(gradeRow);
+    }
+  }
+}
+
+const getGradesInClassroom = (classroomId) => {
+  // TODO: Wait for boomerang team
+  return {
+    "classroom_id": "5b6ecf5d956b8800271c2ec6",
+    "grades": [
+    {
+      "member_id": "5b585b56dfd8a610d0dc5d0d",
+      "name": "3123",
+      "point": [
+        10,
+        2,
+        10,
+        6,
+        6,
+        0,
+        7,
+        6,
+        9,
+        0,
+        5,
+        10,
+        2
+      ]
+    },
+    {
+    "member_id": "5b5cc348fc6e68076c83830d",
+    "name": "123141",
+    "point": [
+      8,
+      9,
+      4,
+      7,
+      8,
+      8,
+      6,
+      2,
+      10,
+      8,
+      10,
+      7,
+      5
+      ]
+    },
+    {
+    "member_id": "5b5e8954f935220c689b9d30",
+    "name": "abcxyz",
+    "point": [
+    3,
+    8,
+    0,
+    7,
+    3,
+    8,
+    4,
+    10,
+    3,
+    10,
+    5,
+    5,
+    2
+    ]
+    }
+    ]
+    }
 };
 
 
@@ -123,7 +202,10 @@ const MembersSessions = (classroomList) => {
     var classroomId = $(this).val();
     currentClassroom = classroomList.find((classroom) => classroom._id === classroomId);
     updateGradeHeaders(currentClassroom.session);
-    console.log(currentClassroom.members);
+    const allMemberGrades = getGradesInClassroom(currentClassroom._id).grades;
+    $('#members').empty();
+    allMemberGrades.forEach((memberGrades) => updateMemberGrades(memberGrades, currentClassroom.session));
+    // const grades = getGradesInClassroom(currentClassroom._id);
     // classroomList.forEach((course) => {
     //   if (course._id === classroomId) {
     //     course.members.forEach((member, index) => {
