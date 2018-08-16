@@ -1,3 +1,10 @@
+let currentClassroom = null;
+
+const findMember = (memberId) => {
+  if (currentClassroom === null) return null;
+  return currentClassroom.members.find(member => member._id === memberId);
+}
+
 $(document).ready(()=>{
   GetMembers()
   GetPoint()
@@ -15,9 +22,9 @@ const clickbutton = () => {
 
 const GetMembers = async () => {
   const data = await getDataMember();
-  const list = data.data;
-  CourseOption(list);
-  MembersSessions(list);
+  const classroomList = data.data;
+  CourseOption(classroomList);
+  MembersSessions(classroomList);
 }
 
 const GetPoint = async () => {
@@ -100,30 +107,38 @@ const CourseOption = (list) => {
   })
 }
 
+const updateGradeHeaders = (sessionMax) => {
+  $("#sessions").empty();
+  $("<th>Session</th>").appendTo("#sessions");
+  for(var session = 1; session < sessionMax; session++) {
+    $(`<th>${session}</th>`).appendTo("#sessions");
+  }
+};
 
-const MembersSessions = (list) => {
-  const members = $("#members")
-  const session = $("#session")
+
+const MembersSessions = (classroomList) => {
+  const members = $("#members");
+  const session = $("#session");
   $('#course').on('change', function () {
-    var id = $(this).val();
-    $(members).empty();
-    $(session).empty();
-    session.append(SessionsTemplates(""))
-    list.forEach((course) => {
-      if (course._id === id) {
-        course.members.forEach((member, index) => {
-          members.append(MembersTemplates(member.username, index))
-        });
-        for (i = 1; i <= course.session; i++) {
-          session.append(SessionsTemplates(i));
-        }
-      }
-      if (id === 'choose') {
-        $(session).empty();
-        $(members).empty();
-      }
-    });
-    GetPoint();
+    var classroomId = $(this).val();
+    currentClassroom = classroomList.find((classroom) => classroom._id === classroomId);
+    updateGradeHeaders(currentClassroom.session);
+    console.log(currentClassroom.members);
+    // classroomList.forEach((course) => {
+    //   if (course._id === classroomId) {
+    //     course.members.forEach((member, index) => {
+    //       members.append(MembersTemplates(member.username, index))
+    //     });
+    //     for (i = 1; i <= course.session; i++) {
+    //       session.append(SessionsTemplates(i));
+    //     }
+    //   }
+    //   if (classroomId === 'choose') {
+    //     $(session).empty();
+    //     $(members).empty();
+    //   }
+    // });
+    // GetPoint();
   });
 
 }

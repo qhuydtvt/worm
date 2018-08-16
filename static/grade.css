@@ -1,31 +1,28 @@
-div {
+/* div {
   padding: 20px;
-}
-
-table {
-  border-collapse: collapse;
-  width: 100%;
-}
+} */
 
 #button-big {
   width: 50%;
 }
 
-.active {
+/* .active {
   height: 30px;
-}
-.table-striped>tbody>tr:nth-child(odd)>td, 
-.table-striped>tbody>tr:nth-child(odd)>th {
-  background-color: rgb(185, 227, 241);
-}
+} */
 
 .dropdown:hover .dropdown-menu {
   display: block;
-  }
-td,th {
-  width: 50px !important;
-  text-align: center !important; 
 }
+
+#tbl_grade > thead th{
+  text-align: right;
+}
+
+#members td:nth-child(n+2) {
+  text-align: right;
+}
+
+
 
 /* .button{
   text-align: center;
