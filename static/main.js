@@ -33,7 +33,7 @@ const GetPoint = async () => {
   listPoint.forEach((classroom) => {
     const currentClassroom = $('#course').val();
     
-    if(classroom._id === currentClassroom) {
+    if(classroom.classroom_id === currentClassroom) {
       classroom.grades.forEach((member, index) => {
         const pointss = $(`#grade-${index}`);
         let pointList = `<td>${member.name}</td>`;
