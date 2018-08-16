@@ -30,7 +30,7 @@ const GetPoint = async () => {
       classroom.grades.forEach((member, index) => {
         const pointss = $(`#grade-${index}`);
         let pointList = `<td>${member.name}</td>`;
-        pointList += member.points.map((eachPoint) => {
+        pointList += member.point.map((eachPoint) => {
           return PointTemplates(eachPoint);
         });
         pointss.html(pointList);
