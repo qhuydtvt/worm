@@ -51,31 +51,45 @@ def savedb_classroom(request):
   return JsonResponse(dummy_class_grade)
 
 
-def renderdb_classroom(request):
+def renderdb_classroom(request, classroom_id=None):
+  
   r = rq.get('http://localhost:8000/database')
   raw_data = r.json()
+
+  def getData(datas):
+    dummy_class_grade = {"data": []}
+    for data in datas:
+      members = data['grades'][0]
+      sessions = data['grades']
+      for member in members:
+        points = []
+        for session in sessions:
+          for memb in session:
+            if member["member_id"] == memb["member_id"]:
+              points.append(memb['point'])
+          continue
+        member['point'] = points
+
+      classroom = {"classroom_id": data['classroom_id'],
+                   "grades": members}
+
+      dummy_class_grade['data'].append(classroom)
+    return dummy_class_grade
+
   datas = raw_data['data']
-  dummy_class_grade = {"data": []}
+  if classroom_id is None:
+    dummy_class_grade = getData(datas)
+  else:
+    for data in datas:
+      if data['classroom_id'] == classroom_id:
+        datas = []
+        datas.append(data)
+        dummy_class_grade = getData(datas)
   
-  for data in datas:
-    members = data['grades'][0]
-    sessions = data['grades']
-    for member in members:
-      points = []
-      for session in sessions:
-
-        for memb in session:
-          if member["member_id"] == memb["member_id"]:
-            points.append(memb['point'])
-        continue
-      member['point'] = points
-            
-    classroom = {"classroom_id": data['classroom_id'],
-                 "grades": members}
-
-    dummy_class_grade['data'].append(classroom)
-
   return JsonResponse(dummy_class_grade)
+        
+ 
+
 
 # teacher = {
 #   _id : "78678678",
