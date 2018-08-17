@@ -11,3 +11,4 @@ tk_rest
 gunicorn
 whitenoise
 djongo
+mysqlclient
