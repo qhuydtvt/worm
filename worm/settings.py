@@ -93,13 +93,12 @@ WSGI_APPLICATION = 'worm.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'djongo',
+        'ENGINE': 'django.db.backends.mysql',
         'NAME': 'worm',
-        'HOST': 'ds223019.mlab.com',
-        'PORT': 23019,
-        'USER': 'admin',
-        'PASSWORD': 'codethechange18',
-        'AUTH_SOURCE': 'worm',
+        'USER': 'root',
+        'PASSWORD': 'thuylinh138',
+        'HOST': 'localhost',
+        'PORT': '3306',
     }
 }
 
