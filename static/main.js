@@ -21,10 +21,10 @@ const GetMembers = async () => {
 }
 
 const GetPoint = async () => {
-  const dataPoint = await getDataPoint();
+  const currentClassroom = $('#course').val();
+  const dataPoint = await getDataPoint(currentClassroom);
   const listPoint = dataPoint.data;
   listPoint.forEach((classroom) => {
-    const currentClassroom = $('#course').val();
     
     if(classroom.classroom_id === currentClassroom) {
       classroom.grades.forEach((member, index) => {
@@ -48,9 +48,9 @@ const getDataMember = () => {
   return data;
 } 
 
-const getDataPoint = () => {
+const getDataPoint = (classroom_id) => {
   const dataPoint = $.ajax({
-    url: "/render",
+    url: `/grades/${classroom_id}`,
     type: "GET",
   });
   return dataPoint;
