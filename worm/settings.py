@@ -13,6 +13,8 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 import os
 # import mongoengine
 from django.contrib.messages import constants as messages
+from .base import get_env_variable
+
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -96,8 +98,8 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'worm',
-        'USER': 'root',
-        'PASSWORD': 'thuylinh138',
+        'USER': get_env_variable("MYSQL_USERNAME"),
+        'PASSWORD': get_env_variable("MYSQL_PASSWORD"),
         'HOST': 'localhost',
         'PORT': '3306',
     }
