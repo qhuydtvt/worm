@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'login',
     'grade',
     'worm',
+    'services',
 ]
 
 MIDDLEWARE = [
