@@ -1,9 +1,15 @@
 from django.shortcuts import render
 from django.http import HttpResponseRedirect, JsonResponse
 from services import lms
-from .models import Grade 
+from .models import Grade
 from django.views.decorators.csrf import csrf_exempt
 import json
+
+
+def classroom_lms(request):
+  r = lms.classroom.get()
+  data = r.json()
+  return JsonResponse(data)
 
 
 def grade(request):

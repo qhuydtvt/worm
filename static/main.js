@@ -1,6 +1,5 @@
 $(document).ready(()=>{
   GetMembers()
-  GetPoint()
   clickbutton()
 });
 
@@ -12,37 +11,36 @@ const clickbutton = () => {
   });
 }
 
-
 const GetMembers = async () => {
   const data = await getDataMember();
   const list = data.data;
   CourseOption(list);
   MembersSessions(list);
+  getPoint();
+
 }
 
-const GetPoint = async () => {
+const getPoint = async () => {
   const currentClassroom = $('#course').val();
   const dataPoint = await getDataPoint(currentClassroom);
-  const listPoint = dataPoint.data;
-  listPoint.forEach((classroom) => {
-    
-    if(classroom.classroom_id === currentClassroom) {
-      classroom.grades.forEach((member, index) => {
-        const pointss = $(`#grade-${index}`);
-        let pointList = `<td>${member.name}</td>`;
-        pointList += member.point.map((eachPoint) => {
-          return PointTemplates(eachPoint);
-        });
-        pointss.html(pointList);
-      })
-    }
+  const listDataPoint = dataPoint.data;  
+  listDataPoint.forEach((member, index) => {
+    let username = member.member.username;
+    let point = member.grades;
+    $(`#members`).append(MembersTemplates(username, index))
+    let pointList = `<td>${username}</td>`;
+    const grades = $(`#grade-${index}`);
+    pointList += point.map((eachpoint) => {
+      return PointTemplates(eachpoint);
+    });
+    grades.html(pointList);
   })
 }
 
 ////////////////////////////////////////////////////////////// GET API
 const getDataMember = () => {
   const data = $.ajax({
-    url: "/classroom",
+    url: "/api/classroom",
     type: "GET",
   });
   return data;
@@ -50,7 +48,7 @@ const getDataMember = () => {
 
 const getDataPoint = (classroom_id) => {
   const dataPoint = $.ajax({
-    url: `/grades/${classroom_id}`,
+    url: `api/grades?classroom_id=${classroom_id}`,
     type: "GET",
   });
   return dataPoint;
@@ -106,24 +104,20 @@ const MembersSessions = (list) => {
   const session = $("#session")
   $('#course').on('change', function () {
     var id = $(this).val();
+    getPoint(id);
     $(members).empty();
     $(session).empty();
     session.append(SessionsTemplates(""))
     list.forEach((course) => {
       if (course._id === id) {
-        course.members.forEach((member, index) => {
-          members.append(MembersTemplates(member.username, index))
-        });
         for (i = 1; i <= course.session; i++) {
           session.append(SessionsTemplates(i));
         }
       }
       if (id === 'choose') {
         $(session).empty();
-        $(members).empty();
       }
     });
-    GetPoint();
   });
 
 }
