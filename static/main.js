@@ -1,12 +1,15 @@
+
 $(document).ready(()=>{
   getTable()
   clickbutton()
 });
 
 const clickbutton = () => {
-  $('#button-big').on('click',function() {
-   console.log('clicked');
+  const point = '#members > tr > td'
+  $(document).on('click', point, (e) => { 
+    console.log(e.target.innerText);
   });
+
 }
 
 const getTable = async () => {
