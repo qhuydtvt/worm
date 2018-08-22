@@ -23,7 +23,9 @@ const getMember = async () => {
   const dataPoint = await getDataPoint(currentClassroom);
   const listDataPoint = dataPoint.data;  
   listDataPoint.forEach((member, index) => {
-    let username = member.member.username;
+    let firstName = member.member.firstName;
+    let lastName = member.member.lastName;
+    let username = `${firstName} ${lastName}`;
     let point = member.grades;
     $(`#members`).append(MembersTemplates(username, index))
     getPoint(username, point, index);
