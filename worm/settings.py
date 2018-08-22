@@ -11,7 +11,6 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 """
 
 import os
-# import mongoengine
 from django.contrib.messages import constants as messages
 from .base import get_env_variable
 
