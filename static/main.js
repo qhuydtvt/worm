@@ -1,26 +1,24 @@
 $(document).ready(()=>{
-  GetMembers()
+  getTable()
   clickbutton()
 });
 
 const clickbutton = () => {
   $('#button-big').on('click',function() {
-    for (i=0; i <6; i++){ 
-    $(`#grade-${i} > td:not(:first)`).replaceWith(`<td><input></input><td>`);
-    }
+   console.log('clicked');
   });
 }
 
-const GetMembers = async () => {
+const getTable = async () => {
   const data = await getDataMember();
-  const list = data.data;
-  CourseOption(list);
-  MembersSessions(list);
-  getPoint();
+  const dataMember = data.data;
+  getCourse(dataMember);
+  getSessions(dataMember);
+  getMember();
 
 }
 
-const getPoint = async () => {
+const getMember = async () => {
   const currentClassroom = $('#course').val();
   const dataPoint = await getDataPoint(currentClassroom);
   const listDataPoint = dataPoint.data;  
@@ -28,13 +26,8 @@ const getPoint = async () => {
     let username = member.member.username;
     let point = member.grades;
     $(`#members`).append(MembersTemplates(username, index))
-    let pointList = `<td>${username}</td>`;
-    const grades = $(`#grade-${index}`);
-    pointList += point.map((eachpoint) => {
-      return PointTemplates(eachpoint);
-    });
-    grades.html(pointList);
-  })
+    getPoint(username, point, index);
+  });
 }
 
 ////////////////////////////////////////////////////////////// GET API
@@ -54,40 +47,8 @@ const getDataPoint = (classroom_id) => {
   return dataPoint;
 }
 
-
-///////////////////////////////////////////// TEMPLATE
-const OptionTemplates = (par, value) => {
-  return (`
-    <option value="${value}">${par}</option>
-`)
-}
-
-const MembersTemplates = (member, index) => {
-  return(
-    `<tr id="grade-${index}">
-      <td>${member}</td>
-    </tr>
-    `
-  )
-}
-
-const PointTemplates = (point) => {
-  return(`
-    <td>${point}</td>
-    `)
-}
-
-const SessionsTemplates = (session) => {
-  return (
-    `
-    <th>${session}</th>
-    `
-  )
-}
-
-
 /////////////////////////////////////////////////// FUNCTION
-const CourseOption = (list) => {
+const getCourse = (list) => {
   const course_option = $("#course")
   course_option.empty()
   course_option.append(`<option value="choose"> choose...</option>`);
@@ -99,12 +60,12 @@ const CourseOption = (list) => {
 }
 
 
-const MembersSessions = (list) => {
+const getSessions = (list) => {
   const members = $("#members")
   const session = $("#session")
   $('#course').on('change', function () {
     var id = $(this).val();
-    getPoint(id);
+    getMember(id);
     $(members).empty();
     $(session).empty();
     session.append(SessionsTemplates(""))
@@ -122,18 +83,46 @@ const MembersSessions = (list) => {
 
 }
 
-function getCookie(c_name) {
-  if (document.cookie.length > 0) {
-    c_start = document.cookie.indexOf(c_name + "=");
-    if (c_start != -1) {
-      c_start = c_start + c_name.length + 1;
-      c_end = document.cookie.indexOf(";", c_start);
-      if (c_end == -1) c_end = document.cookie.length;
-      return unescape(document.cookie.substring(c_start, c_end));
-    }
-  }
-  return "";
+const getPoint  = (username, point, index) => {
+  let pointList = `<td>${username}</td>`;
+  const grades = $(`#grade-${index}`);
+  pointList += point.map((eachpoint) => {
+    return PointTemplates(eachpoint);
+  });
+  grades.html(pointList);
 }
+
+
+///////////////////////////////////////////// TEMPLATE
+const OptionTemplates = (par, value) => {
+  return (`
+    <option value="${value}">${par}</option>
+`)
+}
+
+const MembersTemplates = (member, index) => {
+  return (
+    `<tr id="grade-${index}">
+      <td>${member}</td>
+    </tr>
+    `
+  )
+}
+
+const PointTemplates = (point) => {
+  return (`
+    <td>${point}</td>
+    `)
+}
+
+const SessionsTemplates = (session) => {
+  return (
+    `
+    <th>${session}</th>
+    `
+  )
+}
+
 
 // const test_post = function()  {
 //   const a = {a : 'leu leu'};
