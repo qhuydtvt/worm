@@ -96,11 +96,11 @@ WSGI_APPLICATION = 'worm.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'worm',
+        'NAME': get_env_variable("MYSQL_WORM_DB_NAME"),
         'USER': get_env_variable("MYSQL_USERNAME"),
         'PASSWORD': get_env_variable("MYSQL_PASSWORD"),
-        'HOST': 'localhost',
-        'PORT': '3306',
+        'HOST': get_env_variable("MYSQL_HOST"),
+        'PORT': get_env_variable("MYSQL_PORT"),
     }
 }
 
