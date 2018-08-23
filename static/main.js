@@ -65,13 +65,13 @@ const getDataPoint = (classroom_id) => {
 
 /////////////////////////////////////////////////// FUNCTION
 const getCourse = (list) => {
-  const course_option = $("#course")
-  course_option.empty()
-  course_option.append(`<option value="choose"> choose...</option>`);
+  const courseOption = $("#course")
+  courseOption.empty()
+  courseOption.append(`<option value="choose"> choose...</option>`);
   list.forEach((course) => {
     value = course._id
-    course_name = course.course + " " + course.classroom
-    course_option.append(OptionTemplates(course_name, value))
+    courseName = course.course + " " + course.classroom
+    courseOption.append(OptionTemplates(courseName, value))
   })
 }
 
