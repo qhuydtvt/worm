@@ -1,16 +1,27 @@
 
 $(document).ready(()=>{
-  getTable()
-  clickbutton()
+  getTable();
+  clickbutton();
 });
 
 const clickbutton = () => {
   const point = '#members > tr > td'
-  $(document).on('click', point, (e) => { 
-    console.log(e.target.innerText);
+  const form = $(`#form`)
+  $(document).on('click', point, (e) => {
+    e.preventDefault(); 
+    form.empty();
+    const valu = $(`#${e.target.id}`);
+    form.append(`<input id='input' type="number" value=${e.target.innerText}>`);
+    form.append(`<input id='submit' type="submit" value="Send">`);
+    let input = $(`#input`);
+    $("#submit").on('click',(event)=>{
+      event.preventDefault();
+      valu[0].innerText = input.val();
+    })
   });
-
+  
 }
+
 
 const getTable = async () => {
   const data = await getDataMember();
@@ -91,8 +102,8 @@ const getSessions = (list) => {
 const getPoint  = (username, point, index) => {
   let pointList = `<td>${username}</td>`;
   const grades = $(`#grade-${index}`);
-  pointList += point.map((eachpoint) => {
-    return PointTemplates(eachpoint);
+  pointList += point.map((eachpoint, ind) => {
+    return PointTemplates(eachpoint, index, ind);
   });
   grades.html(pointList);
 }
@@ -114,9 +125,9 @@ const MembersTemplates = (member, index) => {
   )
 }
 
-const PointTemplates = (point) => {
+const PointTemplates = (point, index, ind) => {
   return (`
-    <td>${point}</td>
+    <td id=${index}-${ind}> ${point}</td>
     `)
 }
 
