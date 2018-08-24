@@ -11,4 +11,4 @@ class Grade(models.Model):
   def json(self):
     return {"classroom_id": self.classroom_id,
             "member_id": self.member_id,
-            "grades": self.grades}
+            "grades": self.grades}          

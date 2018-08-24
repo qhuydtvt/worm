@@ -1,25 +1,83 @@
-
 $(document).ready(()=>{
   getTable();
-  clickbutton();
+  clickButton();
+  submit();
 });
 
-const clickbutton = () => {
+const clickButton = () => {
   const point = '#members > tr > td'
   const form = $(`#form`)
   $(document).on('click', point, (e) => {
+    if (!started){
+    startTime();
+    started = true;
+    }
     e.preventDefault(); 
     form.empty();
-    const valu = $(`#${e.target.id}`);
-    form.append(`<input id='input' type="number" value=${e.target.innerText}>`);
-    form.append(`<input id='submit' type="submit" value="Send">`);
+    let valu = $(`#${e.target.id}`);
+    valu.css({ color : `red` })
+    form.append(`<input id='input' type="number" value=${e.target.innerText} autofocus>`);
+    form.append(`<input id='submit' type="submit">`);
     let input = $(`#input`);
     $("#submit").on('click',(event)=>{
       event.preventDefault();
       valu[0].innerText = input.val();
-    })
+      valu.css({ color : `black` });
+    });
   });
   
+}
+
+const submit = () => {
+  const submit = $('#btn-big');
+  members = $('#members');
+  submit.on('click', () => {
+    const currentClassroom = $('#course').val();
+    gradeJson = getClassJSON();
+    membersList = members[0].children;
+    for (let i = 0; i < membersList.length; i++) {
+      memberJSON = getMemberJSON();
+      membId = '#' + membersList[i].id;
+      membInfo = $(membId);
+      infoList = membInfo[0].children;
+      memberJSON.member._id = infoList[0].id;
+      for (let j = 1; j < infoList.length; j++) {
+        memberJSON.grades.push(infoList[j].innerText)
+      }
+      gradeJson.data.push(memberJSON)
+    }
+    postGradeJson(currentClassroom, JSON.stringify(gradeJson))
+  })
+}
+
+const getClassJSON = () => {
+  gradesData = `{    
+   "data": []
+ }`;
+  gradesJson = JSON.parse(gradesData);
+  return gradesJson;
+}
+
+const getMemberJSON = () => {
+  member = `
+   {
+     "member": {
+       "_id": ""
+     },
+     "grades": []
+   }`;
+  memberJSON = JSON.parse(member);
+  return memberJSON;
+}
+
+const postGradeJson = (classroom_id, gradeJSON) => {
+  $.ajax({
+    url: `api/grades?classroom_id=${classroom_id}`,
+    type: "POST",
+    data: gradeJSON,
+    dataType: "json",
+    contentType: "application/json",
+  });
 }
 
 
@@ -139,6 +197,26 @@ const SessionsTemplates = (session) => {
   )
 }
 
+/////////////////////////// TIMING
+let time = 0;
+let started = false
+const startTime = () => {
+    setTimeout(() => {
+    time++;
+    let hours = Math.floor(time/10/60/60);
+    let secs = Math.floor(time/10%60);
+    let mins = Math.floor(time/10/60);
+    if (mins < 10) {
+      mins = `0${mins}`;
+    }
+    if (secs < 10) {
+      secs = `0${secs}`;
+    }
+    $(`#time`).empty();
+    $(`#time`).append(`${hours}:${mins}:${secs}`);
+    startTime();
+  },100);
+}
 
 // const test_post = function()  {
 //   const a = {a : 'leu leu'};
