@@ -54,7 +54,7 @@ const submit = () => {
 const getClassJSON = () => {
   gradesData = `{    
    "data": []
- }`;
+  }`;
   gradesJson = JSON.parse(gradesData);
   return gradesJson;
 }
@@ -96,9 +96,9 @@ const getMember = async () => {
   const dataPoint = await getDataPoint(currentClassroom);
   const listDataPoint = dataPoint.data;  
   listDataPoint.forEach((member, index) => {
+    let id = member.member._id
     let firstName = member.member.firstName;
     let lastName = member.member.lastName;
-    let id = member.member._id
     let username = `${firstName} ${lastName}`;
     let point = member.grades;
     $(`#members`).append(MembersTemplates(username, index))
@@ -140,7 +140,7 @@ const getSessions = (list) => {
   const members = $("#members")
   const session = $("#session")
   $('#course').on('change', function () {
-    var id = $(this).val();
+    let id = $(this).val();
     getMember(id);
     $(members).empty();
     $(session).empty();

@@ -56,10 +56,12 @@ def api_grade_get(request, classroom_id):
 
 def api_grade_post(request, classroom_id):
   grades_json = json.loads(request.body)
-  # member_update = Grade.objects.get()
   for member in grades_json['data']:
-    print(member['member']['_id'])
     member_update = Grade.objects.get(member_id=member['member']['_id'])
-    member_update.grades = member['grades']
+    grades = []
+    for point in member['grades']:
+      point = int(point)
+      grades.append(point)
+    member_update.grades = grades
     member_update.save()
   return JsonResponse({"data": classroom_id})
