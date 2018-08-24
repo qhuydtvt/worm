@@ -46,6 +46,7 @@ const submit = () => {
       }
       gradeJson.data.push(memberJSON)
     }
+    
     postGradeJson(currentClassroom, JSON.stringify(gradeJson))
   })
 }
@@ -97,10 +98,11 @@ const getMember = async () => {
   listDataPoint.forEach((member, index) => {
     let firstName = member.member.firstName;
     let lastName = member.member.lastName;
+    let id = member.member._id
     let username = `${firstName} ${lastName}`;
     let point = member.grades;
     $(`#members`).append(MembersTemplates(username, index))
-    getPoint(username, point, index);
+    getPoint(id, username, point, index);
   });
 }
 
@@ -157,8 +159,8 @@ const getSessions = (list) => {
 
 }
 
-const getPoint  = (username, point, index) => {
-  let pointList = `<td>${username}</td>`;
+const getPoint  = (id, username, point, index) => {
+  let pointList = `<td id=${id}>${username}</td>`;
   const grades = $(`#grade-${index}`);
   pointList += point.map((eachpoint, ind) => {
     return PointTemplates(eachpoint, index, ind);
