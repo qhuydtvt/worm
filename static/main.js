@@ -4,8 +4,9 @@ $(document).ready(()=>{
   submit();
 });
 
+
 const clickButton = () => {
-  const point = '#members > tr > td'
+  const point = '#members > tr > td:not(:first-child)'
   const form = $(`#form`)
   $(document).on('click', point, (e) => {
     if (!started){
@@ -25,62 +26,70 @@ const clickButton = () => {
       valu.css({ color : `black` });
     });
   });
-  
 }
+
 
 const submit = () => {
   const submit = $('#btn-big');
   members = $('#members');
   submit.on('click', () => {
+    const submitTime = $("#time");
+    teacherJSON = getTeacherJSON();
+    teacherJSON.time = submitTime[0].innerText;
+
     const currentClassroom = $('#course').val();
-    gradeJson = getClassJSON();
+    gradeJSON = getClassJSON();
     membersList = members[0].children;
     for (let i = 0; i < membersList.length; i++) {
       memberJSON = getMemberJSON();
       membId = '#' + membersList[i].id;
       membInfo = $(membId);
       infoList = membInfo[0].children;
-      memberJSON.member._id = infoList[0].id;
+      memberJSON._id = infoList[0].id;
       for (let j = 1; j < infoList.length; j++) {
         memberJSON.grades.push(infoList[j].innerText)
       }
-      gradeJson.data.push(memberJSON)
+      gradeJSON.data.member.push(memberJSON)
     }
-    console.log(gradeJson);
+    gradeJSON.data.teacher.push(teacherJSON)
+    console.log(gradeJSON);
     
-    postGradeJson(currentClassroom, JSON.stringify(gradeJson))
+    postGradeJson(currentClassroom, JSON.stringify(gradeJSON))
   })
 }
 
 const getClassJSON = () => {
   gradesData = `{    
-   "data": []
+   "data": {
+     "teacher": [],
+     "member":[]
+   }
  }`;
   gradesJson = JSON.parse(gradesData);
   return gradesJson;
 }
 
+const getTeacherJSON = () => {
+  teacher = `
+    {
+      "_id": "!@#!@#!@#",
+      "time": "0.3"
+    }`;
+  teacherJSON = JSON.parse(teacher);
+  return teacherJSON;
+}
+
 const getMemberJSON = () => {
   member = `
-   {
-     "member": {
-       "_id": ""
-     },
-     "grades": []
-   }`;
+    {
+      "_id": "",
+      "grades": []
+    }`;
   memberJSON = JSON.parse(member);
   return memberJSON;
 }
 
-const postGradeJson = (classroom_id, gradeJSON) => {
-  $.ajax({
-    url: `api/grades?classroom_id=${classroom_id}`,
-    type: "POST",
-    data: gradeJSON,
-    dataType: "json",
-    contentType: "application/json",
-  });
-}
+
 
 
 const getTable = async () => {
@@ -107,7 +116,7 @@ const getMember = async () => {
   });
 }
 
-////////////////////////////////////////////////////////////// GET API
+////////////////////////////////////////////////////////////// API
 const getDataMember = () => {
   const data = $.ajax({
     url: "/api/classroom",
@@ -122,6 +131,16 @@ const getDataPoint = (classroom_id) => {
     type: "GET",
   });
   return dataPoint;
+}
+
+const postGradeJson = (classroom_id, gradeJSON) => {
+  $.ajax({
+    url: `api/grades?classroom_id=${classroom_id}`,
+    type: "POST",
+    data: gradeJSON,
+    dataType: "json",
+    contentType: "application/json",
+  });
 }
 
 /////////////////////////////////////////////////// FUNCTION
