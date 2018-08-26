@@ -3,15 +3,16 @@ $(document).ready(()=>{
   clickButton();
   submit();
 });
-
+let flag = false;
 const clickButton = () => {
-  const point = '#members > tr > td'
+  const point = '#members > tr > td:not(:first-child)'
   const form = $(`#form`)
   $(document).on('click', point, (e) => {
-    if (!started){
-    startTime();
-    started = true;
-    }
+    if (!flag){
+    time.start();
+    getTime();
+    flag = true;
+      }
     e.preventDefault(); 
     form.empty();
     let valu = $(`#${e.target.id}`);
@@ -25,13 +26,16 @@ const clickButton = () => {
       valu.css({ color : `black` });
     });
   });
-  
 }
 
 const submit = () => {
+  
+  
   const submit = $('#btn-big');
   members = $('#members');
   submit.on('click', () => {
+    time.stop();
+    
     const currentClassroom = $('#course').val();
     gradeJson = getClassJSON();
     membersList = members[0].children;
@@ -140,7 +144,7 @@ const getSessions = (list) => {
   const members = $("#members")
   const session = $("#session")
   $('#course').on('change', function () {
-    let id = $(this).val();
+    let id = $(this).val() ;
     getMember(id);
     $(members).empty();
     $(session).empty();
@@ -200,37 +204,59 @@ const SessionsTemplates = (session) => {
 }
 
 /////////////////////////// TIMING
-let time = 0;
-let started = false
-const startTime = () => {
-    setTimeout(() => {
-    time++;
-    let hours = Math.floor(time/10/60/60);
-    let secs = Math.floor(time/10%60);
-    let mins = Math.floor(time/10/60);
-    if (mins < 10) {
-      mins = `0${mins}`;
-    }
-    if (secs < 10) {
-      secs = `0${secs}`;
-    }
-    $(`#time`).empty();
-    $(`#time`).append(`${hours}:${mins}:${secs}`);
-    startTime();
-  },100);
+
+
+getTime = function() {
+  time.getTimePass();
+  $(`#time`).empty();
+  $(`#time`).append(`<span>${time.passedTime}</span>`);
+  setTimeout(() => {
+    getTime();    
+  }, 1000);
 }
 
-// const test_post = function()  {
-//   const a = {a : 'leu leu'};
-//   $.ajax({
-//     type : 'POST',
-//     url: '/classroom',
-//     data: JSON.stringify(a),
-//     contentType: 'application/json',
-//     dataType: 'JSON',
-//     headers: { "X-CSRFToken": getCookie("csrftoken") },
-//     success : (res) => {
-//       console.log(res);
-//     }
-//   })
-// }
+
+
+function Stopwatch() {
+  this.startTime = [];
+  this.endTime = [];
+  this.passedTime = null;
+}
+
+Stopwatch.prototype.start = function() {
+  this.startTime = [];
+  const t = new Date();
+  let hours = t.getHours();
+  let mins = t.getMinutes();
+  let secs = t.getSeconds();
+  this.startTime.push(hours, mins, secs);
+  return this.startTime;
+}
+
+Stopwatch.prototype.getTimePass = function() {
+  let now = this.stop();
+  //convet time to second
+  let nowSecs = (+now[0]) * 60 * 60 + (+now[1]) * 60 + (+now[2]); 
+  let startSecs = (+this.startTime[0]) * 60 * 60 + (+this.startTime[1]) * 60 + (+this.startTime[2]); 
+  let time = nowSecs - startSecs
+  // convert second to HH:MM:SS format
+  let hours = Math.floor(time/60/60);
+  let mins = Math.floor(time/60);
+  let secs = Math.floor(time%60);
+  
+  this.passedTime = `${hours}:${mins}:${secs}`
+  
+  return this.passedTime;
+}
+
+Stopwatch.prototype.stop = function() {
+  this.endTime = [];
+  const t = new Date();
+  let hours = t.getHours();
+  let mins = t.getMinutes();
+  let secs = t.getSeconds();
+  this.endTime.push(hours, mins, secs);
+  return this.endTime;
+}
+time = new Stopwatch()
+
