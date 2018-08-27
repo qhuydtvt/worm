@@ -36,11 +36,12 @@ const submit = () => {
   const submit = $('#btn-big');
   members = $('#members');
   submit.on('click', () => {
+    clockOn(false);
+    $(`#form`).empty();
     const submitTime = $("#time");
     teacherJSON = getTeacherJSON();
     teacherJSON.time = submitTime[0].innerText;
 
-    clockOn(false);
     const currentClassroom = $('#course').val();
     gradeJSON = getClassJSON();
     membersList = members[0].children;
