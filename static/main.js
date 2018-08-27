@@ -108,17 +108,23 @@ const getTable = async () => {
 
 const getMember = async () => {
   const currentClassroom = $('#course').val();
-  const dataPoint = await getDataPoint(currentClassroom);
-  const listDataPoint = dataPoint.data;  
-  listDataPoint.forEach((member, index) => {
-    let id = member.member._id
-    let firstName = member.member.firstName;
-    let lastName = member.member.lastName;
-    let username = `${firstName} ${lastName}`;
-    let point = member.grades;
-    $(`#members`).append(MembersTemplates(username, index))
-    getPoint(id, username, point, index);
-  });
+  try {
+    const dataPoint = await getDataPoint(currentClassroom);
+    const listDataPoint = dataPoint.data;
+    listDataPoint.forEach((member, index) => {
+      let id = member.member._id
+      let firstName = member.member.firstName;
+      let lastName = member.member.lastName;
+      let username = `${firstName} ${lastName}`;
+      let point = member.grades;
+      $(`#members`).append(MembersTemplates(username, index))
+      getPoint(id, username, point, index);
+    });
+  } catch (error) {
+    
+    
+  }  
+ 
 }
 
 ////////////////////////////////////////////////////////////// API

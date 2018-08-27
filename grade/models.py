@@ -19,4 +19,3 @@ class Teacher(models.Model):
   teacher_id = models.CharField(max_length=50)
   grade_day = models.DateTimeField(default=timezone.now)
   grade_time = models.CharField(max_length=50)
-  
