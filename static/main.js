@@ -3,16 +3,17 @@ $(document).ready(()=>{
   clickButton();
   submit();
 });
-
-
+const time = new Stopwatch()
+let flag = false;
 const clickButton = () => {
   const point = '#members > tr > td:not(:first-child)'
   const form = $(`#form`)
   $(document).on('click', point, (e) => {
-    if (!started){
-    startTime();
-    started = true;
-    }
+    if (!flag){
+    clockOn(true);
+    time.start();
+    getTime();
+      }
     e.preventDefault(); 
     form.empty();
     let valu = $(`#${e.target.id}`);
@@ -30,6 +31,8 @@ const clickButton = () => {
 
 
 const submit = () => {
+  
+  
   const submit = $('#btn-big');
   members = $('#members');
   submit.on('click', () => {
@@ -37,6 +40,7 @@ const submit = () => {
     teacherJSON = getTeacherJSON();
     teacherJSON.time = submitTime[0].innerText;
 
+    clockOn(false);
     const currentClassroom = $('#course').val();
     gradeJSON = getClassJSON();
     membersList = members[0].children;
@@ -52,6 +56,8 @@ const submit = () => {
       gradeJSON.data.member.push(memberJSON)
     }
     gradeJSON.data.teacher.push(teacherJSON)
+    console.log(Date());
+    
     console.log(gradeJSON);
     
     postGradeJson(currentClassroom, JSON.stringify(gradeJSON))
@@ -72,8 +78,8 @@ const getClassJSON = () => {
 const getTeacherJSON = () => {
   teacher = `
     {
-      "_id": "!@#!@#!@#",
-      "time": "0.3"
+      "_id": "",
+      "time": ""
     }`;
   teacherJSON = JSON.parse(teacher);
   return teacherJSON;
@@ -160,7 +166,7 @@ const getSessions = (list) => {
   const members = $("#members")
   const session = $("#session")
   $('#course').on('change', function () {
-    var id = $(this).val();
+    let id = $(this).val() ;
     getMember(id);
     $(members).empty();
     $(session).empty();
@@ -220,37 +226,68 @@ const SessionsTemplates = (session) => {
 }
 
 /////////////////////////// TIMING
-let time = 0;
-let started = false
-const startTime = () => {
-    setTimeout(() => {
-    time++;
-    let hours = Math.floor(time/10/60/60);
-    let secs = Math.floor(time/10%60);
-    let mins = Math.floor(time/10/60);
-    if (mins < 10) {
-      mins = `0${mins}`;
-    }
-    if (secs < 10) {
-      secs = `0${secs}`;
-    }
-    $(`#time`).empty();
-    $(`#time`).append(`${hours}:${mins}:${secs}`);
-    startTime();
-  },100);
+
+const clockOn = (input) => {
+  flag = input;
+  time.isActive = input;
 }
 
-// const test_post = function()  {
-//   const a = {a : 'leu leu'};
-//   $.ajax({
-//     type : 'POST',
-//     url: '/classroom',
-//     data: JSON.stringify(a),
-//     contentType: 'application/json',
-//     dataType: 'JSON',
-//     headers: { "X-CSRFToken": getCookie("csrftoken") },
-//     success : (res) => {
-//       console.log(res);
-//     }
-//   })
-// }
+getTime = function() {
+  time.getTimePass();
+  $(`#time`).empty();
+  $(`#time`).append(`<span>${time.passedTime}</span>`);
+  setTimeout(() => {
+    getTime();    
+  }, 1000);
+}
+
+
+
+function Stopwatch() {
+  this.startTime = [];
+  this.nowTime = [];
+  this.passedTime = null;
+  this.isActive = true;
+}
+
+Stopwatch.prototype.start = function() {
+  if (this.isActive){
+  this.startTime = [];
+  const t = new Date();
+  let hours = t.getHours();
+  let mins = t.getMinutes();
+  let secs = t.getSeconds();
+  this.startTime.push(hours, mins, secs);
+  return this.startTime;
+}
+}
+
+Stopwatch.prototype.getTimePass = function() {
+  if (this.isActive){
+  let now = this.now();
+  //convet time to second
+  let nowSecs = (+now[0]) * 60 * 60 + (+now[1]) * 60 + (+now[2]); 
+  let startSecs = (+this.startTime[0]) * 60 * 60 + (+this.startTime[1]) * 60 + (+this.startTime[2]); 
+  let time = nowSecs - startSecs
+  // convert second to HH:MM:SS format
+  let hours = Math.floor(time/60/60);
+  let mins = Math.floor(time/60);
+  let secs = Math.floor(time%60);
+  
+  this.passedTime = `${hours}:${mins}:${secs}`
+  
+  return this.passedTime;
+}
+}
+Stopwatch.prototype.now = function() {
+  if (this.isActive){
+  this.nowTime = [];
+  const t = new Date();
+  let hours = t.getHours();
+  let mins = t.getMinutes();
+  let secs = t.getSeconds();
+  this.nowTime.push(hours, mins, secs);
+  return this.nowTime;
+}
+}
+

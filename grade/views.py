@@ -64,7 +64,6 @@ def api_grade_post(request, classroom_id):
     member_update.save()
   
   for teacher in grades_json['data']['teacher']:
-    teacher_update = Teacher.objects.get(teacher_id=teacher['_id'])
-    teacher_update.grade_time = teacher['time']
+    teacher_update = Teacher(teacher_id=request.session['teacher_id'], grade_time=teacher['time'])
     teacher_update.save()
   return JsonResponse({"data": classroom_id})
