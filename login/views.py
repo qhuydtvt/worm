@@ -16,6 +16,7 @@ def index(request):
 
       if r.json()['success'] == 1:
         request.session['login_success'] = r.headers['Set-Cookie']
+        request.session['teacher_id'] = r.json()['data']['id']
         return HttpResponseRedirect('/')
       else:
         messages.warning(request, 'Username or password incorrect!')

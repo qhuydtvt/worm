@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponseRedirect, JsonResponse
 from services import lms
-from .models import Grade
+from .models import Grade, Teacher
 from django.views.decorators.csrf import csrf_exempt
 import json
 
@@ -56,5 +56,14 @@ def api_grade_get(request, classroom_id):
 
 def api_grade_post(request, classroom_id):
   grades_json = json.loads(request.body)
-  print(grades_json)
+  for member in grades_json['data']['member']:
+    member_update = Grade.objects.get(member_id=member['_id'])
+    grades = []
+    [grades.append(int(point)) for point in member['grades']]
+    member_update.grades = grades
+    member_update.save()
+  
+  for teacher in grades_json['data']['teacher']:
+    teacher_update = Teacher(teacher_id=request.session['teacher_id'], grade_time=teacher['time'])
+    teacher_update.save()
   return JsonResponse({"data": classroom_id})

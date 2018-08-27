@@ -27,6 +27,11 @@ td,th {
   text-align: center !important; 
 }
 
+#members > tr > td:not(:first-child) {
+  cursor: pointer;
+}
+
+
 /* .button{
   text-align: center;
   height: 60;

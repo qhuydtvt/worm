@@ -1,16 +1,101 @@
-
 $(document).ready(()=>{
-  getTable()
-  clickbutton()
+  getTable();
+  clickButton();
+  submit();
 });
-
-const clickbutton = () => {
-  const point = '#members > tr > td'
-  $(document).on('click', point, (e) => { 
-    console.log(e.target.innerText);
+const time = new Stopwatch()
+let flag = false;
+const clickButton = () => {
+  const point = '#members > tr > td:not(:first-child)'
+  const form = $(`#form`)
+  $(document).on('click', point, (e) => {
+    if (!flag){
+    clockOn(true);
+    time.start();
+    getTime();
+      }
+    e.preventDefault(); 
+    form.empty();
+    let valu = $(`#${e.target.id}`);
+    valu.css({ color : `red` })
+    form.append(`<input id='input' type="number" value=${e.target.innerText} autofocus>`);
+    form.append(`<input id='submit' type="submit">`);
+    let input = $(`#input`);
+    $("#submit").on('click',(event)=>{
+      event.preventDefault();
+      valu[0].innerText = input.val();
+      valu.css({ color : `black` });
+    });
   });
-
 }
+
+
+const submit = () => {
+  
+  
+  const submit = $('#btn-big');
+  members = $('#members');
+  submit.on('click', () => {
+    clockOn(false);
+    $(`#form`).empty();
+    const submitTime = $("#time");
+    teacherJSON = getTeacherJSON();
+    teacherJSON.time = submitTime[0].innerText;
+
+    const currentClassroom = $('#course').val();
+    gradeJSON = getClassJSON();
+    membersList = members[0].children;
+    for (let i = 0; i < membersList.length; i++) {
+      memberJSON = getMemberJSON();
+      membId = '#' + membersList[i].id;
+      membInfo = $(membId);
+      infoList = membInfo[0].children;
+      memberJSON._id = infoList[0].id;
+      for (let j = 1; j < infoList.length; j++) {
+        memberJSON.grades.push(infoList[j].innerText)
+      }
+      gradeJSON.data.member.push(memberJSON)
+    }
+    gradeJSON.data.teacher.push(teacherJSON)
+    
+    
+    postGradeJson(currentClassroom, JSON.stringify(gradeJSON))
+  })
+}
+
+const getClassJSON = () => {
+  gradesData = `{    
+   "data": {
+     "teacher": [],
+     "member":[]
+   }
+ }`;
+  gradesJson = JSON.parse(gradesData);
+  return gradesJson;
+}
+
+const getTeacherJSON = () => {
+  teacher = `
+    {
+      "_id": "",
+      "time": ""
+    }`;
+  teacherJSON = JSON.parse(teacher);
+  return teacherJSON;
+}
+
+const getMemberJSON = () => {
+  member = `
+    {
+      "_id": "",
+      "grades": []
+    }`;
+  memberJSON = JSON.parse(member);
+  return memberJSON;
+}
+
+
+
 
 const getTable = async () => {
   const data = await getDataMember();
@@ -26,16 +111,17 @@ const getMember = async () => {
   const dataPoint = await getDataPoint(currentClassroom);
   const listDataPoint = dataPoint.data;  
   listDataPoint.forEach((member, index) => {
+    let id = member.member._id
     let firstName = member.member.firstName;
     let lastName = member.member.lastName;
     let username = `${firstName} ${lastName}`;
     let point = member.grades;
     $(`#members`).append(MembersTemplates(username, index))
-    getPoint(username, point, index);
+    getPoint(id, username, point, index);
   });
 }
 
-////////////////////////////////////////////////////////////// GET API
+////////////////////////////////////////////////////////////// API
 const getDataMember = () => {
   const data = $.ajax({
     url: "/api/classroom",
@@ -52,15 +138,25 @@ const getDataPoint = (classroom_id) => {
   return dataPoint;
 }
 
+const postGradeJson = (classroom_id, gradeJSON) => {
+  $.ajax({
+    url: `api/grades?classroom_id=${classroom_id}`,
+    type: "POST",
+    data: gradeJSON,
+    dataType: "json",
+    contentType: "application/json",
+  });
+}
+
 /////////////////////////////////////////////////// FUNCTION
 const getCourse = (list) => {
-  const course_option = $("#course")
-  course_option.empty()
-  course_option.append(`<option value="choose"> choose...</option>`);
+  const courseOption = $("#course")
+  courseOption.empty()
+  courseOption.append(`<option value="choose"> choose...</option>`);
   list.forEach((course) => {
     value = course._id
-    course_name = course.course + " " + course.classroom
-    course_option.append(OptionTemplates(course_name, value))
+    courseName = course.course + " " + course.classroom
+    courseOption.append(OptionTemplates(courseName, value))
   })
 }
 
@@ -69,7 +165,7 @@ const getSessions = (list) => {
   const members = $("#members")
   const session = $("#session")
   $('#course').on('change', function () {
-    var id = $(this).val();
+    let id = $(this).val() ;
     getMember(id);
     $(members).empty();
     $(session).empty();
@@ -88,11 +184,11 @@ const getSessions = (list) => {
 
 }
 
-const getPoint  = (username, point, index) => {
-  let pointList = `<td>${username}</td>`;
+const getPoint  = (id, username, point, index) => {
+  let pointList = `<td id=${id}>${username}</td>`;
   const grades = $(`#grade-${index}`);
-  pointList += point.map((eachpoint) => {
-    return PointTemplates(eachpoint);
+  pointList += point.map((eachpoint, ind) => {
+    return PointTemplates(eachpoint, index, ind);
   });
   grades.html(pointList);
 }
@@ -114,9 +210,9 @@ const MembersTemplates = (member, index) => {
   )
 }
 
-const PointTemplates = (point) => {
+const PointTemplates = (point, index, ind) => {
   return (`
-    <td>${point}</td>
+    <td id=${index}-${ind}> ${point}</td>
     `)
 }
 
@@ -128,18 +224,69 @@ const SessionsTemplates = (session) => {
   )
 }
 
+/////////////////////////// TIMING
 
-// const test_post = function()  {
-//   const a = {a : 'leu leu'};
-//   $.ajax({
-//     type : 'POST',
-//     url: '/classroom',
-//     data: JSON.stringify(a),
-//     contentType: 'application/json',
-//     dataType: 'JSON',
-//     headers: { "X-CSRFToken": getCookie("csrftoken") },
-//     success : (res) => {
-//       console.log(res);
-//     }
-//   })
-// }
+const clockOn = (input) => {
+  flag = input;
+  time.isActive = input;
+}
+
+getTime = function() {
+  time.getTimePass();
+  $(`#time`).empty();
+  $(`#time`).append(`<span>${time.passedTime}</span>`);
+  setTimeout(() => {
+    getTime();    
+  }, 1000);
+}
+
+
+
+function Stopwatch() {
+  this.startTime = [];
+  this.nowTime = [];
+  this.passedTime = null;
+  this.isActive = true;
+}
+
+Stopwatch.prototype.start = function() {
+  if (this.isActive){
+  this.startTime = [];
+  const t = new Date();
+  let hours = t.getHours();
+  let mins = t.getMinutes();
+  let secs = t.getSeconds();
+  this.startTime.push(hours, mins, secs);
+  return this.startTime;
+}
+}
+
+Stopwatch.prototype.getTimePass = function() {
+  if (this.isActive){
+  let now = this.now();
+  //convet time to second
+  let nowSecs = (+now[0]) * 60 * 60 + (+now[1]) * 60 + (+now[2]); 
+  let startSecs = (+this.startTime[0]) * 60 * 60 + (+this.startTime[1]) * 60 + (+this.startTime[2]); 
+  let time = nowSecs - startSecs
+  // convert second to HH:MM:SS format
+  let hours = Math.floor(time/60/60);
+  let mins = Math.floor(time/60);
+  let secs = Math.floor(time%60);
+  
+  this.passedTime = `${hours}:${mins}:${secs}`
+  
+  return this.passedTime;
+}
+}
+Stopwatch.prototype.now = function() {
+  if (this.isActive){
+  this.nowTime = [];
+  const t = new Date();
+  let hours = t.getHours();
+  let mins = t.getMinutes();
+  let secs = t.getSeconds();
+  this.nowTime.push(hours, mins, secs);
+  return this.nowTime;
+}
+}
+

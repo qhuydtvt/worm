@@ -1,5 +1,6 @@
 from django.db import models
-
+from datetime import datetime
+from django.utils import timezone
 # Create your models here.
 
 
@@ -12,3 +13,10 @@ class Grade(models.Model):
     return {"classroom_id": self.classroom_id,
             "member_id": self.member_id,
             "grades": self.grades}
+
+
+class Teacher(models.Model):
+  teacher_id = models.CharField(max_length=50)
+  grade_day = models.DateTimeField(default=timezone.now)
+  grade_time = models.CharField(max_length=50)
+  
