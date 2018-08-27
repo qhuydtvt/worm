@@ -57,9 +57,7 @@ const submit = () => {
       gradeJSON.data.member.push(memberJSON)
     }
     gradeJSON.data.teacher.push(teacherJSON)
-    console.log(Date());
     
-    console.log(gradeJSON);
     
     postGradeJson(currentClassroom, JSON.stringify(gradeJSON))
   })
