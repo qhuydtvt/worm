@@ -3,15 +3,16 @@ $(document).ready(()=>{
   clickButton();
   submit();
 });
+const time = new Stopwatch()
 let flag = false;
 const clickButton = () => {
   const point = '#members > tr > td:not(:first-child)'
   const form = $(`#form`)
   $(document).on('click', point, (e) => {
     if (!flag){
+    clockOn(true);
     time.start();
     getTime();
-    flag = true;
       }
     e.preventDefault(); 
     form.empty();
@@ -34,8 +35,7 @@ const submit = () => {
   const submit = $('#btn-big');
   members = $('#members');
   submit.on('click', () => {
-    time.stop();
-    
+    clockOn(false);
     const currentClassroom = $('#course').val();
     gradeJson = getClassJSON();
     membersList = members[0].children;
@@ -52,7 +52,7 @@ const submit = () => {
     }
     
     postGradeJson(currentClassroom, JSON.stringify(gradeJson))
-  })
+  });
 }
 
 const getClassJSON = () => {
@@ -205,6 +205,10 @@ const SessionsTemplates = (session) => {
 
 /////////////////////////// TIMING
 
+const clockOn = (input) => {
+  flag = input;
+  time.isActive = input;
+}
 
 getTime = function() {
   time.getTimePass();
@@ -219,11 +223,13 @@ getTime = function() {
 
 function Stopwatch() {
   this.startTime = [];
-  this.endTime = [];
+  this.nowTime = [];
   this.passedTime = null;
+  this.isActive = true;
 }
 
 Stopwatch.prototype.start = function() {
+  if (this.isActive){
   this.startTime = [];
   const t = new Date();
   let hours = t.getHours();
@@ -232,9 +238,11 @@ Stopwatch.prototype.start = function() {
   this.startTime.push(hours, mins, secs);
   return this.startTime;
 }
+}
 
 Stopwatch.prototype.getTimePass = function() {
-  let now = this.stop();
+  if (this.isActive){
+  let now = this.now();
   //convet time to second
   let nowSecs = (+now[0]) * 60 * 60 + (+now[1]) * 60 + (+now[2]); 
   let startSecs = (+this.startTime[0]) * 60 * 60 + (+this.startTime[1]) * 60 + (+this.startTime[2]); 
@@ -248,15 +256,16 @@ Stopwatch.prototype.getTimePass = function() {
   
   return this.passedTime;
 }
-
-Stopwatch.prototype.stop = function() {
-  this.endTime = [];
+}
+Stopwatch.prototype.now = function() {
+  if (this.isActive){
+  this.nowTime = [];
   const t = new Date();
   let hours = t.getHours();
   let mins = t.getMinutes();
   let secs = t.getSeconds();
-  this.endTime.push(hours, mins, secs);
-  return this.endTime;
+  this.nowTime.push(hours, mins, secs);
+  return this.nowTime;
 }
-time = new Stopwatch()
+}
 
