@@ -31,6 +31,7 @@ DEBUG = True
 ALLOWED_HOSTS = [
     'worm-dev.herokuapp.com',
     'worm-test.herokuapp.com',
+    'worm-d.herokuapp.com',
     'localhost',
     '127.0.0.1',
 ]
