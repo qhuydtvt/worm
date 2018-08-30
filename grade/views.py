@@ -62,7 +62,7 @@ def api_grade_post(request, classroom_id):
     [grades.append(float(point)) for point in member['grades']]
     member_update.grades = grades
     member_update.save()
-  
+
   for teacher in grades_json['data']['teacher']:
     teacher_update = Teacher(teacher_id=request.session['teacher_id'], grade_time=teacher['time'])
     teacher_update.save()
