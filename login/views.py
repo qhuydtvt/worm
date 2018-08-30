@@ -11,7 +11,7 @@ def index(request):
     if form.is_valid():
       data = {"username": form.cleaned_data['username'],
               "password": form.cleaned_data['password']}
-      r = TKRest('https://tk-lms.herokuapp.com/api')
+      r = TKRest('https://learn.techkids.vn/api/')
       r = r.auth.post(data)
 
       if r.json()['success'] == 1:
