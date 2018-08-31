@@ -9,57 +9,59 @@ const clickButton = () => {
   const point = '#members > tr > td:not(:first-child)'
   const form = $(`#form`)
   $(document).on('click', point, (e) => {
-    if (!flag){
-    clockOn(true);
-    time.start();
-    getTime();
-      }
+    if (flag){
     e.preventDefault(); 
     form.empty();
     let valu = $(`#${e.target.id}`);
-    valu.css({ color : `red` })
+    valu.css({ color : `blue` })
     form.append(`<input id='input' type="number" value=${e.target.innerText} autofocus>`);
-    form.append(`<input id='submit' type="submit">`);
     let input = $(`#input`);
-    $("#submit").on('click',(event)=>{
+    input.on('input',(event)=>{
       event.preventDefault();
       valu[0].innerText = input.val();
-      valu.css({ color : `black` });
     });
-  });
+    input.on('blur', () => {
+      valu.css({ color: `black` })
+    });
+  }});
 }
 
 
 const submit = () => {
-  
-  
   const submit = $('#btn-big');
   members = $('#members');
   submit.on('click', () => {
-    clockOn(false);
-    $(`#form`).empty();
-    const submitTime = $("#time");
-    teacherJSON = getTeacherJSON();
-    teacherJSON.time = submitTime[0].innerText;
-
-    const currentClassroom = $('#course').val();
-    gradeJSON = getClassJSON();
-    membersList = members[0].children;
-    for (let i = 0; i < membersList.length; i++) {
-      memberJSON = getMemberJSON();
-      membId = '#' + membersList[i].id;
-      membInfo = $(membId);
-      infoList = membInfo[0].children;
-      memberJSON._id = infoList[0].id;
-      for (let j = 1; j < infoList.length; j++) {
-        memberJSON.grades.push(infoList[j].innerText)
-      }
-      gradeJSON.data.member.push(memberJSON)
+    if (!flag) {
+      clockOn(true);
+      time.start();
+      getTime();
     }
-    gradeJSON.data.teacher.push(teacherJSON)
-    
-    
-    postGradeJson(currentClassroom, JSON.stringify(gradeJSON))
+    else if(flag){
+      clockOn(false);
+      $(`#form`).empty();
+      const submitTime = $("#time");
+      teacherJSON = getTeacherJSON();
+      teacherJSON.time = submitTime[0].innerText;
+
+      const currentClassroom = $('#course').val();
+      gradeJSON = getClassJSON();
+      membersList = members[0].children;
+      for (let i = 0; i < membersList.length; i++) {
+        memberJSON = getMemberJSON();
+        membId = '#' + membersList[i].id;
+        membInfo = $(membId);
+        infoList = membInfo[0].children;
+        memberJSON._id = infoList[0].id;
+        for (let j = 1; j < infoList.length; j++) {
+          memberJSON.grades.push(infoList[j].innerText)
+        }
+        gradeJSON.data.member.push(memberJSON)
+      }
+      gradeJSON.data.teacher.push(teacherJSON)
+      
+      
+      postGradeJson(currentClassroom, JSON.stringify(gradeJSON))
+  }
   })
 }
 
