@@ -44,7 +44,7 @@ def api_grade_get(request, classroom_id):
   for member in classroom_data.members:
     grades = grade_dict.get(member._id, [-1] * session)
     if len(grades) < session:
-      grades.extend([-1] * session - len(grades))
+      grades.extend([-1] * (session - len(grades)))
     elif len(grades) > session:
       grades = grades[0:session]
     member.grades = grades
