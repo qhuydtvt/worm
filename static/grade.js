@@ -1,6 +1,7 @@
 const context = {
   classRooms: [],
   selectedClassroom: null,
+  loading: false,
 };
 
 $(document).ready(() => {
@@ -13,9 +14,19 @@ const initClassroomSelection = () => {
   $('#slt_classrooms').on('change', () => {
     const classRoomId = $('#slt_classrooms option:selected').attr('id');
     context.selectedClassroom = context.classRooms.find(classroom => classroom._id === classRoomId);
-    fetchSelectedClassroom();
+    renderGrades();
+    fetchGrades(classRoomId);
   });
 };
+
+const setLoading = (loading) => {
+  context.loading = loading;
+  if (context.loading) {
+    $('#loading_indicator').removeClass('invisible');
+  } else {
+    $('#loading_indicator').addClass('invisible');
+  }
+}
 
 const fetchClassrooms = async () => {
   const res = await $.ajax({
@@ -28,11 +39,13 @@ const fetchClassrooms = async () => {
   }
 };
 
-const fetchGrades= async (classroomId) => {
+const fetchGrades = async (classroomId) => {
+  setLoading(true);
   const res = await $.ajax({
     url: `/api/grades?classroom_id=${classroomId}`,
     type: "GET",
   });
+  setLoading(false);
   if (res && res.data) {
     context.selectedClassroom = res.data;
     renderGrades();
@@ -91,7 +104,7 @@ const renderGrades = () => {
       for(var session = 0; session < sessionMax; session++) {
         $(`
           <td>
-            ${member.grades[session - 1]}
+            ${member.grades[session] == -1 ? '-' : member.grades[session] }
           </td>
         `).appendTo(tr);
       }
