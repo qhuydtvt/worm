@@ -38,23 +38,37 @@ def api_grade_get(request, classroom_id):
     return JsonResponse({
         'success': 0,
         'message': 'Could not find classroom'})
-  return JsonResponse(classroom_response)
+  # return JsonResponse(classroom_response)
+  classroom_data = classroom_response['data']
   grades = Grade.objects.filter(classroom_id=classroom_id)
   if len(grades) == 0:
-    return JsonResponse({"success": 0,
-                         "grades": []})
-  else:
-    classroom_data = classroom_response['data']
-    member_dict = {m['_id']: m for m in classroom_data['members']}
-    for grade in grades:
-      member_id = grade.member_id
-      grade.member = member_dict.get(member_id, {"_id": member_id})
+    grades = save_data(classroom_id, classroom_data)
+  
+  member_dict = {m['_id']: m for m in classroom_data['members']}
+  for grade in grades:
+    member_id = grade.member_id
+    grade.member = member_dict.get(member_id, {"_id": member_id})
 
 # return JsonResponse({'grades': [grade.json() for grade in grades]})
-    return JsonResponse({'data': [{'member': grade.member,
-                                   'grades': json.loads(grade.grades)}
-                                  for grade in grades]})
+  return JsonResponse({'data': [{'member': grade.member,
+                                  'grades': json.loads(grade.grades)}
+                                for grade in grades]})
 
+
+def save_data(classroom_id, classroom_data):
+  list_grades = []
+  classroom_grades = []
+  for member in classroom_data["members"]:
+    for _ in range(classroom_data["session"]):
+      list_grades.append(-1)
+    str_grades = str(list_grades)
+    new_grade = Grade(classroom_id=classroom_id,
+                      member_id=member["_id"],
+                      grades=str_grades)
+    new_grade.save()
+    classroom_grades.append(new_grade)
+    list_grades = []
+  return classroom_grades
 
 @transaction.atomic
 def api_grade_post(request, classroom_id):

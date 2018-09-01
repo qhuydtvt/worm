@@ -123,7 +123,7 @@ const getMember = async () => {
       getPoint(id, username, point, index);
     });
   } catch (error) {
-    
+        
     
   }  
  
