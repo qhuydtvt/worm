@@ -3,6 +3,7 @@ from django.http import HttpResponseRedirect, JsonResponse
 from services import lms
 from .models import Grade, Teacher
 from django.views.decorators.csrf import csrf_exempt
+from django.db import transaction
 import json
 
 
@@ -54,6 +55,7 @@ def api_grade_get(request, classroom_id):
                                   for grade in grades]})
 
 
+@transaction.atomic
 def api_grade_post(request, classroom_id):
   grades_json = json.loads(request.body)
   for member in grades_json['data']['member']:
@@ -66,4 +68,5 @@ def api_grade_post(request, classroom_id):
   for teacher in grades_json['data']['teacher']:
     teacher_update = Teacher(teacher_id=request.session['teacher_id'], grade_time=teacher['time'])
     teacher_update.save()
+
   return JsonResponse({"data": classroom_id})

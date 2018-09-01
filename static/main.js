@@ -238,6 +238,7 @@ const SessionsTemplates = (session) => {
 const clockOn = (input) => {
   flag = input;
   time.isActive = input;
+  time.passedTime = `0:0:0`;
 }
 
 getTime = function() {
