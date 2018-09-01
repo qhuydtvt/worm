@@ -38,6 +38,7 @@ def api_grade_get(request, classroom_id):
     return JsonResponse({
         'success': 0,
         'message': 'Could not find classroom'})
+  return JsonResponse(classroom_response)
   grades = Grade.objects.filter(classroom_id=classroom_id)
   if len(grades) == 0:
     return JsonResponse({"success": 0,
@@ -66,7 +67,8 @@ def api_grade_post(request, classroom_id):
     member_update.save()
 
   for teacher in grades_json['data']['teacher']:
-    teacher_update = Teacher(teacher_id=request.session['teacher_id'], grade_time=teacher['time'])
+    teacher_update = Teacher(teacher_id=request.session['teacher_id'],
+                             grade_time=teacher['time'])
     teacher_update.save()
 
   return JsonResponse({"data": classroom_id})
