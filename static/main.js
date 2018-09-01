@@ -3,6 +3,7 @@ $(document).ready(()=>{
   clickButton();
   submit();
 });
+
 const time = new Stopwatch()
 let flag = false;
 const clickButton = () => {
