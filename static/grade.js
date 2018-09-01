@@ -104,7 +104,7 @@ const clickButton = () => {
 
 
 const submit = () => {
-  const submit = $('#btn-big');
+  const submit = $('#button-big');
   members = $('#members');
   submit.on('click', () => {
     if (!flag) {
@@ -174,6 +174,7 @@ const getMemberJSON = () => {
 
 
 const getTable = async () => {
+
   const data = await getDataMember();
   const dataMember = data.data;
   getCourse(dataMember);
@@ -189,9 +190,7 @@ const getMember = async () => {
     const listDataPoint = dataPoint.data;
     listDataPoint.forEach((member, index) => {
       let id = member.member._id
-      let firstName = member.member.firstName;
-      let lastName = member.member.lastName;
-      let username = `${firstName} ${lastName}`;
+      let username = `${member.member.firstName} ${member.member.lastName}`;
       let point = member.grades;
       $(`#members`).append(MembersTemplates(username, index))
       getPoint(id, username, point, index);
