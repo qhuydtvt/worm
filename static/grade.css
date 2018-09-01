@@ -1,10 +1,5 @@
 #control_panel {
   display: flex;
-  justify-content: space-between;
-}
-
-#control_panel_left {
-  display: flex;
   justify-items: center;
 }
 

@@ -4,6 +4,7 @@ const context = {
 };
 
 $(document).ready(() => {
+  renderGrades();
   initClassroomSelection();
   fetchClassrooms();
 });
@@ -12,7 +13,7 @@ const initClassroomSelection = () => {
   $('#slt_classrooms').on('change', () => {
     const classRoomId = $('#slt_classrooms option:selected').attr('id');
     context.selectedClassroom = context.classRooms.find(classroom => classroom._id === classRoomId);
-    renderSelectedClassroom();
+    fetchSelectedClassroom();
   });
 };
 
@@ -27,6 +28,17 @@ const fetchClassrooms = async () => {
   }
 };
 
+const fetchGrades= async (classroomId) => {
+  const res = await $.ajax({
+    url: `/api/grades?classroom_id=${classroomId}`,
+    type: "GET",
+  });
+  if (res && res.data) {
+    context.selectedClassroom = res.data;
+    renderGrades();
+  }
+}
+
 const renderClassroomSelections = () => {
   $('#slt_classrooms').empty();
   $(`
@@ -39,7 +51,7 @@ const renderClassroomSelections = () => {
   });
 }
 
-const renderSelectedClassroom = () => {
+const renderGrades = () => {
   $('#tbl_grade_row_sessions').empty();
   $('#tbl_grade_body').empty();
   $(`
@@ -67,14 +79,23 @@ const renderSelectedClassroom = () => {
       </tr>
     `);
 
-    for(var session = 1; session <= sessionMax; session++) {
-      $(`
-        <td>
-          -
-        </td>
-      `).appendTo(tr);
+    if (!member.grades) {
+      for(var session = 0; session < sessionMax; session++) {
+        $(`
+          <td>
+            -
+          </td>
+        `).appendTo(tr);
+      }
+    } else {
+      for(var session = 0; session < sessionMax; session++) {
+        $(`
+          <td>
+            ${member.grades[session - 1]}
+          </td>
+        `).appendTo(tr);
+      }
     }
-
     tr.appendTo('#tbl_grade_body');
   });
 }
@@ -134,8 +155,6 @@ const submit = () => {
         gradeJSON.data.member.push(memberJSON)
       }
       gradeJSON.data.teacher.push(teacherJSON)
-      
-      
       postGradeJson(currentClassroom, JSON.stringify(gradeJSON))
   }
   })
