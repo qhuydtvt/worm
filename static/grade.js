@@ -1,9 +1,11 @@
 const context = {
   classRooms: [],
   selectedClassroom: null,
+  loading: false,
 };
 
 $(document).ready(() => {
+  renderGrades();
   initClassroomSelection();
   fetchClassrooms();
 });
@@ -12,9 +14,19 @@ const initClassroomSelection = () => {
   $('#slt_classrooms').on('change', () => {
     const classRoomId = $('#slt_classrooms option:selected').attr('id');
     context.selectedClassroom = context.classRooms.find(classroom => classroom._id === classRoomId);
-    renderSelectedClassroom();
+    renderGrades();
+    fetchGrades(classRoomId);
   });
 };
+
+const setLoading = (loading) => {
+  context.loading = loading;
+  if (context.loading) {
+    $('#loading_indicator').removeClass('invisible');
+  } else {
+    $('#loading_indicator').addClass('invisible');
+  }
+}
 
 const fetchClassrooms = async () => {
   const res = await $.ajax({
@@ -26,6 +38,19 @@ const fetchClassrooms = async () => {
     renderClassroomSelections();
   }
 };
+
+const fetchGrades = async (classroomId) => {
+  setLoading(true);
+  const res = await $.ajax({
+    url: `/api/grades?classroom_id=${classroomId}`,
+    type: "GET",
+  });
+  setLoading(false);
+  if (res && res.data) {
+    context.selectedClassroom = res.data;
+    renderGrades();
+  }
+}
 
 const renderClassroomSelections = () => {
   $('#slt_classrooms').empty();
@@ -39,7 +64,7 @@ const renderClassroomSelections = () => {
   });
 }
 
-const renderSelectedClassroom = () => {
+const renderGrades = () => {
   $('#tbl_grade_row_sessions').empty();
   $('#tbl_grade_body').empty();
   $(`
@@ -67,14 +92,23 @@ const renderSelectedClassroom = () => {
       </tr>
     `);
 
-    for(var session = 1; session <= sessionMax; session++) {
-      $(`
-        <td>
-          -
-        </td>
-      `).appendTo(tr);
+    if (!member.grades) {
+      for(var session = 0; session < sessionMax; session++) {
+        $(`
+          <td>
+            -
+          </td>
+        `).appendTo(tr);
+      }
+    } else {
+      for(var session = 0; session < sessionMax; session++) {
+        $(`
+          <td>
+            ${member.grades[session] == -1 ? '-' : member.grades[session] }
+          </td>
+        `).appendTo(tr);
+      }
     }
-
     tr.appendTo('#tbl_grade_body');
   });
 }
@@ -134,8 +168,6 @@ const submit = () => {
         gradeJSON.data.member.push(memberJSON)
       }
       gradeJSON.data.teacher.push(teacherJSON)
-      
-      
       postGradeJson(currentClassroom, JSON.stringify(gradeJSON))
   }
   })
