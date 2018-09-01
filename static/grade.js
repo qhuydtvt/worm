@@ -104,7 +104,7 @@ const renderGrades = () => {
       for(var session = 0; session < sessionMax; session++) {
         $(`
           <td>
-            ${member.grades[session] == -1 ? '-' : member.grades[session] }
+            ${member.grades[session] < 0 ? '-' : member.grades[session] }
           </td>
         `).appendTo(tr);
       }
