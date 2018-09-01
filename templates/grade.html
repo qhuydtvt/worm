@@ -1,40 +1,53 @@
 <!DOCTYPE html>
 <html>
  <head>
-   <title>WORM</title>
-   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-  {% load static %}
-	<link rel="stylesheet" type="text/css" media="screen" href="{% static 'grade.css' %}" />
+    <title>WORM</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    {% load static %}
+    <link rel="stylesheet" type="text/css" media="screen" href="{% static 'grade.css' %}" />
+    <link rel="shortcut icon" type="image/ico" href="{% static 'fav.ico' %}"/>
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
-    <script type="text/javascript" src="{% static 'main.js' %}"></script>
-    
+    <script type="text/javascript" src="{% static 'grade.js' %}"></script>  
  </head>
 <body>
   
-    <div class = "text-right">
-        <a href='login/logout' type="button" class="btn btn-llight btn-sm">Log out</a>
+    <div class="text-right mt-3 mr-3">
+        <a href='login/logout'>
+            <button type="button" class="btn btn-secondary btn-sm">
+                Logout
+            </button>
+        </a>
     </div>
 
-    <ul>
-        <li class="dropdown" style="list-style: none;">
-            <select class="btn btn-info dropdown-toggle" id="course">
-                <option>loading...</option>
-            </select>
-        </li>
-    </ul>        
-
-  
     <div class="container ">
-        <span id="form" ></span>
+        <div id="control_panel" class="mb-2">
+            <div id="control_panel_left">
+                <select class="dropdown-toggle" id="slt_classrooms">
+                    <option>Loading...</option>
+                </select>
+
+                <button id="btn_grade" type="button" class="btn btn-primary ml-3">
+                    Grade
+                </button>
+                <input type="number" class="ml-3" id="input_grade" disabled>
+                <span id="time" class="ml-3">
+                    00:00:00
+                </span>
+            </div>
+
+        </div>
+
+        <span id="form"></span>
         <span id="time"></span>
 
-        <table class="table-bordered table-striped  ">
-           
-            <tr id="session">
+        <table class="table-bordered table-striped" id="tbl_grade">
+            <thead>
+                <tr id="tbl_grade_row_sessions">
+                    <th class="table-info">Name</th>
+                </tr>
+            </thead>
 
-            </tr>
-                
-    	    <tbody id="members">
+            <tbody id="tbl_grade_body">
                 
 	        </tbody>
         </table>
@@ -42,10 +55,7 @@
     <br /><br />
 
     <div  class="text-center" id="btn-big">
-        <button type="button"
-                class="btn btn-info btn-lg" 
-                id="button-big"> Grade 
-        </button>
+        
     </div>
   
 </body>
