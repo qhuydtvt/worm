@@ -1,8 +1,83 @@
-$(document).ready(()=>{
-  getTable();
-  clickButton();
-  submit();
+const context = {
+  classRooms: [],
+  selectedClassroom: null,
+};
+
+$(document).ready(() => {
+  initClassroomSelection();
+  fetchClassrooms();
 });
+
+const initClassroomSelection = () => {
+  $('#slt_classrooms').on('change', () => {
+    const classRoomId = $('#slt_classrooms option:selected').attr('id');
+    context.selectedClassroom = context.classRooms.find(classroom => classroom._id === classRoomId);
+    renderSelectedClassroom();
+  });
+};
+
+const fetchClassrooms = async () => {
+  const res = await $.ajax({
+    url: "/api/classroom",
+    type: "GET",
+  });
+  if (res && res.data) {
+    context.classRooms = res.data;
+    renderClassroomSelections();
+  }
+};
+
+const renderClassroomSelections = () => {
+  $('#slt_classrooms').empty();
+  $(`
+      <option>...</option>
+    `).appendTo('#slt_classrooms')
+  context.classRooms.forEach((classroom) => {
+    $(`
+      <option id=${classroom._id}>${classroom.course} ${classroom.classroom}</option>
+    `).appendTo('#slt_classrooms')
+  });
+}
+
+const renderSelectedClassroom = () => {
+  $('#tbl_grade_row_sessions').empty();
+  $('#tbl_grade_body').empty();
+  $(`
+      <th class="table-info">Name</th>
+    `).appendTo('#tbl_grade_row_sessions');
+
+  if (!context.selectedClassroom) return;
+
+  const sessionMax = context.selectedClassroom.session;
+  const members = context.selectedClassroom.members;
+  
+  for(var session = 1; session <= sessionMax; session++) {
+    $(`
+      <th class="table-info">${session}</th>
+    `).appendTo('#tbl_grade_row_sessions');
+  }
+
+  members.forEach((member) => {
+    const tr = 
+    $(`
+      <tr>
+        <td>
+          ${member.lastName}
+        </td>
+      </tr>
+    `);
+
+    for(var session = 1; session <= sessionMax; session++) {
+      $(`
+        <td>
+          -
+        </td>
+      `).appendTo(tr);
+    }
+
+    tr.appendTo('#tbl_grade_body');
+  });
+}
 
 const time = new Stopwatch()
 let flag = false;
@@ -98,8 +173,6 @@ const getMemberJSON = () => {
 }
 
 
-
-
 const getTable = async () => {
   const data = await getDataMember();
   const dataMember = data.data;
@@ -190,7 +263,6 @@ const getSessions = (list) => {
       }
     });
   });
-
 }
 
 const getPoint  = (id, username, point, index) => {
@@ -261,42 +333,42 @@ function Stopwatch() {
 
 Stopwatch.prototype.start = function() {
   if (this.isActive){
-  this.startTime = [];
-  const t = new Date();
-  let hours = t.getHours();
-  let mins = t.getMinutes();
-  let secs = t.getSeconds();
-  this.startTime.push(hours, mins, secs);
-  return this.startTime;
-}
+    this.startTime = [];
+    const t = new Date();
+    let hours = t.getHours();
+    let mins = t.getMinutes();
+    let secs = t.getSeconds();
+    this.startTime.push(hours, mins, secs);
+    return this.startTime;
+  }
 }
 
 Stopwatch.prototype.getTimePass = function() {
   if (this.isActive){
-  let now = this.now();
-  //convet time to second
-  let nowSecs = (+now[0]) * 60 * 60 + (+now[1]) * 60 + (+now[2]); 
-  let startSecs = (+this.startTime[0]) * 60 * 60 + (+this.startTime[1]) * 60 + (+this.startTime[2]); 
-  let time = nowSecs - startSecs
-  // convert second to HH:MM:SS format
-  let hours = Math.floor(time/60/60);
-  let mins = Math.floor(time/60);
-  let secs = Math.floor(time%60);
-  
-  this.passedTime = `${hours}:${mins}:${secs}`
-  
-  return this.passedTime;
-}
-}
-Stopwatch.prototype.now = function() {
-  if (this.isActive){
-  this.nowTime = [];
-  const t = new Date();
-  let hours = t.getHours();
-  let mins = t.getMinutes();
-  let secs = t.getSeconds();
-  this.nowTime.push(hours, mins, secs);
-  return this.nowTime;
-}
+    let now = this.now();
+    //convet time to second
+    let nowSecs = (+now[0]) * 60 * 60 + (+now[1]) * 60 + (+now[2]); 
+    let startSecs = (+this.startTime[0]) * 60 * 60 + (+this.startTime[1]) * 60 + (+this.startTime[2]); 
+    let time = nowSecs - startSecs
+    // convert second to HH:MM:SS format
+    let hours = Math.floor(time/60/60);
+    let mins = Math.floor(time/60);
+    let secs = Math.floor(time%60);
+    
+    this.passedTime = `${hours}:${mins}:${secs}`
+    
+    return this.passedTime;
+  }
 }
 
+Stopwatch.prototype.now = function() {
+  if (this.isActive){
+    this.nowTime = [];
+    const t = new Date();
+    let hours = t.getHours();
+    let mins = t.getMinutes();
+    let secs = t.getSeconds();
+    this.nowTime.push(hours, mins, secs);
+    return this.nowTime;
+  }
+}

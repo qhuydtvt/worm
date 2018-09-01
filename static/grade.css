@@ -1,34 +1,51 @@
-div {
-  padding: 20px;
+#control_panel {
+  display: flex;
+  justify-content: space-between;
 }
 
-table {
-  border-collapse: collapse;
-  width: 100%;
+#control_panel_left {
+  display: flex;
+  justify-items: center;
 }
 
-#button-big {
-  width: 50%;
+#time {
+  line-height: 38px;
 }
 
-.active {
-  height: 30px;
-}
-.table-striped>tbody>tr:nth-child(odd)>td, 
-.table-striped>tbody>tr:nth-child(odd)>th {
-  background-color: rgb(185, 227, 241);
+#slt_classrooms {
+  margin-top: 0px !important;
+  height: 38px !important;
 }
 
-.dropdown:hover .dropdown-menu {
-  display: block;
-  }
-td,th {
-  width: 50px !important;
-  text-align: center !important; 
+#input_grade {
+  width: 70px;
+  padding-left: 8px !important
 }
 
-#members > tr > td:not(:first-child) {
-  cursor: pointer;
+#btn_grade {
+  width: 100px;
+}
+
+#tbl_grade td {
+  min-width: 50px;
+}
+
+#tbl_grade th {
+  min-width: 50px;
+}
+
+#tbl_grade_row_sessions th:first-child,
+#tbl_grade_body td:first-child {
+  width: 160px !important;
+  text-align: left !important;
+  padding-left: 8px !important;
+  padding-right: 8px !important;
+}
+
+#tbl_grade_row_sessions th:nth-child(n + 2),
+#tbl_grade_body td:nth-child(n + 2) {
+  text-align: right !important;
+  padding-right: 8px !important;
 }
 
 
