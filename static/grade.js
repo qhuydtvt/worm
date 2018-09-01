@@ -29,10 +29,12 @@ const setLoading = (loading) => {
 }
 
 const fetchClassrooms = async () => {
+  setLoading(true);
   const res = await $.ajax({
     url: "/api/classroom",
     type: "GET",
   });
+  setLoading(false);
   if (res && res.data) {
     context.classRooms = res.data;
     renderClassroomSelections();
