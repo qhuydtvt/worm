@@ -2,22 +2,85 @@ const context = {
   classRooms: [],
   selectedClassroom: null,
   loading: false,
+  submittable: false,
+  gradeDisabled: false,
 };
 
 $(document).ready(() => {
   renderGrades();
   initClassroomSelection();
+  initGradeCellSelection();
+  initGradeProcess();
   fetchClassrooms();
 });
+
+const initGradeProcess = () => {
+  $('#btn_grade').on('click', (event) => {
+    if (context.submittable) {
+      context.submittable = false;
+    }
+    else {
+      context.submittable = true;
+    }
+    
+    renderControlPanel();
+  });
+
+  $('#input_grade').keydown(() => {
+    const val = parseFloat($('#input_grade').val());
+    $('#input_grade').val(val);
+  });
+}
 
 const initClassroomSelection = () => {
   $('#slt_classrooms').on('change', () => {
     const classRoomId = $('#slt_classrooms option:selected').attr('id');
     context.selectedClassroom = context.classRooms.find(classroom => classroom._id === classRoomId);
+    context.submittable = false;
+    renderControlPanel();
     renderGrades();
     fetchGrades(classRoomId);
   });
 };
+
+const initGradeCellSelection = () => {
+  $('#tbl_grade_body').on('click', 'td.grade.changable', (event) => {
+    const text = $(event.target).text();
+    const grade = text.trim() === "-" ? 0 : parseFloat(text);
+    $('#input_grade').val(grade);
+    
+    
+    const oldGradeId = $('#input_grade').attr('grade_id');
+    $(`#${oldGradeId}`).removeClass('highlight');
+    $(event.target).addClass('highlight');
+    $('#input_grade').attr('grade_id', event.target.id);
+  });
+}
+
+const renderControlPanel = () => {
+  if(context.submittable) {
+    $('#tbl_grade_body .grade').addClass('changable');
+    $('#btn_grade').text('Submit');
+    $('#btn_grade').removeClass('btn-secondary');
+    $('#btn_grade').addClass('btn-primary');
+    $('#input_grade').attr('disabled', false);
+  }
+  else {
+    $('#tbl_grade_body .grade').removeClass('changable');
+    $('#btn_grade').text('Start');
+    $('#btn_grade').addClass('btn-secondary');
+    $('#btn_grade').removeClass('btn-primary');
+    $('#input_grade').attr('disabled', true);
+    $('#input_grade').val('');
+  }
+
+  if (context.gradeDisabled) {
+    $('#btn_grade').attr('disabled', true);
+  }
+  else {
+    $('#btn_grade').attr('disabled', false);
+  }
+}
 
 const setLoading = (loading) => {
   context.loading = loading;
@@ -95,18 +158,18 @@ const renderGrades = () => {
     `);
 
     if (!member.grades) {
-      for(var session = 0; session < sessionMax; session++) {
+      for(var session_index = 0; session_index < sessionMax; session_index++) {
         $(`
-          <td>
+          <td class="grade" id="${member._id}_${session_index}" member_id="${member._id}" session_index="${session_index}">
             -
           </td>
         `).appendTo(tr);
       }
     } else {
-      for(var session = 0; session < sessionMax; session++) {
+      for(var session_index = 0; session_index < sessionMax; session_index++) {
         $(`
-          <td>
-            ${member.grades[session] < 0 ? '-' : member.grades[session] }
+          <td class="grade" id="${member._id}_${session_index}" member_id="${member._id}" session_index="${session_index}">
+            ${member.grades[session_index] < 0 ? '-' : member.grades[session_index] }
           </td>
         `).appendTo(tr);
       }
