@@ -76,6 +76,8 @@ const fetchGrades = async (classroomId) => {
     type: "GET",
   });
   setLoading(false);
+  
+
   if (res && res.data) {
     context.selectedClassroom = res.data;
     renderGrades();
