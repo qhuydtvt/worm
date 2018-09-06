@@ -89,11 +89,6 @@ TEMPLATES = [
 WSGI_APPLICATION = 'worm.wsgi.application'
 
 
-# Database
-# https://docs.djangoproject.com/en/2.1/ref/settings/#databases
-
-# DATABASES = {'default': {'ENGINE': 'django_mongodb_engine',
-#                          'NAME': 'worm'}}
 
 DATABASES = {
     'default': {
@@ -105,16 +100,6 @@ DATABASES = {
         'PORT': get_env_variable("MYSQL_PORT"),
     }
 }
-
-# HOST = 'ds223019.mlab.com'
-# PORT = 23019
-# DB_NAME = 'worm'
-# USERNAME = 'admin'
-# PASSWORD = 'codethechange18'
-
-# mongoengine.connect(
-#     DB_NAME, host=HOST, port=PORT, username=USERNAME, password=PASSWORD
-# )
 
 
 # Password validation
@@ -135,6 +120,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+LOGIN_URL = '/login'
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.1/topics/i18n/
@@ -147,7 +133,7 @@ USE_I18N = True
 
 USE_L10N = True
 
-USE_TZ = True
+USE_TZ = False
 
 
 # Static files (CSS, JavaScript, Images)

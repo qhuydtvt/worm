@@ -1,5 +1,6 @@
 from django.shortcuts import render
-from django.http import HttpResponseRedirect, JsonResponse
+from django.http import JsonResponse
+from django.contrib.auth.decorators import login_required
 from services import lms
 from .models import Grade, GradeLog
 from django.views.decorators.csrf import csrf_exempt
@@ -14,29 +15,30 @@ def classroom_lms(request):
   return JsonResponse(data)
 
 
+@login_required
 def grade(request):
-  if 'login_success' in request.session:
     return render(request, "grade.html")
-  else:
-    return HttpResponseRedirect('/login')
 
 
 @csrf_exempt
 def api_grade(request):
-  if 'classroom_id' not in request.GET:
-    return JsonResponse({'success': 0,
-                        'message': '\'classroom_id\' not specified'})
-  classroom_id = request.GET["classroom_id"]
-  if request.method == "GET":
-    return api_grade_get(request, classroom_id)
-  elif request.method == "POST":
-    return api_grade_post(request, classroom_id)
+  if request.user.is_authenticated:
+    if 'classroom_id' not in request.GET:
+      return JsonResponse({'success': 0,
+                          'message': '\'classroom_id\' not specified'})
+    classroom_id = request.GET["classroom_id"]
+    if request.method == "GET":
+      return api_grade_get(request, classroom_id)
+    elif request.method == "POST":
+      return api_grade_post(request, classroom_id)
+  else:
+    return JsonResponse({"success": 0, "message:": "method not allowed"})
 
 
 def api_grade_get(request, classroom_id):
   classroom_response = lms.classroom.get(classroom_id).json()
   if 'data' not in classroom_response:
-    return JsonResponse({ "success": 0, "message": 'Could not find classroom', })
+    return JsonResponse({"success": 0, "message": 'Could not find classroom',})
   classroom_data = Dict(classroom_response['data'])
   session = classroom_data.session
   grades = Grade.objects.filter(classroom_id=classroom_id)
@@ -64,5 +66,15 @@ def api_grade_post(request, classroom_id):
                            classroom_id=classroom_id,
                            grade_time=grade_log['time'])
   new_grade_log.save()
-
   return JsonResponse({"data": classroom_id})
+
+
+def api_grade_log(request):
+  grade_log = GradeLog.objects.filter(classroom_id="5b8521c829a0640c61e476e0")
+  for log in grade_log:
+    log_dict = {
+                "teacher_id": log.teacher_id,
+                "class": log.classroom_id,
+                "time": log.grade_time,
+               }
+  return JsonResponse({"data": log_dict})
