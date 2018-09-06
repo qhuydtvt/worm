@@ -4,14 +4,23 @@ const context = {
   loading: false,
   submittable: false,
   gradeDisabled: false,
+  // selectedGrade: {tdId, value}
 };
 
+// classrooms => 1 classroom => members => 1 member => grades => 1 grade
+// Insonima => GET /api/grades?id=....
+// MVC
+// Context => Model
+// Render => View
+// Fetch, Init => Controller
+
+
 $(document).ready(() => {
-  renderGrades();
-  initClassroomSelection();
-  initGradeCellSelection();
-  initGradeProcess();
-  fetchClassrooms();
+  renderGrades(); // Render empty grade tables
+  initClassroomSelection(); // Config classroom => when users select classrooms
+  initGradeCellSelection(); // Config grade cell => when users select grade
+  initGradeProcess(); // Config grading: CLick start => Edit grade => Submit
+  fetchClassrooms(); // Load classrooms
 });
 
 const initGradeProcess = () => {
@@ -38,7 +47,7 @@ const initClassroomSelection = () => {
     context.selectedClassroom = context.classRooms.find(classroom => classroom._id === classRoomId);
     context.submittable = false;
     renderControlPanel();
-    renderGrades();
+    renderGrades(); // render empty grades of class, only members shown
     fetchGrades(classRoomId);
   });
 };
