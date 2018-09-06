@@ -1,3 +1,6 @@
+
+
+
 #control_panel {
   display: flex;
   justify-items: center;
@@ -35,37 +38,26 @@
   text-align: left !important;
   padding-left: 8px !important;
   padding-right: 8px !important;
+  border-width: 2px;
 }
 
 #tbl_grade_row_sessions th:nth-child(n + 2),
 #tbl_grade_body td:nth-child(n + 2) {
+  margin-right: 8px !important;
   text-align: right !important;
   padding-right: 8px !important;
+  border-width: 2px;
 }
 
-
-/* .button{
-  text-align: center;
-  height: 60;
-} */
-
-/* .text-center {
-  text-align: center; 
-  size: 50;
-} */
-
-
-/* 
-.text-right {
-  text-align: right;
-
+.grade {
+  margin: 4px !important;
 }
 
+.grade.changable {
+  cursor: pointer;
+}
 
-
-
-.button {
-    padding: 100px 100px;
-    text-align: center;
-    font-size: 16px;
-} */
+.grade.changable:hover,
+.grade.changable.highlight {
+  background-color: rgb(145, 145, 255);
+}
