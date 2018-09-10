@@ -55,26 +55,30 @@ def api_grade_get(request, classroom_id):
 
 @transaction.atomic
 def api_grade_post(request, classroom_id):
-  grades_json = json.loads(request.body)
-  for member in grades_json['data']['members']:
-    grade = Grade.objects.get_or_create(member_id=member['_id'], classroom_id=classroom_id)[0]
-    grade.grades = [float(point) for point in member['grades']]
-    grade.save()
+  try:
+    grades_json = json.loads(request.body)
+    for member in grades_json['data']['members']:
+      grade = Grade.objects.get_or_create(member_id=member['_id'], classroom_id=classroom_id)[0]
+      grade.grades = [float(point) for point in member['grades']]
+      grade.save()
 
-  grade_log = grades_json['data']['teachers']
-  new_grade_log = GradeLog(teacher_id=request.session['teacher_id'],
-                           classroom_id=classroom_id,
-                           grade_time=grade_log['time'])
-  new_grade_log.save()
-  return JsonResponse({"data": classroom_id})
+    grade_log = grades_json['data']['teachers']
+    new_grade_log = GradeLog(teacher_id=request.session['teacher_id'],
+                             classroom_id=classroom_id,
+                             grade_time=grade_log['time'])
+    new_grade_log.save()
+    return JsonResponse({"success": 1, "message": "data saved"})
+  except BaseException:
+    return JsonResponse({"success": 0, "message:": "data save falied"})
 
 
 def api_grade_log(request):
-  grade_log = GradeLog.objects.filter(classroom_id="5b8521c829a0640c61e476e0")
-  for log in grade_log:
-    log_dict = {
-                "teacher_id": log.teacher_id,
-                "class": log.classroom_id,
-                "time": log.grade_time,
-               }
-  return JsonResponse({"data": log_dict})
+  if request.user.is_authenticated:
+    grade_log = GradeLog.objects.filter(classroom_id="5b8521c829a0640c61e476e0")
+    data = [{"class": log.classroom_id,
+             "teacher_id": log.teacher_id,
+             "time": log.grade_time,
+             } for log in grade_log]
+    return JsonResponse({"data": data})
+  else:
+    return JsonResponse({"success": 0, "message:": "method not allowed"})
