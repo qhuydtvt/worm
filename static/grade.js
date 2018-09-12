@@ -111,7 +111,7 @@ const editGrade = (memberID, gradeID, inputValue) => {
     $(tdId).prevObject[0].all[tdId].innerText = tdValue;
     tdIndex = parseInt(tdId.substr(tdId.length - 1));
     
-    console.log(context.selectedClassroom);
+    context.selectedClassroom.time = context.time.hours + ":" + context.time.minutes + ":" + context.time.seconds;
     
     members = context.selectedClassroom.members;
     members.forEach((member) => {
