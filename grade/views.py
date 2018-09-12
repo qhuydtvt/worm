@@ -57,7 +57,6 @@ def api_grade_get(request, classroom_id):
 @transaction.atomic
 def api_grade_post(request, classroom_id):
   grades_json = json.loads(request.body)
-  print(grades_json)
   for member in grades_json['members']:
     grade = Grade.objects.get_or_create(member_id=member['_id'], classroom_id=classroom_id)[0]
     grade.grades = [float(point) for point in member['grades']]

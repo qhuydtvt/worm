@@ -20,15 +20,11 @@ def index(request):
       r = r.auth.post(data)
 
       if r.json()['success'] == 1:
-        try:
-          request.session['teacher_id'] = r.json()['data']['id']
-          user = User.objects.get(username=username, password=password)
-          login(request, user)
-          return HttpResponseRedirect('/')
-        except BaseException:
-          user = User.objects.create_user(username=username, password=password)
-          login(request, user)
-          return HttpResponseRedirect('/')
+        request.session['teacher_id'] = r.json()['data']['id']
+        user, create = User.objects.get_or_create(username=username, password=password)
+        login(request, user)
+        return HttpResponseRedirect('/')
+
       else:
         messages.warning(request, 'Username or password incorrect!')
         return render(request, 'login.html', {"form": form})
