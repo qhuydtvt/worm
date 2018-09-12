@@ -1,5 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
+from django.contrib.auth.models import User
+from django.contrib.auth import login, logout
 from .forms import LoginForm
 from django.contrib import messages
 from tk_rest import TKRest
@@ -9,15 +11,24 @@ def index(request):
   if request.method == 'POST':
     form = LoginForm(request.POST)
     if form.is_valid():
-      data = {"username": form.cleaned_data['username'],
-              "password": form.cleaned_data['password']}
+      username = form.cleaned_data["username"]
+      password = form.cleaned_data["password"]
+
+      data = {"username": username,
+              "password": password}
       r = TKRest('https://learn.techkids.vn/api/')
       r = r.auth.post(data)
 
       if r.json()['success'] == 1:
-        request.session['login_success'] = r.headers['Set-Cookie']
-        request.session['teacher_id'] = r.json()['data']['id']
-        return HttpResponseRedirect('/')
+        try:
+          request.session['teacher_id'] = r.json()['data']['id']
+          user = User.objects.get(username=username, password=password)
+          login(request, user)
+          return HttpResponseRedirect('/')
+        except BaseException:
+          user = User.objects.create_user(username=username, password=password)
+          login(request, user)
+          return HttpResponseRedirect('/')
       else:
         messages.warning(request, 'Username or password incorrect!')
         return render(request, 'login.html', {"form": form})
@@ -26,9 +37,6 @@ def index(request):
     return render(request, 'login.html', {"form": form})
 
 
-def logout(request):
-  try:
-        del request.session['login_success']
-  except BaseException:
-        pass
+def logout_view(request):
+  logout(request)
   return HttpResponseRedirect('/')
