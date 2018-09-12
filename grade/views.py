@@ -61,13 +61,12 @@ def api_grade_post(request, classroom_id):
   for member in grades_json['members']:
     grade = Grade.objects.get_or_create(member_id=member['_id'], classroom_id=classroom_id)[0]
     grade.grades = [float(point) for point in member['grades']]
-    print(grade)
-    # grade.save()
+    grade.save()
 
   grade_log = grades_json['teachers']
   new_grade_log = GradeLog(teacher_id=request.session['teacher_id'],
-                            classroom_id=classroom_id,
-                            grade_time=grades_json['time'])
+                           classroom_id=classroom_id,
+                           grade_time=grades_json['time'])
   new_grade_log.save()
   return JsonResponse({"success": 1, "message": "data saved"})
   
