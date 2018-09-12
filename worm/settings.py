@@ -89,7 +89,6 @@ TEMPLATES = [
 WSGI_APPLICATION = 'worm.wsgi.application'
 
 
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',

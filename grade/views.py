@@ -41,6 +41,7 @@ def api_grade_get(request, classroom_id):
     return JsonResponse({"success": 0, "message": 'Could not find classroom',})
   classroom_data = Dict(classroom_response['data'])
   session = classroom_data.session
+  classroom_data.time = "00:00:00"
   grades = Grade.objects.filter(classroom_id=classroom_id)
   grade_dict = {g.member_id: json.loads(g.grades) for g in grades}
   for member in classroom_data.members:
@@ -74,7 +75,7 @@ def api_grade_post(request, classroom_id):
 
 def api_grade_log(request):
   if request.user.is_authenticated:
-    grade_log = GradeLog.objects.filter(classroom_id="5b8521c829a0640c61e476e0")
+    grade_log = GradeLog.objects.filter(classroom_id="5b8521c829a0640c61e476e0")  #test in one class
     data = [{"class": log.classroom_id,
              "teacher_id": log.teacher_id,
              "time": log.grade_time,
