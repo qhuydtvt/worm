@@ -4,8 +4,47 @@ const context = {
   loading: false,
   submittable: false,
   gradeDisabled: false,
-  // selectedGrade: {tdId, value}
+  timeRunning: false, 
+  selectedGrade: {
+    tdId: "",
+    value: ""
+  },
+  time: {
+    seconds: 0,
+    minutes: 0,
+    hours: 0,
+  }
 };
+
+const stopWatch = (timeVal) => {
+  let seconds = 0;
+  let minutes = 0;
+  let hours = 0;
+  const runTime = () => {
+    seconds++;
+    if (seconds >= 60) {
+        seconds = 0;
+        minutes++;
+        if (minutes >= 60) {
+            minutes = 0;
+            hours++;
+        }
+    }
+    context.time.seconds = seconds > 9 ? seconds : "0" + seconds;
+    context.time.minutes = minutes ? (minutes > 9 ? minutes : "0" + minutes) : "00";
+    context.time.hours = hours ? (hours > 9 ? hours : "0" + hours) : "00";
+    timer = setTimeout(runTime, 1000);
+    timeVal[0].innerText = context.time.hours + ":" + context.time.minutes + ":" + context.time.seconds;
+  }
+  if (context.timeRunning) { 
+    timeVal[0].innerText = "00:00:00";
+    timer = setTimeout(runTime, 1000);
+  } else {
+    clearTimeout(timer);    
+  }
+}
+
+
 
 // classrooms => 1 classroom => members => 1 member => grades => 1 grade
 // Insonima => GET /api/grades?id=....
@@ -14,35 +53,43 @@ const context = {
 // Render => View
 // Fetch, Init => Controller
 
-
 $(document).ready(() => {
   renderGrades(); // Render empty grade tables
   initClassroomSelection(); // Config classroom => when users select classrooms
   initGradeCellSelection(); // Config grade cell => when users select grade
   initGradeProcess(); // Config grading: CLick start => Edit grade => Submit
-  fetchClassrooms(); // Load classrooms
+  fetchClassrooms(); // Load classrooms 
 });
 
 const initGradeProcess = () => {
   $('#btn_grade').on('click', (event) => {
     if (context.submittable) {
       context.submittable = false;
-      contex.gradeDisabled = true;
+      context.gradeDisabled = true;
+      context.timeRunning = false;
+      submit(context.selectedClassroom._id, JSON.stringify(context.selectedClassroom));
     }
     else {
       context.submittable = true;
+      context.timeRunning = true;
     }
+    stopWatch($('#time'));
     renderControlPanel();
+    
   });
 
-  $('#input_grade').keydown(() => {
-    const val = parseFloat($('#input_grade').val());
-    $('#input_grade').val(val);
-  });
+  // $('#input_grade').keydown(() => {
+  //   const val = parseFloat($('#input_grade').val());
+  //   $('#input_grade').val(val);
+  // });
 }
 
 const initClassroomSelection = () => {
   $('#slt_classrooms').on('change', () => {
+    if(context.timeRunning) {
+      $('#btn_grade').click();
+      $('#time')[0].innerText = "00:00:00";
+    }
     const classRoomId = $('#slt_classrooms option:selected').attr('id');
     context.selectedClassroom = context.classRooms.find(classroom => classroom._id === classRoomId);
     context.submittable = false;
@@ -52,16 +99,43 @@ const initClassroomSelection = () => {
   });
 };
 
+const editGrade = (memberID, gradeID, inputValue) => {
+  context.selectedGrade.tdId = gradeID;
+  context.selectedGrade.value = inputValue;
+  
+  $('#input_grade').on('input',(event) => {
+    const tdId = context.selectedGrade.tdId;
+    const inputVal = $('#input_grade').val();
+    context.selectedGrade.value = inputVal;
+    tdValue = context.selectedGrade.value;
+    $(tdId).prevObject[0].all[tdId].innerText = tdValue;
+    tdIndex = parseInt(tdId.substr(tdId.length - 1));
+    
+    console.log(context.selectedClassroom);
+    
+    members = context.selectedClassroom.members;
+    members.forEach((member) => {
+      if (member._id === memberID) {
+        member.grades[tdIndex] = parseFloat(tdValue);
+      }
+    })
+  } )
+  
+}
+
 const initGradeCellSelection = () => {
   $('#tbl_grade_body').on('click', 'td.grade.changable', (event) => {
     const text = $(event.target).text();
     const grade = text.trim() === "-" ? 0 : parseFloat(text);
     $('#input_grade').val(grade);
     
+    editGrade(event.target.parentNode.id, event.target.id, $('#input_grade').val());
+    
     const oldGradeId = $('#input_grade').attr('grade_id');
     $(`#${oldGradeId}`).removeClass('highlight');
     $(event.target).addClass('highlight');
     $('#input_grade').attr('grade_id', event.target.id);
+   
   });
 }
 
@@ -90,14 +164,15 @@ const fetchGrades = async (classroomId) => {
   if (res && res.data) {
     context.selectedClassroom = res.data;
     renderGrades();
-  }
-}
+  };
+};
 
 const renderClassroomSelections = () => {
   $('#slt_classrooms').empty();
   $(`
-      <option>...</option>
+      <option id="...">...</option>
     `).appendTo('#slt_classrooms')
+
   context.classRooms.forEach((classroom) => {
     $(`
       <option id=${classroom._id}>${classroom.course} ${classroom.classroom}</option>
@@ -126,7 +201,7 @@ const renderGrades = () => {
   members.forEach((member) => {
     const tr = 
     $(`
-      <tr>
+      <tr id="${member._id}">
         <td>
           ${member.lastName}
         </td>
@@ -171,19 +246,33 @@ const renderControlPanel = () => {
     $('#input_grade').val('');
   }
 
-  if (context.gradeDisabled) {
-    $('#btn_grade').attr('disabled', true);
-  }
-  else {
-    $('#btn_grade').attr('disabled', false);
-  }
+  // if (context.gradeDisabled) {
+  //   $('#btn_grade').attr('disabled', true);
+  // }
+  // else {
+  //   $('#btn_grade').attr('disabled', false);
+  // }
 }
 
 const setLoading = (loading) => {
   context.loading = loading;
   if (context.loading) {
     $('#loading_indicator').removeClass('invisible');
+    $('#btn_grade').attr('disabled', true);      
   } else {
     $('#loading_indicator').addClass('invisible');
+    $('#btn_grade').attr('disabled', false);
   }
+}
+
+const submit = async (classroom_id, gradeJSON) => {
+  setLoading(true);
+  await $.ajax({
+    url: `api/grades?classroom_id=${classroom_id}`,
+    type: "POST",
+    data: gradeJSON,
+    dataType: "json",
+    contentType: "application/json",
+  });
+  setLoading(false);
 }
