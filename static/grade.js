@@ -68,6 +68,8 @@ const initGradeProcess = () => {
       context.gradeDisabled = true;
       context.timeRunning = false;
       submit(context.selectedClassroom._id, JSON.stringify(context.selectedClassroom));
+      console.log(context.selectedClassroom);
+      
     }
     else {
       context.submittable = true;
@@ -109,8 +111,7 @@ const editGrade = (memberID, gradeID, inputValue) => {
     context.selectedGrade.value = inputVal;
     tdValue = context.selectedGrade.value;
     $(tdId).prevObject[0].all[tdId].innerText = tdValue;
-    tdIndex = parseInt(tdId.substr(tdId.length - 1));
-    
+    tdIndex = parseInt(tdId.split("_")[1]);
     context.selectedClassroom.time = context.time.hours + ":" + context.time.minutes + ":" + context.time.seconds;
     
     members = context.selectedClassroom.members;
