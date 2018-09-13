@@ -21,7 +21,7 @@ def index(request):
 
       if r.json()['success'] == 1:
         request.session['teacher_id'] = r.json()['data']['id']
-        user, create = User.objects.get_or_create(username=username, password=password)
+        user, create = User.objects.get_or_create(username=username, password=password, is_staff=True)
         login(request, user)
         return HttpResponseRedirect('/')
 
