@@ -69,12 +69,11 @@ def api_grade_post(request, classroom_id):
                            grade_time=grades_json['time'])
   new_grade_log.save()
   return JsonResponse({"success": 1, "message": "data saved"})
-  
 
 
 def api_grade_log(request):
   if request.user.is_authenticated:
-    grade_log = GradeLog.objects.filter(classroom_id="5b8521c829a0640c61e476e0")  #test in one class
+    grade_log = GradeLog.objects.filter(grade_day__range=['2018-09-12', '2018-09-13'])  #test in one class
     data = [{"class": log.classroom_id,
              "teacher_id": log.teacher_id,
              "time": log.grade_time,
