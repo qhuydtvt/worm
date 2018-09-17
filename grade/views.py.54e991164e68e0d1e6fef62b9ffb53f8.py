@@ -75,9 +75,9 @@ def api_grade_post(request, classroom_id):
 def api_grade_log(request):
   time = request.GET['time']
   time = time.split("_")
-  time[0] = datetime.datetime.strptime(time[0], "%Y-%m-%d")
   time[1] = datetime.datetime.strptime(time[1], "%Y-%m-%d") + datetime.timedelta(days=1)
-  day = time[1] - time[0]
+
+  time[1] = datetime.datetime.strptime(time[1], "%Y-%m-%d") + datetime.timedelta(days=1)
   if request.user.is_authenticated:
     grade_log = GradeLog.objects.filter(grade_day__range=[time[0], time[1]])  #test in one perious of time
     data = [{"class": log.classroom_id,
