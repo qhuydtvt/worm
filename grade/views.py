@@ -76,15 +76,20 @@ def api_grade_log(request):
   time = request.GET['time']
   time = time.split("_")
   time[0] = datetime.datetime.strptime(time[0], "%Y-%m-%d")
-  time[1] = datetime.datetime.strptime(time[1], "%Y-%m-%d") + datetime.timedelta(days=1)
+  time[1] = datetime.datetime.strptime(time[1], "%Y-%m-%d")
   day = time[1] - time[0]
+  print(day.days)
+  time_plus = time[1] + datetime.timedelta(days=1)
   if request.user.is_authenticated:
-    grade_log = GradeLog.objects.filter(grade_day__range=[time[0], time[1]])  #test in one perious of time
-    data = [{"class": log.classroom_id,
-             "teacher_id": log.teacher_id,
-             "time": log.grade_time,
-             "create_date": log.grade_day,
-             } for log in grade_log]
-    return JsonResponse({"data": data})
+    grade_log = GradeLog.objects.filter(grade_day__range=[time[0], time_plus])  #test in one perious of time
+    if len(grade_log) > 0:
+      data = [{"class": log.classroom_id,
+               "teacher_id": log.teacher_id,
+               "time": log.grade_time,
+               "create_date": log.grade_day,}for log in grade_log]
+      return JsonResponse({"data": data})
+    else:
+      return JsonResponse({"success": 0, "message": 'Could not find logs', })
+
   else:
     return JsonResponse({"success": 0, "message:": "method not allowed"})
