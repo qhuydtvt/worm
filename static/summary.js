@@ -1,5 +1,5 @@
 const context = {
-  summary: [],
+  summary: null,
   loading: false
 }
 
@@ -9,7 +9,9 @@ $(document).ready(() => {
 });
 
 const initDate = (() => {
-  $("#start_date").flatpickr();
+  $("#start_date").flatpickr({
+    defaultDate: "today",
+  });
   $("#stop_date").flatpickr({
     defaultDate: "today",
   }); 
@@ -27,7 +29,6 @@ const selectDate = (() => {
     stop_date = event.target.value;
     fetchSummary(start_date, stop_date);
   });
-  console.log(context.summary);
   
 });
 
@@ -42,6 +43,7 @@ const fetchSummary = async (start_date, stop_date) => {
 
   if (res && res.data) {
     context.summary = res.data;
+    console.log(context.summary);
   };
 };
 
