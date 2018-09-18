@@ -21,6 +21,11 @@ def grade(request):
     return render(request, "grade.html")
 
 
+def summary(request):
+    return render(request, "summary.html")
+
+
+
 @csrf_exempt
 def api_grade(request):
   if request.user.is_authenticated:
@@ -93,3 +98,4 @@ def api_grade_log(request):
 
   else:
     return JsonResponse({"success": 0, "message:": "method not allowed"})
+

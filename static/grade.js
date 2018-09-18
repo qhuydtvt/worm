@@ -17,6 +17,14 @@ const context = {
   selectedMemberID: ""
 };
 
+$(document).ready(() => {
+  renderGrades(); // Render empty grade tables
+  initClassroomSelection(); // Config classroom => when users select classrooms
+  initGradeCellSelection(); // Config grade cell => when users select grade
+  initGradeProcess(); // Config grading: CLick start => Edit grade => Submit
+  fetchClassrooms(); // Load classrooms 
+});
+
 const stopWatch = (timeVal) => {
   let seconds = 0;
   let minutes = 0;
@@ -54,14 +62,6 @@ const stopWatch = (timeVal) => {
 // Render => View
 // Fetch, Init => Controller
 
-$(document).ready(() => {
-  renderGrades(); // Render empty grade tables
-  initClassroomSelection(); // Config classroom => when users select classrooms
-  initGradeCellSelection(); // Config grade cell => when users select grade
-  initGradeProcess(); // Config grading: CLick start => Edit grade => Submit
-  fetchClassrooms(); // Load classrooms 
-  initInput();
-});
 
 const initGradeProcess = () => {
   $('#btn_grade').on('click', (event) => {

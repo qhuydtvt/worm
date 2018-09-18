@@ -3,35 +3,61 @@
 <head>
     <title>A Web Page</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-   {% load static %}
-   <link rel="stylesheet" type="text/css" media="screen" href="{% static 'summary.css' %}" />
-   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
-   <link href="https://fonts.googleapis.com/css?family=Exo+2" rel="stylesheet">
+    {% load static %}
+    <link rel="stylesheet" type="text/css" media="screen" href="{% static 'summary.css' %}" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css?family=Exo+2" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.2.3/flatpickr.css">    
   </head>
-<body>
-    <div class = "text-right">
-        <button type="button" class="btn btn-info">Log out</button>
+<body class="container">
+    <div class="d-flex flex-column">
+        <div>
+            <label for="">Start date</label>
+            <input type="text" id="start_date" placeholder="Please select Date Time">
+            <div id="loading_indicator" class="invisible p-0">Loading...</div>
+        </div>
+        <div>
+            <label for="">Stop date</label>
+            <input type="text" id="stop_date" value="" data-input>
+        </div>
     </div>
-    <br> <br>
-      <div class="container">
-            <div class="row">
-                <div class="col-6 col-md-4"></div>
-                <div class="col-6 col-md-4">Summary</div>
-                <div class="col-6 col-md-4"></div>
-            </div>
-            <div class="row">
-                <div class="col-6 col-md-4"></div>
-                <div class="col-6 col-md-3">Average grading time</div>
-                <div class="col-6 col-md-4">02:00:00</div>
-            </div>  
-            <div class="row">
-                <div class="col-6 col-md-4"></div>
-                <div class="col-6 col-md-3">Grading tim target</div>
-                <div class="col-6 col-md-4">01:00:00</div>
-            </div>  
+    <div>
+        <h1>Instructors Stats</h1>
+        <table class="table-bordered">
+                <thead>
+                    <tr id="">
+                        <th>Name</th>
+                        <th>Total hour</th>
+                        <th>Hour per day</th>
+                    </tr>
+                </thead>
+    
+                <tbody id="">
                     
-      </div>
+                </tbody>
+            </table>
+    </div>
 
+    <div>
+            <h1>Class Stats</h1>
+            <table class="table-bordered">
+                    <thead>
+                        <tr id="">
+                            <th>Name</th>
+                            <th>Total hour</th>
+                            <th>Hour per day</th>
+                        </tr>
+                    </thead>
+        
+                    <tbody id="">
+                        
+                    </tbody>
+                </table>
+        </div>
+    
       
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.2.3/flatpickr.js"></script>
+    <script type="text/javascript" src="{% static 'summary.js' %}"></script>  
 </body>
 </html>
