@@ -7,6 +7,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.db import transaction
 import json
 from addict import Dict
+import datetime
 
 
 def classroom_lms(request):
@@ -18,6 +19,11 @@ def classroom_lms(request):
 @login_required
 def grade(request):
     return render(request, "grade.html")
+
+
+def summary(request):
+    return render(request, "summary.html")
+
 
 
 @csrf_exempt
@@ -38,7 +44,7 @@ def api_grade(request):
 def api_grade_get(request, classroom_id):
   classroom_response = lms.classroom.get(classroom_id).json()
   if 'data' not in classroom_response:
-    return JsonResponse({"success": 0, "message": 'Could not find classroom',})
+    return JsonResponse({"success": 0, "message": 'Could not find classroom', })
   classroom_data = Dict(classroom_response['data'])
   session = classroom_data.session
   classroom_data.time = "00:00:00"
@@ -57,29 +63,34 @@ def api_grade_get(request, classroom_id):
 @transaction.atomic
 def api_grade_post(request, classroom_id):
   grades_json = json.loads(request.body)
-  print(grades_json)
+  
   for member in grades_json['members']:
     grade = Grade.objects.get_or_create(member_id=member['_id'], classroom_id=classroom_id)[0]
     grade.grades = [float(point) for point in member['grades']]
-    print(grade)
-    # grade.save()
+    grade.save()
 
   grade_log = grades_json['teachers']
   new_grade_log = GradeLog(teacher_id=request.session['teacher_id'],
-                            classroom_id=classroom_id,
-                            grade_time=grades_json['time'])
+                           classroom_id=classroom_id,
+                           grade_time=grades_json['time'])
   new_grade_log.save()
   return JsonResponse({"success": 1, "message": "data saved"})
-  
 
 
 def api_grade_log(request):
+  time = request.GET['time']
+  time = time.split("_")
+  time[0] = datetime.datetime.strptime(time[0], "%Y-%m-%d")
+  time[1] = datetime.datetime.strptime(time[1], "%Y-%m-%d") + datetime.timedelta(days=1)
+  day = time[1] - time[0]
   if request.user.is_authenticated:
-    grade_log = GradeLog.objects.filter(classroom_id="5b8521c829a0640c61e476e0")  #test in one class
+    grade_log = GradeLog.objects.filter(grade_day__range=[time[0], time[1]])  #test in one perious of time
     data = [{"class": log.classroom_id,
              "teacher_id": log.teacher_id,
              "time": log.grade_time,
+             "create_date": log.grade_day,
              } for log in grade_log]
     return JsonResponse({"data": data})
   else:
     return JsonResponse({"success": 0, "message:": "method not allowed"})
+

@@ -17,16 +17,25 @@ const initDate = (() => {
 
 
 const selectDate = (() => {
+  stop_date = (($('#stop_date')[0].value));
+  
   $('#start_date').on('change', (event) => {
-    console.log(event.target.value);
+    start_date = event.target.value;
+    fetchSummary(start_date, stop_date);
   });
+  $('#stop_date').on('change', (event) => {
+    stop_date = event.target.value;
+    fetchSummary(start_date, stop_date);
+  });
+  console.log(context.summary);
+  
 });
 
 
-const fetchSummary = async (time) => {
+const fetchSummary = async (start_date, stop_date) => {
   setLoading(true);
   const res = await $.ajax({
-    url: `/api/log?time=${time}`,
+    url: `/api/log?time=${start_date}_${stop_date}`,
     type: "GET"
   });
   setLoading(false);

@@ -19,6 +19,4 @@ from django.contrib import admin
 urlpatterns = [
     path('', include('grade.urls')),
     path('admin/', admin.site.urls),
-    path('login/', include('login.urls')),
-    path('summary/', include('summary.urls')),
-]
+    path('login/', include('login.urls')),]

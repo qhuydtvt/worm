@@ -13,7 +13,8 @@ const context = {
     seconds: 0,
     minutes: 0,
     hours: 0,
-  }
+  },
+  selectedMemberID: ""
 };
 
 $(document).ready(() => {
@@ -62,14 +63,16 @@ const stopWatch = (timeVal) => {
 // Fetch, Init => Controller
 
 
-
 const initGradeProcess = () => {
   $('#btn_grade').on('click', (event) => {
     if (context.submittable) {
       context.submittable = false;
       context.gradeDisabled = true;
       context.timeRunning = false;
+      context.selectedClassroom.time = context.time.hours + ":" + context.time.minutes + ":" + context.time.seconds;
       submit(context.selectedClassroom._id, JSON.stringify(context.selectedClassroom));
+      // console.log(context.selectedClassroom);
+      
     }
     else {
       context.submittable = true;
@@ -101,28 +104,35 @@ const initClassroomSelection = () => {
   });
 };
 
+const handleGradeInput = (event) => {
+  const tdId = context.selectedGrade.tdId;
+  const inputVal = $('#input_grade').val();
+  context.selectedGrade.value = inputVal;
+  tdValue = context.selectedGrade.value;
+  $(tdId).prevObject[0].all[tdId].innerText = parseFloat(tdValue);
+  tdIndex = parseInt(tdId.split("_")[1]);
+  context.selectedClassroom.time = context.time.hours + ":" + context.time.minutes + ":" + context.time.seconds;
+  
+  members = context.selectedClassroom.members;
+  members.forEach((member) => {
+    if (member._id === context.selectedMemberID) {
+      member.grades[tdIndex] = tdValue;
+    }
+  })
+}
+
 const editGrade = (memberID, gradeID, inputValue) => {
   context.selectedGrade.tdId = gradeID;
   context.selectedGrade.value = inputValue;
+  context.selectedMemberID = memberID;
+  $("#input_grade").on("input", handleGradeInput);
   
-  $('#input_grade').on('input',(event) => {
-    const tdId = context.selectedGrade.tdId;
-    const inputVal = $('#input_grade').val();
-    context.selectedGrade.value = inputVal;
-    tdValue = context.selectedGrade.value;
-    $(tdId).prevObject[0].all[tdId].innerText = tdValue;
-    tdIndex = parseInt(tdId.substr(tdId.length - 1));
-    
-    context.selectedClassroom.time = context.time.hours + ":" + context.time.minutes + ":" + context.time.seconds;
-    
-    members = context.selectedClassroom.members;
-    members.forEach((member) => {
-      if (member._id === memberID) {
-        member.grades[tdIndex] = parseFloat(tdValue);
-      }
-    })
-  } )
-  
+}
+
+const initInput = () => {
+  $('#input_grade').on('focusout', function() {
+    $('#input_grade').off("input", handleGradeInput);
+  });
 }
 
 const initGradeCellSelection = () => {
@@ -131,7 +141,9 @@ const initGradeCellSelection = () => {
     const grade = text.trim() === "-" ? 0 : parseFloat(text);
     $('#input_grade').val(grade);
     
-    editGrade(event.target.parentNode.id, event.target.id, $('#input_grade').val());
+    // console.log(event);
+    
+    editGrade(event.target.attributes[2].nodeValue, event.target.id, $('#input_grade').val());
     
     const oldGradeId = $('#input_grade').attr('grade_id');
     $(`#${oldGradeId}`).removeClass('highlight');
