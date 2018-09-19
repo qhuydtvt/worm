@@ -86,6 +86,8 @@ def api_grade_log(request):
   print(day.days)
   time_plus = time[1] + datetime.timedelta(days=1)
   if request.user.is_authenticated:
+    for id in GradeLog.objects.all():
+      print(id.teacher_id)
     grade_log = GradeLog.objects.filter(grade_day__range=[time[0], time_plus])  #test in one perious of time
     if len(grade_log) > 0:
       data = [{"class": log.classroom_id,

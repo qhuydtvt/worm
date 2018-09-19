@@ -38,7 +38,7 @@ const selectDate = (() => {
 const fetchSummary = async (start_date, stop_date) => {
   setLoading(true);
   const res = await $.ajax({
-    url: `/api/log?time=${start_date}_${stop_date}`,
+    url: `/api/log?star_time=${start_date}&stop_time=${stop_date}`,
     type: "GET"
   });
   setLoading(false);
@@ -51,7 +51,6 @@ const fetchSummary = async (start_date, stop_date) => {
       console.log(context.summary);
     };
   };
-  
 };
 
 const setLoading = (loading) => {

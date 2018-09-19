@@ -17,7 +17,7 @@ class Grade(models.Model):
 class GradeLog(models.Model):
   classroom_id = models.CharField(max_length=50)
   teacher_id = models.CharField(max_length=50)
-  grade_day = models.DateTimeField(default=timezone.now)
+  grade_day = models.DateTimeField()
   grade_time = models.CharField(max_length=50)
 
   def __str__(self):
