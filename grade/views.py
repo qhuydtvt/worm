@@ -78,22 +78,28 @@ def api_grade_post(request, classroom_id):
 
 
 def api_grade_log(request):
-  time = request.GET['time']
-  time = time.split("_")
-  time[0] = datetime.datetime.strptime(time[0], "%Y-%m-%d")
-  time[1] = datetime.datetime.strptime(time[1], "%Y-%m-%d")
-  day = time[1] - time[0]
+  start_time = request.GET['start_time']
+  stop_time = request.GET['stop_time']
+  start_time = datetime.datetime.strptime(start_time, "%Y-%m-%d")
+  stop_time = datetime.datetime.strptime(stop_time, "%Y-%m-%d")
+  day = stop_time - start_time
   print(day.days)
-  time_plus = time[1] + datetime.timedelta(days=1)
+  time_plus = stop_time + datetime.timedelta(days=1)
   if request.user.is_authenticated:
-    for id in GradeLog.objects.all():
-      print(id.teacher_id)
-    grade_log = GradeLog.objects.filter(grade_day__range=[time[0], time_plus])  #test in one perious of time
+    grade_log = GradeLog.objects.filter(grade_day__range=[start_time, time_plus])  #test in one perious of time
     if len(grade_log) > 0:
-      data = [{"class": log.classroom_id,
-               "teacher_id": log.teacher_id,
-               "time": log.grade_time,
-               "create_date": log.grade_day,}for log in grade_log]
+      data = {}
+      for log in grade_log:
+        if log.teacher_id not in data:
+          data[log.teacher_id] = [{"classroom": log.classroom_id,
+                                   "time": log.grade_time, 
+                                   "created_day": log.grade_day,
+                                  }]
+        else:
+          data[log.teacher_id].append({"classroom": log.classroom_id,
+                                       "time": log.grade_time,
+                                       "created_day": log.grade_day,
+                                       })
       return JsonResponse({"data": data})
     else:
       return JsonResponse({"success": 0, "message": 'Could not find logs', })

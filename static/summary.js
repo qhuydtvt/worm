@@ -1,6 +1,7 @@
 const context = {
   summary: null,
-  loading: false
+  loading: false,
+  incorrect: false
 }
 
 $(document).ready(() => {
@@ -38,14 +39,14 @@ const selectDate = (() => {
 const fetchSummary = async (start_date, stop_date) => {
   setLoading(true);
   const res = await $.ajax({
-    url: `/api/log?star_time=${start_date}&stop_time=${stop_date}`,
+    url: `/api/log?start_time=${start_date}&stop_time=${stop_date}`,
     type: "GET"
   });
   setLoading(false);
   if(res.success === 0) {
-    console.log("dkmm");
-    
+    setIncorrect(true);
   } else {
+    setIncorrect(false);
     if (res && res.data) {
       context.summary = res.data;
       console.log(context.summary);
@@ -61,3 +62,12 @@ const setLoading = (loading) => {
     $('#loading_indicator').addClass('invisible');
   };
 };
+
+const setIncorrect = (incorrect) => {
+  context.incorrect = incorrect;
+  if (context.incorrect) {
+    $('#incorrect').removeClass('invisible');
+  } else {
+    $('#incorrect').addClass('invisible');
+  }
+}
