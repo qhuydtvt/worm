@@ -8,12 +8,24 @@ from django.db import transaction
 import json
 from addict import Dict
 import datetime
+import time
+from . import controller
 
 
 def classroom_lms(request):
   r = lms.classroom.get()
   data = r.json()
   return JsonResponse(data)
+
+
+def user_lms(request):
+  r = lms.users.get()
+  data = r.json()
+  teacher = []
+  for user in data['data']:
+    if user['role'] == 1:
+      teacher.append(user)
+  return JsonResponse({"data": teacher})
 
 
 @login_required
@@ -83,28 +95,13 @@ def api_grade_log(request):
   start_time = datetime.datetime.strptime(start_time, "%Y-%m-%d")
   stop_time = datetime.datetime.strptime(stop_time, "%Y-%m-%d")
   day = stop_time - start_time
-  print(day.days)
   time_plus = stop_time + datetime.timedelta(days=1)
+
   if request.user.is_authenticated:
     grade_log = GradeLog.objects.filter(grade_day__range=[start_time, time_plus])  #test in one perious of time
     if len(grade_log) > 0:
-      data = [
-        {},
-        {}
-      ]
-      for log in grade_log:
-        if log.teacher_id not in data[0]:
-          data[0][log.teacher_id] = [{"classroom": log.classroom_id,
-                                   "teacher": log.teacher_id,
-                                   "time": log.grade_time, 
-                                   "created_day": log.grade_day,
-                                  }]
-        else:
-          data[0][log.teacher_id].append({"classroom": log.classroom_id,
-                                       "teacher": log.teacher_id,
-                                       "time": log.grade_time,
-                                       "created_day": log.grade_day,
-                                       })
+      log = get_teacher_log(grade_log)
+      data = controller.cal_teacher_time(log, day.days)
       return JsonResponse({"data": data})
     else:
       return JsonResponse({"success": 0, "message": 'Could not find logs', })
@@ -112,3 +109,20 @@ def api_grade_log(request):
   else:
     return JsonResponse({"success": 0, "message:": "method not allowed"})
 
+
+def get_teacher_log(grade_log):
+  data = {}
+  for log in grade_log:
+        if log.teacher_id not in data:
+          data[log.teacher_id] = [{"classroom": log.classroom_id,
+                                   "teacher": log.teacher_id,
+                                   "time": log.grade_time,
+                                   "created_day": log.grade_day,
+                                   }]
+        else:
+          data[log.teacher_id].append({"classroom": log.classroom_id,
+                                       "teacher": log.teacher_id,
+                                       "time": log.grade_time,
+                                       "created_day": log.grade_day,
+                                       })
+  return data
