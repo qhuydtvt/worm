@@ -88,15 +88,20 @@ def api_grade_log(request):
   if request.user.is_authenticated:
     grade_log = GradeLog.objects.filter(grade_day__range=[start_time, time_plus])  #test in one perious of time
     if len(grade_log) > 0:
-      data = {}
+      data = [
+        {},
+        {}
+      ]
       for log in grade_log:
-        if log.teacher_id not in data:
-          data[log.teacher_id] = [{"classroom": log.classroom_id,
+        if log.teacher_id not in data[0]:
+          data[0][log.teacher_id] = [{"classroom": log.classroom_id,
+                                   "teacher": log.teacher_id,
                                    "time": log.grade_time, 
                                    "created_day": log.grade_day,
                                   }]
         else:
-          data[log.teacher_id].append({"classroom": log.classroom_id,
+          data[0][log.teacher_id].append({"classroom": log.classroom_id,
+                                       "teacher": log.teacher_id,
                                        "time": log.grade_time,
                                        "created_day": log.grade_day,
                                        })
