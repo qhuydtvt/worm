@@ -1,14 +1,14 @@
 const context = {
-  summary: null,
+  summaryTeachers: null,
   loading: false,
   incorrect: false,
-  classroom: []
+  totalDays: 0,
 }
 
 $(document).ready(() => {
   initDate();
   selectDate();
-  // fetchTeacher();
+  // renderTeachers();
 });
 
 const initDate = (() => {
@@ -38,24 +38,19 @@ const selectDate = (() => {
 });
 
 
-// const fetchTeacher = async () => {
-//   setLoading(true);
-//   const res = await $.ajax({
-//     url: `/api/classroom`,
-//     type: "GET"
-//   });
-  
-//   if (res && res.data) {
-//     res.data.forEach((classroom) => {
-//       console.log(classroom.teachers);
-//     })
-//   }
-//   setLoading(false);
-// }
-
-
 const renderTeachers = (() => {
   $('#tbl_teacher_body').empty();
+  teachers = context.summaryTeachers;
+  teachers.forEach((teacher) => {
+    const tr = 
+    $(`
+      <tr id="${teacher._id}">
+        <td>${teacher.lastName}</td>
+        <td>${teacher.time}</td>
+
+      </tr>
+    `)
+  })
   
 })
 
@@ -71,9 +66,11 @@ const fetchSummary = async (start_date, stop_date) => {
     setIncorrect(true);
   } else {
     setIncorrect(false);
-    if (res && res.data) {
-      context.summary = res.data;
-      console.log(context.summary);
+    if (res) {
+      context.summaryTeachers = res.teachers;
+      context.totalDays = res.total
+      console.log(context.summaryTeachers);
+      renderTeachers();
     };
   };
 };

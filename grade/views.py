@@ -11,10 +11,17 @@ import datetime
 from . import controller
 
 
+def classroom_lms(request):
+  r = lms.classroom.get()
+  data = r.json()
+  return JsonResponse(data)
+
+
 def get_classroom_lms():
   r = lms.classroom.get()
   data = r.json()
   return data
+
 
 
 def get_user_lms():
@@ -96,13 +103,14 @@ def api_grade_log(request):
   if request.user.is_authenticated:
     grade_log = GradeLog.objects.filter(grade_day__range=[start_time, time_plus])
     if len(grade_log) > 0:
+      #teachers
       teacher_log = get_teacher_log(grade_log)
       teacher_time = controller.cal_teacher_time(teacher_log, day.days)
       teacher_info = get_user_lms()
-      classroom_info = get_classroom_lms()
+      #classrooms
       classroom_log = get_classroom_log(grade_log)
-      # print(classroom_log)
-      
+      classroom_info = get_classroom_lms()
+      classroom_time = controller.cal_classroom_time(classroom_log, day.days, 15)
 
       for index, user in enumerate(teacher_info):
         if user["_id"] in teacher_time:
@@ -110,7 +118,7 @@ def api_grade_log(request):
         else:
           teacher_info[index]["time"] = None
       return JsonResponse({"teachers": teacher_info,
-                           "classrooms": None
+                           "classrooms": classroom_time,
                           })
     else:
       return JsonResponse({"success": 0, "message": 'Could not find logs', })
