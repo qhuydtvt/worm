@@ -101,7 +101,7 @@ def api_grade_log(request):
       teacher_info = get_user_lms()
       classroom_info = get_classroom_lms()
       classroom_log = get_classroom_log(grade_log)
-      print(classroom_log)
+      # print(classroom_log)
       
 
       for index, user in enumerate(teacher_info):
