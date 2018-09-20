@@ -8,12 +8,23 @@ from django.db import transaction
 import json
 from addict import Dict
 import datetime
+from . import controller
 
 
 def classroom_lms(request):
   r = lms.classroom.get()
   data = r.json()
   return JsonResponse(data)
+
+
+def get_user_lms():
+  r = lms.users.get()
+  data = r.json()
+  teacher = []
+  for user in data['data']:
+    if user['role'] == 1:
+      teacher.append(user)
+  return teacher
 
 
 @login_required
@@ -23,7 +34,6 @@ def grade(request):
 
 def summary(request):
     return render(request, "summary.html")
-
 
 
 @csrf_exempt
@@ -63,13 +73,11 @@ def api_grade_get(request, classroom_id):
 @transaction.atomic
 def api_grade_post(request, classroom_id):
   grades_json = json.loads(request.body)
-  
   for member in grades_json['members']:
     grade = Grade.objects.get_or_create(member_id=member['_id'], classroom_id=classroom_id)[0]
     grade.grades = [float(point) for point in member['grades']]
     grade.save()
 
-  grade_log = grades_json['teachers']
   new_grade_log = GradeLog(teacher_id=request.session['teacher_id'],
                            classroom_id=classroom_id,
                            grade_time=grades_json['time'])
@@ -83,32 +91,40 @@ def api_grade_log(request):
   start_time = datetime.datetime.strptime(start_time, "%Y-%m-%d")
   stop_time = datetime.datetime.strptime(stop_time, "%Y-%m-%d")
   day = stop_time - start_time
-  print(day.days)
   time_plus = stop_time + datetime.timedelta(days=1)
+
   if request.user.is_authenticated:
-    grade_log = GradeLog.objects.filter(grade_day__range=[start_time, time_plus])  #test in one perious of time
+    grade_log = GradeLog.objects.filter(grade_day__range=[start_time, time_plus])
     if len(grade_log) > 0:
-      data = [
-        {},
-        {}
-      ]
-      for log in grade_log:
-        if log.teacher_id not in data[0]:
-          data[0][log.teacher_id] = [{"classroom": log.classroom_id,
-                                   "teacher": log.teacher_id,
-                                   "time": log.grade_time, 
-                                   "created_day": log.grade_day,
-                                  }]
+      log = get_teacher_log(grade_log)
+      time = controller.cal_teacher_time(log, day.days)
+      teacher_info = get_user_lms()
+      for index, user in enumerate(teacher_info):
+        if user["_id"] in time:
+          teacher_info[index]["time"] = time[user["_id"]]
         else:
-          data[0][log.teacher_id].append({"classroom": log.classroom_id,
-                                       "teacher": log.teacher_id,
-                                       "time": log.grade_time,
-                                       "created_day": log.grade_day,
-                                       })
-      return JsonResponse({"data": data})
+          teacher_info[index]["time"] = None
+      return JsonResponse({"data": teacher_info})
     else:
       return JsonResponse({"success": 0, "message": 'Could not find logs', })
 
   else:
     return JsonResponse({"success": 0, "message:": "method not allowed"})
 
+
+def get_teacher_log(grade_log):
+  data = {}
+  for log in grade_log:
+        if log.teacher_id not in data:
+          data[log.teacher_id] = [{"classroom": log.classroom_id,
+                                   "teacher": log.teacher_id,
+                                   "time": log.grade_time,
+                                   "created_day": log.grade_day,
+                                   }]
+        else:
+          data[log.teacher_id].append({"classroom": log.classroom_id,
+                                       "teacher": log.teacher_id,
+                                       "time": log.grade_time,
+                                       "created_day": log.grade_day,
+                                       })
+  return data
