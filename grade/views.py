@@ -8,7 +8,6 @@ from django.db import transaction
 import json
 from addict import Dict
 import datetime
-import time
 from . import controller
 
 
@@ -18,14 +17,14 @@ def classroom_lms(request):
   return JsonResponse(data)
 
 
-def user_lms(request):
+def get_user_lms():
   r = lms.users.get()
   data = r.json()
   teacher = []
   for user in data['data']:
     if user['role'] == 1:
       teacher.append(user)
-  return JsonResponse({"data": teacher})
+  return teacher
 
 
 @login_required
@@ -75,7 +74,6 @@ def api_grade_get(request, classroom_id):
 @transaction.atomic
 def api_grade_post(request, classroom_id):
   grades_json = json.loads(request.body)
-  
   for member in grades_json['members']:
     grade = Grade.objects.get_or_create(member_id=member['_id'], classroom_id=classroom_id)[0]
     grade.grades = [float(point) for point in member['grades']]
@@ -101,8 +99,14 @@ def api_grade_log(request):
     grade_log = GradeLog.objects.filter(grade_day__range=[start_time, time_plus])  #test in one perious of time
     if len(grade_log) > 0:
       log = get_teacher_log(grade_log)
-      data = controller.cal_teacher_time(log, day.days)
-      return JsonResponse({"data": data})
+      user_info = get_user_lms()
+      time = controller.cal_teacher_time(log, day.days)
+      for index, user in enumerate(user_info):
+        if user["_id"] in time:
+          user_info[index]["time"] = time[user["_id"]]
+        else:
+          user_info[index]["time"] = None
+      return JsonResponse({"data": user_info})
     else:
       return JsonResponse({"success": 0, "message": 'Could not find logs', })
 

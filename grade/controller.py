@@ -5,7 +5,7 @@ import datetime
 def cal_teacher_time(data, num_day):
   if num_day == 0:
     num_day = 1
-  log = []
+  log = {}
   time_list = []
   total = 0
   for key, value in data.items():
@@ -15,6 +15,5 @@ def cal_teacher_time(data, num_day):
           time_list.append(_time)
       total = sum(time_list)
       time_list = []
-      log.append({"techer": key, "time": str(datetime.timedelta(seconds=total / num_day))})
+      log[key] = str(datetime.timedelta(seconds=total / num_day))
   return log
-
