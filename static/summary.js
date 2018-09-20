@@ -2,15 +2,12 @@ const context = {
   summaryTeachers: null,
   loading: false,
   incorrect: false,
-  // totalDays: 0,
-  // seconds: 0,
-  // time: null,
+  // strToSec: 0,
 }
 
 $(document).ready(() => {
   initDate();
   selectDate();
-  // renderTeachers();
 });
 
 const initDate = (() => {
@@ -43,19 +40,11 @@ const selectDate = (() => {
 const renderTeachers = (() => {
   $('#tbl_teacher_body').empty();
   teachers = context.summaryTeachers;
+  totalSec = 0;
   teachers.forEach((teacher) => {
     if (teacher.time === null) {
       teacher.time = [0,0];
     }
-    // if (teacher.time === null) {
-    //   teacher.time = "0";
-    //   avgHour = 0;
-    //   context.time = "0";
-    // } else {
-    //   convertTimeToSecond(teacher.time);
-    //   avgHour = context.seconds / context.totalDays;
-    //   convertSecondToTime(avgHour);
-    // }
     const tr = 
     $(`
       <tr id="${teacher._id}">
@@ -65,6 +54,13 @@ const renderTeachers = (() => {
       </tr>
     `).appendTo($('#tbl_teacher_body'));
   })
+  
+  const trAvg = $(`
+      <tr>
+        <td>Average Time</td>
+        <td></td>
+      </tr>
+    `)
   
 })
 
@@ -81,8 +77,7 @@ const fetchSummary = async (start_date, stop_date) => {
   } else {
     setIncorrect(false);
     if (res && res.teachers) {
-      context.summaryTeachers = res.teachers;
-      // context.totalDays = res.total_days;      
+      context.summaryTeachers = res.teachers;    
       renderTeachers();
     };
   };
@@ -91,32 +86,26 @@ const fetchSummary = async (start_date, stop_date) => {
 const setLoading = (loading) => {
   context.loading = loading;
   if (context.loading) {
-    $('#loading_indicator').removeClass('invisible');
+    $('#noti').removeClass('invisible');
+    $('#noti')[0].innerText = "Loading...";  
   } else {
-    $('#loading_indicator').addClass('invisible');
+    $('#noti').addClass('invisible');
   };
 };
 
 const setIncorrect = (incorrect) => {
   context.incorrect = incorrect;
   if (context.incorrect) {
-    $('#incorrect').removeClass('invisible');
+    $('#noti').removeClass('invisible');
+    $('#noti')[0].innerText = "Not found logs or incorrect date :(";  
   } else {
-    $('#incorrect').addClass('invisible');
+    $('#noti').addClass('invisible');
   }
 }
 
 
-// const convertTimeToSecond = (timeString) => {  
-//   const timeSplit = timeString.split(':'); 
-//   const seconds = (+timeSplit[0]) * 60 * 60 + (+timeSplit[1]) * 60 + (+timeSplit[2]); 
-//   context.seconds = seconds;
-// }
-
-
-// const convertSecondToTime = (tick) => {
-//   let hours = Math.floor(tick/3600);
-//   let mins = Math.floor(tick/60);
-//   let secs = tick % 60;
-//   context.time =  hours + ":"  + mins + ":" + secs;
+// const strToSec = (strTime) => { 
+//   let a = strTime.split(':');
+//   let seconds = (+a[0]) * 60 * 60 + (+a[1]) * 60 + (+a[2]); 
+//   context.strToSec = seconds;
 // }

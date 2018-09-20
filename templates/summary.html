@@ -8,23 +8,23 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
     <link href="https://fonts.googleapis.com/css?family=Exo+2" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.2.3/flatpickr.css">    
+    
   </head>
 <body class="container">
-    <div class="d-flex flex-column">
+    <div class="">
         <div>
             <label for="">Start date</label>
-            <input type="text" id="start_date" placeholder="Please select Date Time">
-            <div id="loading_indicator" class="invisible p-0">Loading...</div>
+            <input type="text" id="start_date" data-input>
         </div>
         <div>
             <label for="">Stop date</label>
-            <input type="text" id="stop_date" value="" data-input>
-            <div id="incorrect" class="invisible p-0 text-danger">Not found logs or incorrect date</div>
+            <input type="text" id="stop_date" data-input>
         </div>
+        <h6 id="noti" class="invisible p-0 text-danger"></h3>
     </div>
     <div>
         <h1>Instructors Stats</h1>
-        <table class="table-bordered">
+        <table class="table table-striped">
                 <thead>
                     <tr id="">
                         <th>Name</th>
@@ -41,7 +41,7 @@
 
     <div>
             <h1>Class Stats</h1>
-            <table class="table-bordered">
+            <table class="table table-striped">
                     <thead>
                         <tr id="">
                             <th>Name</th>
