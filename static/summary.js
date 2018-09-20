@@ -58,7 +58,7 @@ const renderTeachers = (() => {
       <tr id="${teacher._id}">
         <td>${teacher.lastName}</td>
         <td>${teacher.time}</td>
-        <td>${context.time}</td>
+        <td>${Math.round(context.time * 100) / 100}</td>
       </tr>
     `).appendTo($('#tbl_teacher_body'));
   })
