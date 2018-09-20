@@ -2,6 +2,7 @@ import time
 import datetime
 from services import lms
 
+
 def cal_teacher_time(data, num_day):
   if num_day == 0:
     num_day = 1
@@ -18,7 +19,8 @@ def cal_teacher_time(data, num_day):
           time_list.append(_time)
       total = sum(time_list)
       time_list = []
-      log[key] = str(datetime.timedelta(seconds=total))
+      avg_time = total / num_day
+      log[key] = [str(datetime.timedelta(seconds=total)), str(datetime.timedelta(seconds=avg_time))]
   return log
 
 
