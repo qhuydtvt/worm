@@ -1,6 +1,6 @@
 import time
 import datetime
-
+from services import lms
 
 def cal_teacher_time(data, num_day):
   if num_day == 0:
@@ -18,11 +18,17 @@ def cal_teacher_time(data, num_day):
           time_list.append(_time)
       total = sum(time_list)
       time_list = []
-      log[key] = str(datetime.timedelta(seconds=total / num_day))
+      log[key] = str(datetime.timedelta(seconds=total))
   return log
 
 
-def cal_classroom_time(data, num_day, num_member):
+def get_classroom_lms():
+  r = lms.classroom.get()
+  data = r.json()
+  return data
+
+
+def cal_classroom_time(data, num_day):
     if num_day == 0:
         num_day = 1
     log = {}
@@ -38,5 +44,8 @@ def cal_classroom_time(data, num_day, num_member):
             time_list.append(_time)
         total = sum(time_list)
         time_list = []
-        log[key] = str(datetime.timedelta(seconds=total / (num_day / num_member)))
+        classroom_info = get_classroom_lms()
+        for classroom in classroom_info['data']:
+            if classroom["_id"] == key:
+                log[key] = str(datetime.timedelta(seconds=total / (num_day / len(classroom['members']) )))
     return log

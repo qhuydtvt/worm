@@ -16,11 +16,6 @@ def classroom_lms(request):
   data = r.json()
   return JsonResponse(data)
 
-def get_classroom_lms():
-  r = lms.classroom.get()
-  data = r.json()
-  return data
-
 
 def get_user_lms():
   r = lms.users.get()
@@ -107,14 +102,14 @@ def api_grade_log(request):
       teacher_info = get_user_lms()
       #classrooms
       classroom_log = get_classroom_log(grade_log)
-      classroom_info = get_classroom_lms()
-      classroom_time = controller.cal_classroom_time(classroom_log, day.days, 15)
+      classroom_time = controller.cal_classroom_time(classroom_log, day.days)
 
       for index, user in enumerate(teacher_info):
         if user["_id"] in teacher_time:
           teacher_info[index]["time"] = teacher_time[user["_id"]]
         else:
           teacher_info[index]["time"] = None
+
       return JsonResponse({"total_days" : day.days,
                            "teachers": teacher_info,
                            "classrooms": classroom_time,
