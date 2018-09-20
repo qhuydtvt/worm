@@ -121,7 +121,6 @@ def api_grade_log(request):
       
       for index, classroom in enumerate(class_info):
         class_info[index].pop('teachers', None)
-        class_info[index].pop('members', None)
         class_info[index].pop('playlists', None)
         if classroom["_id"] in classroom_time:
           class_info[index]["time"] = classroom_time[classroom["_id"]]

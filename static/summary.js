@@ -1,8 +1,9 @@
 const context = {
   summaryTeachers: null,
+  summaryClassrooms: null,
   loading: false,
   incorrect: false,
-  // strToSec: 0,
+  totalDays: 0
 }
 
 $(document).ready(() => {
@@ -41,9 +42,10 @@ const renderTeachers = (() => {
   $('#tbl_teacher_body').empty();
   teachers = context.summaryTeachers;
   totalSec = 0;
+  totalSecPerDay = 0;
   teachers.forEach((teacher) => {
     if (teacher.time === null) {
-      teacher.time = [0,0];
+      teacher.time = ["0:00:00","0:00:00"];
     }
     const tr = 
     $(`
@@ -53,15 +55,58 @@ const renderTeachers = (() => {
         <td>${teacher.time[1]}</td>
       </tr>
     `).appendTo($('#tbl_teacher_body'));
+    secondsTotal = strToSec(teacher.time[0]);
+    secondsTotalPerDay = strToSec(teacher.time[1]);
+    totalSec += secondsTotal;
+    totalSecPerDay += secondsTotalPerDay;
   })
-  
+  avgTotalSecond = (totalSec / teachers.length);
+  avgTotalSecondPerDay = (totalSecPerDay / teachers.length)
+  strAvgTotalSecond = new Date(avgTotalSecond * 1000).toISOString().substr(11, 8);
+  strAvgTotalSecondPerDay = new Date(avgTotalSecondPerDay * 1000).toISOString().substr(11, 8);
   const trAvg = $(`
-      <tr>
+      <tr class="text-danger">
         <td>Average Time</td>
-        <td></td>
+        <td>${strAvgTotalSecond}</td>
+        <td>${strAvgTotalSecondPerDay}</td>
       </tr>
-    `)
-  
+    `).appendTo($('#tbl_teacher_body'));
+})
+
+
+const renderClassrooms = (() => {
+  $('#tbl_classroom_body').empty();
+  classrooms = context.summaryClassrooms;
+  totalSec = 0;
+  totalSecPerDay = 0;
+  classrooms.forEach((classroom) => {
+    if (classroom.time === null) {
+      classroom.time = ["0:00:00","0:00:00"];
+    }
+    const tr = 
+    $(`
+      <tr id="${classroom._id}">
+        <td>${classroom.course + " " + classroom.classroom}</td>
+        <td>${classroom.time[0]}</td>
+        <td>${classroom.time[1]}</td>
+      </tr>
+    `).appendTo($('#tbl_classroom_body'));
+    secondsTotal = strToSec(classroom.time[0]);
+    secondsTotalPerDay = strToSec(classroom.time[1]);
+    totalSec += secondsTotal;
+    totalSecPerDay += secondsTotalPerDay;
+  })
+  avgTotalSecond = (totalSec / classrooms.length);
+  avgTotalSecondPerDay = (totalSecPerDay / classrooms.length)
+  strAvgTotalSecond = new Date(avgTotalSecond * 1000).toISOString().substr(11, 8);
+  strAvgTotalSecondPerDay = new Date(avgTotalSecondPerDay * 1000).toISOString().substr(11, 8);
+  const trAvg = $(`
+      <tr class="text-danger">
+        <td>Average Time</td>
+        <td>${strAvgTotalSecond}</td>
+        <td>${strAvgTotalSecondPerDay}</td>
+      </tr>
+    `).appendTo($('#tbl_classroom_body'))
 })
 
 
@@ -76,9 +121,12 @@ const fetchSummary = async (start_date, stop_date) => {
     setIncorrect(true);
   } else {
     setIncorrect(false);
-    if (res && res.teachers) {
-      context.summaryTeachers = res.teachers;    
+    if (res && res.teachers && res.classrooms && res.total_days) {
+      context.summaryTeachers = res.teachers;
+      context.summaryClassrooms = res.classrooms;
+      context.totalDays = res.total_days;
       renderTeachers();
+      renderClassrooms();
     };
   };
 };
@@ -104,8 +152,8 @@ const setIncorrect = (incorrect) => {
 }
 
 
-// const strToSec = (strTime) => { 
-//   let a = strTime.split(':');
-//   let seconds = (+a[0]) * 60 * 60 + (+a[1]) * 60 + (+a[2]); 
-//   context.strToSec = seconds;
-// }
+const strToSec = (strTime) => {
+  let a = strTime.split(':');
+  let seconds = (+a[0]) * 60 * 60 + (+a[1]) * 60 + (+a[2]); 
+  return seconds;
+}
