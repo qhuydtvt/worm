@@ -36,7 +36,6 @@ def summary(request):
     return render(request, "summary.html")
 
 
-
 @csrf_exempt
 def api_grade(request):
   if request.user.is_authenticated:
@@ -79,7 +78,6 @@ def api_grade_post(request, classroom_id):
     grade.grades = [float(point) for point in member['grades']]
     grade.save()
 
-  grade_log = grades_json['teachers']
   new_grade_log = GradeLog(teacher_id=request.session['teacher_id'],
                            classroom_id=classroom_id,
                            grade_time=grades_json['time'])
@@ -96,17 +94,17 @@ def api_grade_log(request):
   time_plus = stop_time + datetime.timedelta(days=1)
 
   if request.user.is_authenticated:
-    grade_log = GradeLog.objects.filter(grade_day__range=[start_time, time_plus])  #test in one perious of time
+    grade_log = GradeLog.objects.filter(grade_day__range=[start_time, time_plus])
     if len(grade_log) > 0:
       log = get_teacher_log(grade_log)
-      user_info = get_user_lms()
       time = controller.cal_teacher_time(log, day.days)
-      for index, user in enumerate(user_info):
+      teacher_info = get_user_lms()
+      for index, user in enumerate(teacher_info):
         if user["_id"] in time:
-          user_info[index]["time"] = time[user["_id"]]
+          teacher_info[index]["time"] = time[user["_id"]]
         else:
-          user_info[index]["time"] = None
-      return JsonResponse({"data": user_info})
+          teacher_info[index]["time"] = None
+      return JsonResponse({"data": teacher_info})
     else:
       return JsonResponse({"success": 0, "message": 'Could not find logs', })
 
