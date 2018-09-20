@@ -3,7 +3,8 @@ const context = {
   loading: false,
   incorrect: false,
   totalDays: 0,
-  seconds: 0
+  seconds: 0,
+  time: null,
 }
 
 $(document).ready(() => {
@@ -49,13 +50,15 @@ const renderTeachers = (() => {
     } else {
       convertTimeToSecond(teacher.time);
       avgHour = context.seconds / context.totalDays;
+      convertSecondToTime(avgHour);
     }
     const tr = 
     $(`
       <tr id="${teacher._id}">
         <td>${teacher.lastName}</td>
         <td>${teacher.time}</td>
-        <td>${Math.round(avgHour * 100) / 100}</td>
+        <td>${context.time}</td>
+        
       </tr>
     `).appendTo($('#tbl_teacher_body'));
   })
@@ -105,4 +108,12 @@ const convertTimeToSecond = (timeString) => {
   const timeSplit = timeString.split(':'); 
   const seconds = (+timeSplit[0]) * 60 * 60 + (+timeSplit[1]) * 60 + (+timeSplit[2]); 
   context.seconds = seconds;
+}
+
+
+const convertSecondToTime = (tick) => {
+  let hours = Math.floor(tick/3600);
+  let mins = Math.floor(tick/60);
+  let secs = tick % 60;
+  context.time = (hours < 10 ? "0" : "")+ hours + ":" + (mins < 10 ? "0" : "" ) + mins + ":" + (secs < 10 ? "0" : "" ) + secs;
 }
