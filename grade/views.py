@@ -114,10 +114,12 @@ def api_grade_log(request):
       for index, user in enumerate(teacher_info):
         if user["_id"] in teacher_time:
           teacher_info[index]["time"] = teacher_time[user["_id"]]
+
         else:
           teacher_info[index]["time"] = None
 
-      return JsonResponse({"total_days" : day.days,
+
+      return JsonResponse({"total_days": day.days,
                            "teachers": teacher_info,
                            "classrooms": classroom_time,
                           })
