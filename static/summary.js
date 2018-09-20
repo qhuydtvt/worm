@@ -1,12 +1,14 @@
 const context = {
   summary: null,
   loading: false,
-  incorrect: false
+  incorrect: false,
+  classroom: []
 }
 
 $(document).ready(() => {
   initDate();
   selectDate();
+  // fetchTeacher();
 });
 
 const initDate = (() => {
@@ -34,6 +36,28 @@ const selectDate = (() => {
   });
   
 });
+
+
+// const fetchTeacher = async () => {
+//   setLoading(true);
+//   const res = await $.ajax({
+//     url: `/api/classroom`,
+//     type: "GET"
+//   });
+  
+//   if (res && res.data) {
+//     res.data.forEach((classroom) => {
+//       console.log(classroom.teachers);
+//     })
+//   }
+//   setLoading(false);
+// }
+
+
+const renderTeachers = (() => {
+  $('#tbl_teacher_body').empty();
+  
+})
 
 
 const fetchSummary = async (start_date, stop_date) => {
