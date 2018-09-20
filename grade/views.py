@@ -110,6 +110,7 @@ def api_grade_log(request):
       #classrooms
       classroom_log = get_classroom_log(grade_log)
       classroom_time = controller.cal_classroom_time(classroom_log, day.days)
+      class_info = controller.classroom_info["data"]
 
       for index, user in enumerate(teacher_info):
         if user["_id"] in teacher_time:
@@ -117,11 +118,20 @@ def api_grade_log(request):
 
         else:
           teacher_info[index]["time"] = None
-
+      
+      for index, classroom in enumerate(class_info):
+        class_info[index].pop('teachers', None)
+        class_info[index].pop('members', None)
+        class_info[index].pop('playlists', None)
+        if classroom["_id"] in classroom_time:
+          class_info[index]["time"] = classroom_time[classroom["_id"]]
+          
+        else:
+          class_info[index]["time"] = None
 
       return JsonResponse({"total_days": day.days,
                            "teachers": teacher_info,
-                           "classrooms": classroom_time,
+                           "classrooms": class_info,
                           })
     else:
       return JsonResponse({"success": 0, "message": 'Could not find logs', })

@@ -30,6 +30,9 @@ def get_classroom_lms():
   return data
 
 
+classroom_info = get_classroom_lms()
+
+
 def cal_classroom_time(data, num_day):
     if num_day == 0:
         num_day = 1
@@ -46,8 +49,10 @@ def cal_classroom_time(data, num_day):
             time_list.append(_time)
         total = sum(time_list)
         time_list = []
-        classroom_info = get_classroom_lms()
         for classroom in classroom_info['data']:
             if classroom["_id"] == key:
-                log[key] = str(datetime.timedelta(seconds=total / (num_day / len(classroom['members']) )))
+                avg_time = total / (num_day / len(classroom["members"]))
+                print(total)
+                print(avg_time)
+                log[key] = [str(datetime.timedelta(seconds=total)), str(datetime.timedelta(seconds=avg_time))]
     return log
