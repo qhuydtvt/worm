@@ -16,6 +16,11 @@ def classroom_lms(request):
   data = r.json()
   return JsonResponse(data)
 
+def get_classroom_lms():
+  r = lms.classroom.get()
+  data = r.json()
+  return data
+
 
 def get_classroom_lms():
   r = lms.classroom.get()
@@ -117,7 +122,8 @@ def api_grade_log(request):
           teacher_info[index]["time"] = teacher_time[user["_id"]]
         else:
           teacher_info[index]["time"] = None
-      return JsonResponse({"teachers": teacher_info,
+      return JsonResponse({"total_days" : day.days,
+                           "teachers": teacher_info,
                            "classrooms": classroom_time,
                           })
     else:
