@@ -14,6 +14,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='teacher',
             name='grade_day',
-            field=models.DateTimeField(default=django.utils.timezone.localdate),
+            field=models.DateTimeField(),
         ),
     ]

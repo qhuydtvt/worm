@@ -17,6 +17,13 @@ def classroom_lms(request):
   return JsonResponse(data)
 
 
+def get_classroom_lms():
+  r = lms.classroom.get()
+  data = r.json()
+  return data
+
+
+
 def get_user_lms():
   r = lms.users.get()
   data = r.json()
@@ -115,7 +122,6 @@ def api_grade_log(request):
       
       for index, classroom in enumerate(class_info):
         class_info[index].pop('teachers', None)
-        class_info[index].pop('members', None)
         class_info[index].pop('playlists', None)
         if classroom["_id"] in classroom_time:
           class_info[index]["time"] = classroom_time[classroom["_id"]]
