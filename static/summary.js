@@ -45,8 +45,9 @@ const renderTeachers = (() => {
   teachers = context.summaryTeachers;
   teachers.forEach((teacher) => {
     if (teacher.time === null) {
-      teacher.time = 0;
+      teacher.time = "0";
       avgHour = 0;
+      context.time = "0";
     } else {
       convertTimeToSecond(teacher.time);
       avgHour = context.seconds / context.totalDays;
@@ -58,7 +59,6 @@ const renderTeachers = (() => {
         <td>${teacher.lastName}</td>
         <td>${teacher.time}</td>
         <td>${context.time}</td>
-        
       </tr>
     `).appendTo($('#tbl_teacher_body'));
   })
@@ -115,5 +115,5 @@ const convertSecondToTime = (tick) => {
   let hours = Math.floor(tick/3600);
   let mins = Math.floor(tick/60);
   let secs = tick % 60;
-  context.time = (hours < 10 ? "0" : "")+ hours + ":" + (mins < 10 ? "0" : "" ) + mins + ":" + (secs < 10 ? "0" : "" ) + secs;
+  context.time =  hours + ":"  + mins + ":" + secs;
 }
