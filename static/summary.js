@@ -3,6 +3,7 @@ const context = {
   loading: false,
   incorrect: false,
   totalDays: 0,
+  seconds: 0
 }
 
 $(document).ready(() => {
@@ -42,14 +43,21 @@ const renderTeachers = (() => {
   $('#tbl_teacher_body').empty();
   teachers = context.summaryTeachers;
   teachers.forEach((teacher) => {
+    if (teacher.time === null) {
+      teacher.time = 0;
+      avgHour = 0;
+    } else {
+      convertTimeToSecond(teacher.time);
+      avgHour = context.seconds / context.totalDays;
+    }
     const tr = 
     $(`
       <tr id="${teacher._id}">
         <td>${teacher.lastName}</td>
         <td>${teacher.time}</td>
-
+        <td>${Math.round(avgHour * 100) / 100}</td>
       </tr>
-    `)
+    `).appendTo($('#tbl_teacher_body'));
   })
   
 })
@@ -66,10 +74,9 @@ const fetchSummary = async (start_date, stop_date) => {
     setIncorrect(true);
   } else {
     setIncorrect(false);
-    if (res) {
+    if (res && res.teachers && res.total_days) {
       context.summaryTeachers = res.teachers;
-      context.totalDays = res.total
-      console.log(context.summaryTeachers);
+      context.totalDays = res.total_days;      
       renderTeachers();
     };
   };
@@ -91,4 +98,11 @@ const setIncorrect = (incorrect) => {
   } else {
     $('#incorrect').addClass('invisible');
   }
+}
+
+
+const convertTimeToSecond = (timeString) => {  
+  const timeSplit = timeString.split(':'); 
+  const seconds = (+timeSplit[0]) * 60 * 60 + (+timeSplit[1]) * 60 + (+timeSplit[2]); 
+  context.seconds = seconds;
 }
