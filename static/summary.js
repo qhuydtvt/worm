@@ -44,6 +44,9 @@ const renderTeachers = (() => {
   $('#tbl_teacher_body').empty();
   teachers = context.summaryTeachers;
   teachers.forEach((teacher) => {
+    if (teacher.time === null) {
+      teacher.time = [0,0];
+    }
     // if (teacher.time === null) {
     //   teacher.time = "0";
     //   avgHour = 0;
