@@ -38,6 +38,5 @@ def cal_classroom_time(data, num_day, num_member):
             time_list.append(_time)
         total = sum(time_list)
         time_list = []
-        log[key] = str(datetime.timedelta(seconds=total / num_member))
+        log[key] = str(datetime.timedelta(seconds=total / (num_day / num_member)))
     return log
-
