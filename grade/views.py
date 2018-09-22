@@ -39,6 +39,7 @@ def grade(request):
     return render(request, "grade.html")
 
 
+@login_required
 def summary(request):
     return render(request, "summary.html")
 
