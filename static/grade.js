@@ -24,6 +24,7 @@ $(document).ready(() => {
   initGradeCellSelection(); // Config grade cell => when users select grade
   initGradeProcess(); // Config grading: CLick start => Edit grade => Submit
   fetchClassrooms(); // Load classrooms 
+  initSelectOptions();
 });
 
 const stopWatch = (timeVal) => {
@@ -100,9 +101,19 @@ const initClassroomSelection = () => {
 const handleGradeInput = (event) => {
   const tdId = context.selectedGrade.tdId;
   const inputVal = $('#input_grade').val();
-  context.selectedGrade.value = inputVal;
-  tdValue = context.selectedGrade.value;
-  $(tdId).prevObject[0].all[tdId].innerText = parseFloat(tdValue);
+  if (inputVal === ""){
+    $(tdId).prevObject[0].all[tdId].innerText = "-";    
+  } else {
+    if (inputVal < 0) {
+      context.selectedGrade.value = 0;
+    } else if (inputVal > 10) {
+      context.selectedGrade.value = 10;
+    } else {
+      context.selectedGrade.value = inputVal;  
+    }
+    tdValue = context.selectedGrade.value;
+    $(tdId).prevObject[0].all[tdId].innerText = parseFloat(tdValue);
+  }
   tdIndex = parseInt(tdId.split("_")[1]);
   context.selectedClassroom.time = context.time.hours + ":" + context.time.minutes + ":" + context.time.seconds;
   
@@ -133,7 +144,8 @@ const initGradeCellSelection = () => {
     const text = $(event.target).text();
     const grade = text.trim() === "-" ? 0 : parseFloat(text);
     $('#input_grade').val(grade);
-    
+    $('#input_grade').focus();
+    $('#input_grade').select();
     // console.log(event);
     
     editGrade(event.target.attributes[2].nodeValue, event.target.id, $('#input_grade').val());
@@ -279,9 +291,26 @@ const submit = async (classroom_id, gradeJSON) => {
   }
   setLoading(false);
   if (context.success === 1) {
-    alert("Updated Success!");
+  
+    
+    $.alert({
+      title: "SUCCESS",
+      content: "Updated Success!"
+    });
   } else {
-    alert("Session expired, please login again!");
-    $('#log_out').click();
+    $.alert({
+      title: "FAILED",
+      content: "Session expired, please login again!",
+      buttons: {
+        OK: () => {
+          $('#log_out').click();
+        }
+      }
+    });
   };
+}
+
+
+const initSelectOptions = () => {
+  $('#slt_classrooms').dropdown();
 }
