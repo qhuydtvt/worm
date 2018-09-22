@@ -198,7 +198,7 @@ const renderGrades = () => {
   $('#tbl_grade_row_sessions').empty();
   $('#tbl_grade_body').empty();
   $(`
-      <th class="table-info">Name</th>
+      <th class="table-dark">Name</th>
     `).appendTo('#tbl_grade_row_sessions');
 
   if (!context.selectedClassroom) return;
@@ -208,7 +208,7 @@ const renderGrades = () => {
   
   for(var session = 1; session <= sessionMax; session++) {
     $(`
-      <th class="table-info">${session}</th>
+      <th class="table-dark">${session}</th>
     `).appendTo('#tbl_grade_row_sessions');
   }
 
@@ -289,4 +289,5 @@ const submit = async (classroom_id, gradeJSON) => {
     contentType: "application/json",
   });
   setLoading(false);
+  
 }
