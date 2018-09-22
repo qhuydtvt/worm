@@ -259,13 +259,6 @@ const renderControlPanel = () => {
     $('#input_grade').attr('disabled', true);
     $('#input_grade').val('');
   }
-
-  // if (context.gradeDisabled) {
-  //   $('#btn_grade').attr('disabled', true);
-  // }
-  // else {
-  //   $('#btn_grade').attr('disabled', false);
-  // }
 }
 
 const setLoading = (loading) => {
