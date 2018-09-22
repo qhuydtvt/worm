@@ -23,7 +23,6 @@ def get_classroom_lms():
   return data
 
 
-
 def get_user_lms():
   r = lms.users.get()
   data = r.json()
@@ -86,11 +85,14 @@ def api_grade_post(request, classroom_id):
     grade.grades = [float(point) for point in member['grades']]
     grade.save()
 
-  new_grade_log = GradeLog(teacher_id=request.session['teacher_id'],
-                           classroom_id=classroom_id,
-                           grade_time=grades_json['time'])
-  new_grade_log.save()
-  return JsonResponse({"success": 1, "message": "data saved"})
+  try:
+    new_grade_log = GradeLog(teacher_id=request.session['teacher_id'],
+                             classroom_id=classroom_id,
+                             grade_time=grades_json['time'])
+    new_grade_log.save()
+    return JsonResponse({"success": 1, "message": "data saved"})
+  except BaseException:
+    return JsonResponse({"success": 0, "message": "session expired"})
 
 
 def api_grade_log(request):

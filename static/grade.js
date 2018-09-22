@@ -14,7 +14,8 @@ const context = {
     minutes: 0,
     hours: 0,
   },
-  selectedMemberID: ""
+  selectedMemberID: "",
+  success: null,
 };
 
 $(document).ready(() => {
@@ -71,8 +72,6 @@ const initGradeProcess = () => {
       context.timeRunning = false;
       context.selectedClassroom.time = context.time.hours + ":" + context.time.minutes + ":" + context.time.seconds;
       submit(context.selectedClassroom._id, JSON.stringify(context.selectedClassroom));
-      // console.log(context.selectedClassroom);
-      
     }
     else {
       context.submittable = true;
@@ -80,13 +79,7 @@ const initGradeProcess = () => {
     }
     stopWatch($('#time'));
     renderControlPanel();
-    
   });
-
-  // $('#input_grade').keydown(() => {
-  //   const val = parseFloat($('#input_grade').val());
-  //   $('#input_grade').val(val);
-  // });
 }
 
 const initClassroomSelection = () => {
@@ -274,13 +267,21 @@ const setLoading = (loading) => {
 
 const submit = async (classroom_id, gradeJSON) => {
   setLoading(true);
-  await $.ajax({
+  const res = await $.ajax({
     url: `api/grades?classroom_id=${classroom_id}`,
     type: "POST",
     data: gradeJSON,
     dataType: "json",
     contentType: "application/json",
   });
+  if (res && res.success) {
+    context.success = res.success;
+  }
   setLoading(false);
-  
+  if (context.success === 1) {
+    alert("Updated Success!");
+  } else {
+    alert("Session expired, please login again!");
+    $('#log_out').click();
+  };
 }
