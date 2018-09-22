@@ -6,23 +6,14 @@
     {% load static %}
     <link rel="stylesheet" type="text/css" media="screen" href="{% static 'grade.css' %}" />
     <link rel="shortcut icon" type="image/ico" href="{% static 'fav.ico' %}"/>
-	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
-    <script type="text/javascript" src="{% static 'grade.js' %}"></script>  
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
+    <script type="text/javascript" src="{% static 'grade.js' %}"></script>
+      
  </head>
-<body>
-  
-    <div class="text-right mt-3 mr-3">
-        <a href='login/logout'>
-            <button type="button" class="btn btn-secondary btn-sm">
-                Logout
-            </button>
-        </a>
-    </div>
-
-    <div class="container ">
-        <div id="loading_indicator" class="invisible mb-1">Loading...</div>
-        <div id="control_panel" class="mb-2">
-            <select class="dropdown-toggle" id="slt_classrooms">
+<body class="mt-5">
+     <div class="container ">
+        <div id="control_panel" class="d-flex">
+            <select class="dropdown-toggle" id="slt_classrooms" data-dropdown="#dropdown-standard">
                 <option>Loading...</option>
             </select>
 
@@ -33,15 +24,33 @@
             <span id="time" class="ml-3">
                 00:00:00
             </span>
+            <div class="ml-auto d-flex">
+                <div class="mr-3">
+                    <a href='/summary'>
+                        <button type="button" class="btn btn-secondary">
+                            Summary
+                        </button>
+                    </a>
+                </div>
+                <div class="">
+                    <a href='login/logout'>
+                        <button type="button" class="btn btn-secondary">
+                            Logout
+                        </button>
+                    </a>
+                </div>
+            </div>
         </div>
+        <div id="loading_indicator" class="invisible mb-1">Loading...</div>
+
 
         <span id="form"></span>
         <span id="time"></span>
 
-        <table class="table-bordered table-striped" id="tbl_grade">
+        <table class="table-bordered table-striped mt-1" id="tbl_grade">
             <thead>
                 <tr id="tbl_grade_row_sessions">
-                    <th class="table-info">Name</th>
+                    <th class="table-dark">Name</th>
                 </tr>
             </thead>
 
@@ -55,6 +64,6 @@
     <div  class="text-center" id="btn-big">
         
     </div>
-  
+
 </body>
 </html>

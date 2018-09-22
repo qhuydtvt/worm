@@ -65,7 +65,7 @@ const renderTeachers = (() => {
   strAvgTotalSecond = new Date(avgTotalSecond * 1000).toISOString().substr(11, 8);
   strAvgTotalSecondPerDay = new Date(avgTotalSecondPerDay * 1000).toISOString().substr(11, 8);
   const trAvg = $(`
-      <tr class="text-danger">
+      <tr class="font-weight-bold">
         <td>Average Time</td>
         <td>${strAvgTotalSecond}</td>
         <td>${strAvgTotalSecondPerDay}</td>
@@ -101,7 +101,7 @@ const renderClassrooms = (() => {
   strAvgTotalSecond = new Date(avgTotalSecond * 1000).toISOString().substr(11, 8);
   strAvgTotalSecondPerDay = new Date(avgTotalSecondPerDay * 1000).toISOString().substr(11, 8);
   const trAvg = $(`
-      <tr class="text-danger">
+      <tr class="font-weight-bold">
         <td>Average Time</td>
         <td>${strAvgTotalSecond}</td>
         <td>${strAvgTotalSecondPerDay}</td>
@@ -135,6 +135,7 @@ const setLoading = (loading) => {
   context.loading = loading;
   if (context.loading) {
     $('#noti').removeClass('invisible');
+    $('#noti').removeClass('text-danger');
     $('#noti')[0].innerText = "Loading...";  
   } else {
     $('#noti').addClass('invisible');
@@ -145,9 +146,11 @@ const setIncorrect = (incorrect) => {
   context.incorrect = incorrect;
   if (context.incorrect) {
     $('#noti').removeClass('invisible');
+    $('#noti').addClass('text-danger');
     $('#noti')[0].innerText = "Not found logs or incorrect date :(";  
   } else {
     $('#noti').addClass('invisible');
+    $('#noti').removeClass('text-danger');
   }
 }
 

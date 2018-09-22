@@ -58,3 +58,8 @@
 .grade.changable.highlight {
   background-color: rgb(145, 145, 255);
 }
+
+#slt_classrooms,
+#input_grade {
+  border-radius: 5px;
+}
