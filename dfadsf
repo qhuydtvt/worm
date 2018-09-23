@@ -1,0 +1,229 @@
+[33mf508cc7[m[33m ([m[1;36mHEAD -> [m[1;32mdev[m[33m)[m HEAD@{0}: reset: moving to HEAD
+[33mf508cc7[m[33m ([m[1;36mHEAD -> [m[1;32mdev[m[33m)[m HEAD@{1}: commit: use temp tag
+[33mfc84487[m[33m ([m[1;32mgrade[m[33m)[m HEAD@{2}: checkout: moving from dev to dev
+[33mfc84487[m[33m ([m[1;32mgrade[m[33m)[m HEAD@{3}: merge grade: Fast-forward
+[33mbed3cd5[m HEAD@{4}: checkout: moving from grade to dev
+[33mfc84487[m[33m ([m[1;32mgrade[m[33m)[m HEAD@{5}: commit: handle exception
+[33mfaf5125[m HEAD@{6}: pull origin dev: Merge made by the 'recursive' strategy.
+[33m60de221[m HEAD@{7}: commit: handle exception
+[33mbed3cd5[m HEAD@{8}: checkout: moving from dev to grade
+[33mbed3cd5[m HEAD@{9}: merge grade: Fast-forward
+[33m95cf21b[m HEAD@{10}: checkout: moving from grade to dev
+[33mbed3cd5[m HEAD@{11}: commit: edit timezone
+[33m3b112cc[m HEAD@{12}: pull origin dev: Merge made by the 'recursive' strategy.
+[33m4c047cd[m HEAD@{13}: commit: edit session
+[33macf8748[m[33m ([m[1;31morigin/grade[m[33m)[m HEAD@{14}: commit: .
+[33mb69a5d6[m HEAD@{15}: commit: .
+[33mc04ce55[m HEAD@{16}: commit: cal time
+[33m73fceb9[m HEAD@{17}: commit: add total days
+[33m41419e1[m HEAD@{18}: commit: .
+[33m247f0df[m HEAD@{19}: commit: dummy data
+[33mac3fadb[m HEAD@{20}: commit: refactor api
+[33mf869726[m HEAD@{21}: commit: refactor api
+[33m39d5289[m HEAD@{22}: commit: cal techer time
+[33m3756c22[m HEAD@{23}: commit: .
+[33m1535c85[m HEAD@{24}: commit: refactor api
+[33ma85171e[m HEAD@{25}: commit: handle user's err
+[33m3d278fc[m HEAD@{26}: merge homepage: Merge made by the 'recursive' strategy.
+[33mc9d4357[m HEAD@{27}: checkout: moving from homepage to grade
+[33m61eea7f[m[33m ([m[1;32mhomepage[m[33m)[m HEAD@{28}: commit: .
+[33mfcc0723[m[33m ([m[1;31morigin/homepage[m[33m)[m HEAD@{29}: pull origin homepage: Fast-forward
+[33m7f01fff[m HEAD@{30}: checkout: moving from grade to homepage
+[33mc9d4357[m HEAD@{31}: commit: handle except
+[33mb97d093[m HEAD@{32}: commit: api for logs
+[33m95cf21b[m HEAD@{33}: merge dev: Fast-forward
+[33mf8ab666[m HEAD@{34}: checkout: moving from dev to grade
+[33m95cf21b[m HEAD@{35}: commit: filter log between two 2 days
+[33mf9d8b2e[m HEAD@{36}: commit: fix time, login
+[33ma788ddf[m HEAD@{37}: commit: fix login
+[33m0aaf0de[m HEAD@{38}: commit: fix fe
+[33mc0c82a5[m HEAD@{39}: commit: fix quan'sbug
+[33m7f01fff[m HEAD@{40}: merge homepage: Fast-forward
+[33meeb05d3[m HEAD@{41}: checkout: moving from homepage to dev
+[33m7f01fff[m HEAD@{42}: commit: done
+[33md4773f1[m HEAD@{43}: pull origin homepage: Fast-forward
+[33m073d48d[m HEAD@{44}: checkout: moving from grade to homepage
+[33mf8ab666[m HEAD@{45}: commit: update time field in api
+[33m1dc6bcb[m HEAD@{46}: commit: creat api for save and show time
+[33mf26fb35[m HEAD@{47}: pull origin grade: Merge made by the 'recursive' strategy.
+[33m1435860[m HEAD@{48}: commit: use django auth system
+[33meeb05d3[m HEAD@{49}: merge dev: Fast-forward
+[33m80b7460[m HEAD@{50}: checkout: moving from dev to grade
+[33meeb05d3[m HEAD@{51}: commit: post grade api
+[33m80b7460[m HEAD@{52}: merge grade: Fast-forward
+[33m760c6d0[m[33m ([m[1;31morigin/grade_fe[m[33m)[m HEAD@{53}: checkout: moving from grade to dev
+[33m80b7460[m HEAD@{54}: pull origin grade: Merge made by the 'recursive' strategy.
+[33m1208d6e[m HEAD@{55}: commit: .
+[33me5cea41[m HEAD@{56}: commit: .
+[33m77d4028[m HEAD@{57}: pull origin grade: Merge made by the 'recursive' strategy.
+[33mfa9b6ff[m HEAD@{58}: commit: handle empty db
+[33mfbc7175[m[33m ([m[1;32mgrade_fe[m[33m)[m HEAD@{59}: merge grade_fe: Fast-forward
+[33m760c6d0[m[33m ([m[1;31morigin/grade_fe[m[33m)[m HEAD@{60}: checkout: moving from grade_fe to grade
+[33mfbc7175[m[33m ([m[1;32mgrade_fe[m[33m)[m HEAD@{61}: commit: .
+[33m760c6d0[m[33m ([m[1;31morigin/grade_fe[m[33m)[m HEAD@{62}: merge dev: Fast-forward
+[33m488c78e[m HEAD@{63}: checkout: moving from dev to grade_fe
+[33m760c6d0[m[33m ([m[1;31morigin/grade_fe[m[33m)[m HEAD@{64}: commit: apply transaction
+[33m72d3555[m HEAD@{65}: commit: fix ux
+[33mc5ba0c1[m[33m ([m[1;32mupdate-data[m[33m)[m HEAD@{66}: merge update-data: Fast-forward
+[33mdc75bec[m HEAD@{67}: checkout: moving from update-data to dev
+[33mc5ba0c1[m[33m ([m[1;32mupdate-data[m[33m)[m HEAD@{68}: commit: fix ux
+[33mdc75bec[m HEAD@{69}: checkout: moving from dev to update-data
+[33mdc75bec[m HEAD@{70}: merge update-data: Fast-forward
+[33m39919d1[m HEAD@{71}: checkout: moving from update-data to dev
+[33mdc75bec[m HEAD@{72}: commit: change timezone
+[33m39919d1[m HEAD@{73}: Branch: renamed refs/heads/bump-data to refs/heads/update-data
+[33m39919d1[m HEAD@{75}: checkout: moving from dev to bump-data
+[33m39919d1[m HEAD@{76}: commit: int grade to float grade
+[33mc504a66[m HEAD@{77}: commit: int grade to float grade
+[33m8c6725f[m HEAD@{78}: commit: add teacher model to admin site
+[33m73794f1[m HEAD@{79}: pull origin dev: Merge made by the 'recursive' strategy.
+[33m38093cb[m HEAD@{80}: commit: change auth link
+[33m0d85c00[m HEAD@{81}: pull origin dev: Merge made by the 'recursive' strategy.
+[33m488c78e[m HEAD@{82}: merge grade_fe: Fast-forward
+[33m663a033[m HEAD@{83}: checkout: moving from grade_fe to dev
+[33m488c78e[m HEAD@{84}: commit: handle er
+[33m663a033[m HEAD@{85}: merge dev: Fast-forward
+[33mf10f538[m HEAD@{86}: checkout: moving from dev to grade_fe
+[33m663a033[m HEAD@{87}: commit: save time
+[33mca38efb[m HEAD@{88}: merge grade_fe: Merge made by the 'recursive' strategy.
+[33mfc42880[m HEAD@{89}: checkout: moving from grade_fe to dev
+[33mf10f538[m HEAD@{90}: commit: save time
+[33m04949aa[m HEAD@{91}: checkout: moving from dev to grade_fe
+[33mfc42880[m HEAD@{92}: pull origin dev: Merge made by the 'recursive' strategy.
+[33m69e37f4[m HEAD@{93}: commit: save time
+[33m04949aa[m HEAD@{94}: merge grade_fe: Fast-forward
+[33m10fe3ce[m HEAD@{95}: checkout: moving from grade_fe to dev
+[33m04949aa[m HEAD@{96}: pull origin grade_fe: Fast-forward
+[33mf8f8e5b[m HEAD@{97}: checkout: moving from homepage to grade_fe
+[33m073d48d[m HEAD@{98}: checkout: moving from grade_be to homepage
+[33m9518b64[m[33m ([m[1;32mgrade_be[m[33m)[m HEAD@{99}: checkout: moving from grade_be to grade_be
+[33m9518b64[m[33m ([m[1;32mgrade_be[m[33m)[m HEAD@{100}: checkout: moving from grade_fe to grade_be
+[33mf8f8e5b[m HEAD@{101}: commit: stop time
+[33ma79ddc8[m HEAD@{102}: checkout: moving from grade_be to grade_fe
+[33m9518b64[m[33m ([m[1;32mgrade_be[m[33m)[m HEAD@{103}: commit: .
+[33mf5224a6[m[33m ([m[1;31morigin/grade_be[m[33m)[m HEAD@{104}: pull origin grade_be: Fast-forward
+[33m073d48d[m HEAD@{105}: checkout: moving from grade_fe to grade_be
+[33ma79ddc8[m HEAD@{106}: commit: cal time
+[33me55798b[m HEAD@{107}: commit (merge): update grade to database
+[33m1546b90[m HEAD@{108}: commit: .
+[33mab0f691[m HEAD@{109}: commit: get data from client
+[33m2030353[m HEAD@{110}: commit: update grade (fe)
+[33m669e712[m HEAD@{111}: commit: update grade (fe)
+[33m10fe3ce[m HEAD@{112}: checkout: moving from dev to grade_fe
+[33m10fe3ce[m HEAD@{113}: merge grade_fe: Fast-forward
+[33m2f0b00a[m HEAD@{114}: checkout: moving from grade_fe to dev
+[33m10fe3ce[m HEAD@{115}: commit: .
+[33m073d48d[m HEAD@{116}: checkout: moving from grade_be to grade_fe
+[33m073d48d[m HEAD@{117}: checkout: moving from grade_fe to grade_be
+[33m073d48d[m HEAD@{118}: checkout: moving from homepage to grade_fe
+[33m073d48d[m HEAD@{119}: pull origin homepage: Fast-forward
+[33mef91230[m HEAD@{120}: commit: render last name + first name to table
+[33mf8b2f51[m HEAD@{121}: pull origin homepage: Merge made by the 'recursive' strategy.
+[33m2f0b00a[m HEAD@{122}: reset: moving to HEAD
+[33m2f0b00a[m HEAD@{123}: merge dev: Fast-forward
+[33mac31c33[m HEAD@{124}: checkout: moving from dev to homepage
+[33m2f0b00a[m HEAD@{125}: commit: .
+[33m19620b6[m HEAD@{126}: commit: .
+[33m025f3b3[m HEAD@{127}: commit: deploy
+[33mac31c33[m HEAD@{128}: checkout: moving from homepage to dev
+[33mac31c33[m HEAD@{129}: merge dev: Fast-forward
+[33m2f1df2f[m HEAD@{130}: checkout: moving from dev to homepage
+[33mac31c33[m HEAD@{131}: commit: edit requirements
+[33m2f1df2f[m HEAD@{132}: merge homepage: Fast-forward
+[33m0ec89b6[m HEAD@{133}: checkout: moving from homepage to dev
+[33m2f1df2f[m HEAD@{134}: commit: .
+[33mbacf681[m HEAD@{135}: commit: refactor main.js
+[33m31dcffa[m HEAD@{136}: commit: render to client side
+[33ma5c1d93[m[33m ([m[1;31morigin/config[m[33m)[m HEAD@{137}: pull origin homepage: Fast-forward
+[33m50dff26[m HEAD@{138}: commit: refactor api_grade
+[33m0ec89b6[m HEAD@{139}: checkout: moving from dev to homepage
+[33m0ec89b6[m HEAD@{140}: merge homepage: Fast-forward
+[33mf20c4c3[m HEAD@{141}: checkout: moving from homepage to dev
+[33m0ec89b6[m HEAD@{142}: commit: render to table
+[33m4679d84[m HEAD@{143}: commit: edit requirements.txt
+[33m0f225c8[m HEAD@{144}: commit: add req lib
+[33m02fd37a[m HEAD@{145}: commit: setup db
+[33m0de3737[m HEAD@{146}: commit: edit _id field
+[33m16b85a2[m HEAD@{147}: commit (merge): render point
+[33m86e444e[m HEAD@{148}: commit: render point
+[33md7d1f50[m HEAD@{149}: merge dev: Merge made by the 'recursive' strategy.
+[33mb3a0df5[m HEAD@{150}: checkout: moving from dev to homepage
+[33mf20c4c3[m HEAD@{151}: pull origin dev: Fast-forward
+[33mcccd216[m HEAD@{152}: checkout: moving from homepage to dev
+[33mb3a0df5[m HEAD@{153}: checkout: moving from db to homepage
+[33m4a2952c[m[33m ([m[1;31morigin/db[m[33m, [m[1;32mdb[m[33m)[m HEAD@{154}: reset: moving to HEAD
+[33m4a2952c[m[33m ([m[1;31morigin/db[m[33m, [m[1;32mdb[m[33m)[m HEAD@{155}: reset: moving to HEAD
+[33m4a2952c[m[33m ([m[1;31morigin/db[m[33m, [m[1;32mdb[m[33m)[m HEAD@{156}: checkout: moving from homepage to db
+[33mb3a0df5[m HEAD@{157}: commit: render dummy db
+[33m8036eb7[m HEAD@{158}: pull origin homepage: Fast-forward
+[33m743632e[m HEAD@{159}: commit: refactor main.js
+[33m89ad7bd[m HEAD@{160}: commit: remove grade-submit route
+[33mcccd216[m HEAD@{161}: checkout: moving from dev to homepage
+[33mcccd216[m HEAD@{162}: reset: moving to HEAD
+[33mcccd216[m HEAD@{163}: merge homepage: Fast-forward
+[33m7a840db[m HEAD@{164}: checkout: moving from homepage to dev
+[33mcccd216[m HEAD@{165}: commit: fix get classroom url
+[33m7a840db[m HEAD@{166}: checkout: moving from dev to homepage
+[33m7a840db[m HEAD@{167}: pull origin dev: Fast-forward
+[33md1d2448[m HEAD@{168}: checkout: moving from homepage to dev
+[33m7a840db[m HEAD@{169}: pull origin dev: Fast-forward
+[33m9262ac1[m HEAD@{170}: checkout: moving from huyen-ui to homepage
+[33m85cd9be[m[33m ([m[1;32mhuyen-ui[m[33m)[m HEAD@{171}: reset: moving to HEAD
+[33m85cd9be[m[33m ([m[1;32mhuyen-ui[m[33m)[m HEAD@{172}: checkout: moving from homepage to huyen-ui
+[33m9262ac1[m HEAD@{173}: checkout: moving from huyen-ui to homepage
+[33m85cd9be[m[33m ([m[1;32mhuyen-ui[m[33m)[m HEAD@{174}: checkout: moving from homepage to huyen-ui
+[33m9262ac1[m HEAD@{175}: reset: moving to HEAD
+[33m9262ac1[m HEAD@{176}: commit: connect to malb
+[33md1d2448[m HEAD@{177}: checkout: moving from dev to homepage
+[33md1d2448[m HEAD@{178}: merge homepage: Fast-forward
+[33m76466b0[m HEAD@{179}: checkout: moving from homepage to dev
+[33md1d2448[m HEAD@{180}: commit: change route name
+[33m76466b0[m HEAD@{181}: checkout: moving from dev to homepage
+[33m76466b0[m HEAD@{182}: commit: edit css
+[33mef953cc[m HEAD@{183}: commit: add whitenoise
+[33m2464c5f[m HEAD@{184}: commit: edit allowed host
+[33m18325b1[m HEAD@{185}: commit: install gunicorn
+[33m768c4f0[m HEAD@{186}: commit: edit setting for deployment
+[33m71f8f25[m HEAD@{187}: checkout: moving from login to dev
+[33mf2a207e[m[33m ([m[1;31morigin/login[m[33m, [m[1;32mlogin[m[33m)[m HEAD@{188}: commit: delete branch bug
+[33m71f8f25[m HEAD@{189}: merge dev: Fast-forward
+[33me6f5604[m HEAD@{190}: checkout: moving from dev to login
+[33m71f8f25[m HEAD@{191}: commit: add procfile
+[33me6f5604[m HEAD@{192}: merge login: Fast-forward
+[33mcf32af0[m HEAD@{193}: checkout: moving from login to dev
+[33me6f5604[m HEAD@{194}: commit: edit setting for deploy
+[33mcf32af0[m HEAD@{195}: checkout: moving from dev to login
+[33mcf32af0[m HEAD@{196}: merge login: Fast-forward
+[33m3c79a0d[m HEAD@{197}: checkout: moving from login to dev
+[33mcf32af0[m HEAD@{198}: commit: .
+[33m458ebd5[m HEAD@{199}: commit: clean warning
+[33m9c4ccff[m HEAD@{200}: commit: add tkrest lib
+[33mc1bb082[m HEAD@{201}: commit: fix redirect
+[33mb9260c9[m HEAD@{202}: commit: finish login page
+[33mdfb5df4[m HEAD@{203}: commit (merge): merge with bug
+[33mfc9e02b[m HEAD@{204}: checkout: moving from bug to login
+[33m3ba89dc[m HEAD@{205}: checkout: moving from login to bug
+[33mfc9e02b[m HEAD@{206}: commit: fix ui login
+[33m8f514cc[m HEAD@{207}: reset: moving to HEAD
+[33m8f514cc[m HEAD@{208}: commit: creat html for login page
+[33m0f05d4d[m HEAD@{209}: commit: creat html for login page
+[33m815e076[m HEAD@{210}: commit (merge): update flake8
+[33mc742c80[m HEAD@{211}: commit: update pylint, flake 8
+[33maeae71d[m HEAD@{212}: commit: .
+[33m3c79a0d[m HEAD@{213}: merge dev: Fast-forward
+[33m9b425dc[m HEAD@{214}: checkout: moving from dev to login
+[33m3c79a0d[m HEAD@{215}: commit: refactor folder dir
+[33m8001823[m HEAD@{216}: commit: merge with login
+[33m9b425dc[m HEAD@{217}: merge login: Fast-forward
+[33m05f2ee3[m[33m ([m[1;31morigin/master[m[33m, [m[1;32mmaster[m[33m)[m HEAD@{218}: checkout: moving from login to dev
+[33m9b425dc[m HEAD@{219}: commit: connect to mlab
+[33m05f2ee3[m[33m ([m[1;31morigin/master[m[33m, [m[1;32mmaster[m[33m)[m HEAD@{220}: checkout: moving from dev to login
+[33m05f2ee3[m[33m ([m[1;31morigin/master[m[33m, [m[1;32mmaster[m[33m)[m HEAD@{221}: checkout: moving from login to dev
+[33m05f2ee3[m[33m ([m[1;31morigin/master[m[33m, [m[1;32mmaster[m[33m)[m HEAD@{222}: checkout: moving from master to login
+[33m05f2ee3[m[33m ([m[1;31morigin/master[m[33m, [m[1;32mmaster[m[33m)[m HEAD@{223}: merge login: Fast-forward
+[33m44cc8a6[m HEAD@{224}: checkout: moving from login to master
+[33m05f2ee3[m[33m ([m[1;31morigin/master[m[33m, [m[1;32mmaster[m[33m)[m HEAD@{225}: commit: reset hard
+[33m44cc8a6[m HEAD@{226}: checkout: moving from master to login
+[33m44cc8a6[m HEAD@{227}: checkout: moving from login to master
+[33m44cc8a6[m HEAD@{228}: checkout: moving from login to login
+[33m44cc8a6[m HEAD@{229}: commit (initial): creat login route
