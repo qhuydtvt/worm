@@ -63,3 +63,12 @@
 #input_grade {
   border-radius: 5px;
 }
+
+tr {
+  width: 40px;
+  height: 30px;
+}
+
+body {
+  font-size: 15px !important;
+}

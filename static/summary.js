@@ -3,7 +3,8 @@ const context = {
   summaryClassrooms: null,
   loading: false,
   incorrect: false,
-  totalDays: 0
+  totalDays: 0,
+  timeRounded: ""
 }
 
 $(document).ready(() => {
@@ -47,12 +48,13 @@ const renderTeachers = (() => {
     if (teacher.time === null) {
       teacher.time = ["0:00:00","0:00:00"];
     }
+    round2Decimal(teacher.time[1]);
     const tr = 
     $(`
       <tr id="${teacher._id}">
         <td>${teacher.lastName}</td>
         <td>${teacher.time[0]}</td>
-        <td>${teacher.time[1]}</td>
+        <td>${context.timeRounded}</td>
       </tr>
     `).appendTo($('#tbl_teacher_body'));
     secondsTotal = strToSec(teacher.time[0]);
@@ -83,12 +85,13 @@ const renderClassrooms = (() => {
     if (classroom.time === null) {
       classroom.time = ["0:00:00","0:00:00"];
     }
+    round2Decimal(classroom.time[1]);
     const tr = 
     $(`
       <tr id="${classroom._id}">
         <td>${classroom.course + " " + classroom.classroom}</td>
         <td>${classroom.time[0]}</td>
-        <td>${classroom.time[1]}</td>
+        <td>${context.timeRounded}</td>
       </tr>
     `).appendTo($('#tbl_classroom_body'));
     secondsTotal = strToSec(classroom.time[0]);
@@ -159,4 +162,13 @@ const strToSec = (strTime) => {
   let a = strTime.split(':');
   let seconds = (+a[0]) * 60 * 60 + (+a[1]) * 60 + (+a[2]); 
   return seconds;
+}
+
+
+const round2Decimal = (time) => {
+  timeSplited = time.split(":");
+  secondRounded = Math.round(timeSplited[2]*100)/100;
+  timeSplited[2] = secondRounded;
+  timeRounded = timeSplited[0] + ":" + timeSplited[1] + ":" + timeSplited[2]
+  context.timeRounded = timeRounded;
 }

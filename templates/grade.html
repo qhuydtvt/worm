@@ -2,19 +2,36 @@
 <html>
  <head>
     <title>WORM</title>
+
+    <!-- JQUERY -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+    <!-- MY CSS -->
     {% load static %}
     <link rel="stylesheet" type="text/css" media="screen" href="{% static 'grade.css' %}" />
     <link rel="shortcut icon" type="image/ico" href="{% static 'fav.ico' %}"/>
+
+    <!-- BOOTSTRAP -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
+
+    <!-- CUSTOM ALERT -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.0/jquery-confirm.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.0/jquery-confirm.min.js"></script>
+
+    <!-- SEMANTIC UI -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/1.11.8/semantic.min.css"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/1.11.8/semantic.min.js"></script>
+
+    <!-- MY JS FILE -->
     <script type="text/javascript" src="{% static 'grade.js' %}"></script>
-      
+
+    
  </head>
 <body class="mt-5">
      <div class="container ">
         <div id="control_panel" class="d-flex">
-            <select class="dropdown-toggle" id="slt_classrooms" data-dropdown="#dropdown-standard">
-                <option>Loading...</option>
+            <select class="" id="slt_classrooms" data-dropdown="#dropdown-standard">
+                <option>...</option>
             </select>
 
             <button id="btn_grade" type="button" class="btn btn-secondary ml-3">
@@ -27,14 +44,14 @@
             <div class="ml-auto d-flex">
                 <div class="mr-3">
                     <a href="{% url 'grade:summary' %}">
-                        <button type="button" class="btn btn-secondary">
+                        <button type="button" class="btn btn-secondary" style="height: 41px; width: 100px;">
                             Summary
                         </button>
                     </a>
                 </div>
                 <div class="">
                     <a href="{% url 'login:logout' %}">
-                        <button id="log_out" type="button" class="btn btn-secondary">
+                        <button id="log_out" type="button" class="btn btn-secondary" style="height: 41px; width: 100px">
                             Logout
                         </button>
                     </a>
@@ -59,11 +76,7 @@
 	        </tbody>
         </table>
     </div>
-    <br /><br />
 
-    <div  class="text-center" id="btn-big">
-        
-    </div>
 
 </body>
 </html>
