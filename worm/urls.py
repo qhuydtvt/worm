@@ -16,6 +16,8 @@ Including another URLconf
 from django.urls import include, path
 from django.contrib import admin
 
+admin.site.site_url = '/worm'
+
 urlpatterns2 = [
     path('', include('grade.urls')),
     path('admin/', admin.site.urls),
