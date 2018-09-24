@@ -161,7 +161,7 @@ const initGradeCellSelection = () => {
 const fetchClassrooms = async () => {
   setLoading(true);
   const res = await $.ajax({
-    url: "/api/classroom",
+    url: "/worm/api/classroom",
     type: "GET",
   });
   setLoading(false);
