@@ -17,6 +17,9 @@ from django.urls import include, path
 from django.contrib import admin
 
 urlpatterns = [
-    path('', include('grade.urls')),
-    path('admin/', admin.site.urls),
-    path('login/', include('login.urls')),]
+    url(r'^worm/', include([
+        path('', include('grade.urls')),
+        path('admin/', admin.site.urls),
+        path('login/', include('login.urls')),
+    ])),
+]
