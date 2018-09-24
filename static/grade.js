@@ -174,7 +174,7 @@ const fetchClassrooms = async () => {
 const fetchGrades = async (classroomId) => {
   setLoading(true);
   const res = await $.ajax({
-    url: `/api/grades?classroom_id=${classroomId}`,
+    url: `/worm/api/grades?classroom_id=${classroomId}`,
     type: "GET",
   });
   setLoading(false);
