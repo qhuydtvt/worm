@@ -49,7 +49,7 @@ def cal_classroom_time(data, num_day):
             time_list.append(_time)
         total = sum(time_list)
         time_list = []
-        for classroom in classroom_info['data']:
+        for classroom in classroom_info['data']['class']:
             if classroom["_id"] == key:
                 avg_time = total / num_day / len(classroom["members"])
                 log[key] = [str(datetime.timedelta(seconds=total)), str(datetime.timedelta(seconds=avg_time))]

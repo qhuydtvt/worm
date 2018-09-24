@@ -154,7 +154,7 @@ const fetchClassrooms = async () => {
   });
   setLoading(false);
   if (res && res.data) {
-    context.classRooms = res.data;
+    context.classRooms = res.data.class;
     renderClassroomSelections();
   }
 };
