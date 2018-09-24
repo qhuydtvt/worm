@@ -34,6 +34,8 @@ ALLOWED_HOSTS = [
     'worm-d.herokuapp.com',
     'localhost',
     '127.0.0.1',
+    'techkids.vn',
+    'learn.techkids.vn',
 ]
 
 
