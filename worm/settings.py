@@ -123,7 +123,6 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 LOGIN_URL = '/worm/login'
-LOGIN_REDIRECT_URL = '/worm/'
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.1/topics/i18n/
