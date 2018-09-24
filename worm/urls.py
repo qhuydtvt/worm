@@ -16,7 +16,11 @@ Including another URLconf
 from django.urls import include, path
 from django.contrib import admin
 
-urlpatterns = [
+urlpatterns2 = [
     path('', include('grade.urls')),
     path('admin/', admin.site.urls),
     path('login/', include('login.urls')),]
+
+urlpatterns = [
+    path('worm/', urlpatterns2)
+]
