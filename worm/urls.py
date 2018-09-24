@@ -22,5 +22,5 @@ urlpatterns2 = [
     path('login/', include('login.urls')),]
 
 urlpatterns = [
-    path('worm/', urlpatterns2)
+    path('worm/', include(urlpatterns2))
 ]
