@@ -27,7 +27,7 @@ def get_user_lms():
   r = lms.users.get()
   data = r.json()
   teacher = []
-  for user in data['data']:
+  for user in data['data']['users']:
     if user['role'] == 1:
       teacher.append(user)
   return teacher
@@ -121,7 +121,7 @@ def api_grade_log(request):
       #classrooms
       classroom_log = get_classroom_log(grade_log)
       classroom_time = controller.cal_classroom_time(classroom_log, day.days)
-      class_info = controller.classroom_info["data"]
+      class_info = controller.classroom_info["data"]['class']
 
       for index, user in enumerate(teacher_info):
         if user["_id"] in teacher_time:

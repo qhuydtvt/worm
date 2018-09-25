@@ -2,13 +2,32 @@
 <html>
 <head>
     <title>A Web Page</title>
-    <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script> -->
+    
+    <!-- JQUERY -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+    <!-- MY CSS -->
     {% load static %}
     <link rel="stylesheet" type="text/css" media="screen" href="{% static 'summary.css' %}" />
+
+    <!-- BOOTSTRAP -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
+
+    <!-- FONT -->
     <link href="https://fonts.googleapis.com/css?family=Exo+2" rel="stylesheet">
+
+    <!-- FLATPICKR -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.2.3/flatpickr.css">    
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.2.3/flatpickr.js"></script>
+
+    <!-- SEMANTIC UI -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/1.11.8/semantic.min.css"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/1.11.8/semantic.min.js"></script>
+
+    <!-- MY JS -->
+    <script type="text/javascript" src="{% static 'summary.js' %}"></script>  
+
   </head>
 <body class="container mt-5">
     <div class="">
@@ -18,7 +37,7 @@
         </div>
         <div class="d-flex mt-3">
             <label for=""><b>Stop date</b></label>
-            <input class="ml-2" type="text" id="stop_date" data-input>
+            <input class="" type="text" id="stop_date" style="margin-left: 10px;" data-input>
         </div>
         <h6 id="noti" class="invisible p-0"></h3>
     </div>
@@ -29,8 +48,8 @@
                     <thead class="table-dark">
                         <tr id="">
                             <th>Name</th>
-                            <th>Total hour</th>
-                            <th>Hour per day</th>
+                            <th>Total time</th>
+                            <th>Time per day</th>
                         </tr>
                     </thead>
         
@@ -46,8 +65,8 @@
                         <thead class="table-dark">
                             <tr id="">
                                 <th>Name</th>
-                                <th>Total hour</th>
-                                <th>Hour per day</th>
+                                <th>Total time</th>
+                                <th>Time per day</th>
                             </tr>
                         </thead>
             
@@ -57,10 +76,5 @@
                     </table>
             </div>
     </div>
-      
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.2.3/flatpickr.js"></script>
-    <!-- <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script> -->
-    <script type="text/javascript" src="{% static 'summary.js' %}"></script>  
 </body>
 </html>
