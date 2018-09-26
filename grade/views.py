@@ -74,7 +74,15 @@ def api_grade_get(request, classroom_id):
     elif len(grades) > session:
       grades = grades[0:session]
     member.grades = grades
-  return JsonResponse({"data": classroom_data})
+  try:
+    teacher_id = request.session['teacher_id']
+    return JsonResponse({"data": classroom_data,
+                         "role": teacher_id
+                         },)
+  except BaseException:
+    return JsonResponse({"data": classroom_data,
+                         "role": 0
+                         },)
 
 
 @transaction.atomic
