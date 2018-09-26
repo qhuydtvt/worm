@@ -269,9 +269,13 @@ const renderControlPanel = () => {
 const setLoading = (loading) => {
   context.loading = loading;
   if (context.loading) {
+    $('#loading_indicator').addClass('ui active indeterminate inline loader');
+    $('#loading_indicator')[0].innerHTML = "";
     $('#loading_indicator').removeClass('invisible');
-    $('#btn_grade').attr('disabled', true);      
+    $('.ui.dropdown').addClass("disabled");
+    $('#btn_grade').attr('disabled', true);  
   } else {
+    $('.ui.dropdown').removeClass("disabled");
     $('#loading_indicator').addClass('invisible');
     $('#btn_grade').attr('disabled', false);
   }
@@ -291,12 +295,10 @@ const submit = async (classroom_id, gradeJSON) => {
   }
   setLoading(false);
   if (context.success === 1) {
-  
-    
-    $.alert({
-      title: "SUCCESS",
-      content: "Updated Success!"
-    });
+    $('#loading_indicator').removeClass('ui active indeterminate inline loader');
+    $('#loading_indicator').removeClass('invisible');
+    $('#loading_indicator').addClass('text-success');
+    $('#loading_indicator')[0].innerHTML = "Update Success!";
   } else {
     $.alert({
       title: "FAILED",
