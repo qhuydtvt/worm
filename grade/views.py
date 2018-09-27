@@ -115,12 +115,11 @@ def api_grade_log(request):
     grade_log = GradeLog.objects.filter(grade_day__range=[start_time, time_plus])
     if len(grade_log) > 0:
       #teachers
-      teacher_log = get_teacher_log(grade_log)
-      teacher_time = controller.cal_teacher_time(teacher_log, day.days)
+      log = get_log(grade_log)
+      teacher_time = controller.cal_teacher_time(log, day.days)
       teacher_info = get_user_lms()
       #classrooms
-      classroom_log = get_classroom_log(grade_log)
-      classroom_time = controller.cal_classroom_time(classroom_log, day.days)
+      classroom_time = controller.cal_classroom_time(log, day.days)
       class_info = controller.classroom_info["data"]['class']
 
       for index, user in enumerate(teacher_info):
@@ -150,7 +149,7 @@ def api_grade_log(request):
     return JsonResponse({"success": 0, "message:": "method not allowed"})
 
 
-def get_teacher_log(grade_log):
+def get_log(grade_log):
   data = {}
   for log in grade_log:
     data_dict = {"classroom": log.classroom_id,
@@ -162,19 +161,9 @@ def get_teacher_log(grade_log):
       data[log.teacher_id] = [data_dict]
     else:
       data[log.teacher_id].append(data_dict)
-  return data
-
-
-def get_classroom_log(grade_log):
-  data = {}
-  for log in grade_log:
-    data_dict = {"classroom": log.classroom_id,
-                 "teacher": log.teacher_id,
-                 "time": log.grade_time,
-                 "created_day": log.grade_day,
-                 }
     if log.classroom_id not in data:
       data[log.classroom_id] = [data_dict]
     else:
       data[log.classroom_id].append(data_dict)
   return data
+
