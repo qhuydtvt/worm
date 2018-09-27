@@ -25,6 +25,7 @@ def get_classroom_lms():
 
 def get_user_lms():
   r = lms.users.get()
+  lms.users.url += "?listAll=1" 
   data = r.json()
   teacher = []
   for user in data['data']['users']:
@@ -47,8 +48,15 @@ def summary(request):
 def api_grade(request):
   if request.user.is_authenticated:
     if 'classroom_id' not in request.GET:
-      return JsonResponse({'success': 0,
-                          'message': '\'classroom_id\' not specified'})
+      try:
+        teacher_id = request.session['teacher_id']
+        return JsonResponse({'success': 0,
+                             'message': '\'classroom_id\' not specified',
+                             "role": teacher_id})
+      except BaseException:
+        return JsonResponse({'success': 0,
+                             'message': '\'classroom_id\' not specified',
+                             "role": 0})
     classroom_id = request.GET["classroom_id"]
     if request.method == "GET":
       return api_grade_get(request, classroom_id)
@@ -74,15 +82,7 @@ def api_grade_get(request, classroom_id):
     elif len(grades) > session:
       grades = grades[0:session]
     member.grades = grades
-  try:
-    teacher_id = request.session['teacher_id']
-    return JsonResponse({"data": classroom_data,
-                         "role": teacher_id
-                         },)
-  except BaseException:
-    return JsonResponse({"data": classroom_data,
-                         "role": 0
-                         },)
+  return JsonResponse({"data": classroom_data, })
 
 
 @transaction.atomic

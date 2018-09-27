@@ -15,7 +15,7 @@ const context = {
     hours: 0,
   },
   selectedMemberID: "",
-  success: null,
+  role: null,
 };
 
 $(document).ready(() => {
@@ -24,9 +24,224 @@ $(document).ready(() => {
   initGradeCellSelection(); // Config grade cell => when users select grade
   initGradeProcess(); // Config grading: CLick start => Edit grade => Submit
   fetchClassrooms(); // Load classrooms 
+  checkAdmin();
   initSelectOptions();
 });
 
+// API /////////////////////////////////////////////
+
+// GET one classroom
+const fetchGrades = async (classroomId) => {
+  setLoading(true);
+  const res = await $.ajax({
+    url: `/api/grades?classroom_id=${classroomId}`,
+    type: "GET",
+  });
+  setLoading(false);
+  if (res && res.data) {
+    context.selectedClassroom = res.data;
+    renderGrades();
+  };
+};
+
+
+// GET all classrooms
+const fetchClassrooms = async () => {
+  setLoading(true);
+  const res = await $.ajax({
+    url: "/api/classroom",
+    type: "GET",
+  });
+  setLoading(false);
+  if (res && res.data) {
+    context.classRooms = res.data.class;
+    renderClassroomSelections();
+  }
+};
+
+
+// POST when user click Submit button
+const submit = async (classroom_id, gradeJSON) => {
+  setLoading(true);
+  const res = await $.ajax({
+    url: `api/grades?classroom_id=${classroom_id}`,
+    type: "POST",
+    data: gradeJSON,
+    dataType: "json",
+    contentType: "application/json",
+  });
+  setLoading(false);
+  submitUI();
+}
+
+
+// GET to check user is admin or not
+const checkAdmin = async () => {
+  setLoading(true);
+  const res = await $.ajax({
+    url: "/api/grades?classroom",
+    type: "GET",
+  });
+  setLoading(false);
+  
+  if (res) {
+    context.role = res.role;
+    if (context.role === 0) {
+      adminUI();
+    }
+  }
+}
+
+
+
+// UI/UX ////////////////////////////////////////////////
+
+// User click Submit button
+const submitUI = () => {
+  $('#loading_indicator').removeClass('ui active indeterminate inline loader');
+  $('#loading_indicator').removeClass('invisible');
+  $('#loading_indicator').addClass('text-success');
+  $('#loading_indicator')[0].innerHTML = "Update Success!";
+}
+
+
+// Loading data
+const setLoading = (loading) => {
+  context.loading = loading;
+  if (context.loading) {
+    $('#loading_indicator').addClass('ui active indeterminate inline loader');
+    $('#loading_indicator')[0].innerHTML = "";
+    $('#loading_indicator').removeClass('invisible');
+    $('.ui.dropdown').addClass("disabled");
+    $('#btn_grade').attr('disabled', true);  
+  } else {
+    $('.ui.dropdown').removeClass("disabled");
+    $('#btn_grade').attr('disabled', false);
+    if (context.role === 0) {
+      adminUI();
+    } else {
+      $('#loading_indicator').addClass('invisible');
+    }
+  }
+}
+
+
+// Login with role admin
+const adminUI = () => {
+  $('#btn_grade').hide();
+  $('#input_grade').hide();
+  $('#time').hide();
+  $('#loading_indicator').removeClass('ui active indeterminate inline loader');
+  $('#loading_indicator').removeClass('invisible');
+  $('#loading_indicator').addClass('text-warning');
+  $('#loading_indicator')[0].innerHTML = "You're not teacher. Please login as teacher to grade!";
+}
+
+
+// Animation for Select-Options element
+const initSelectOptions = () => {
+  $('#slt_classrooms').dropdown();
+}
+
+
+// Highlight column and row
+const hightLight = (column, row) => {
+  column.css('background-color', 'rgb(145, 145, 255)');
+  row.css('background-color', 'rgb(145, 145, 255)');
+}
+
+// RENDER //////////////////////////////////////////////////
+
+// Render classrooms selections
+const renderClassroomSelections = () => {
+  $('#slt_classrooms').empty();
+  $(`
+      <option id="...">...</option>
+    `).appendTo('#slt_classrooms')
+
+  context.classRooms.forEach((classroom) => {
+    $(`
+      <option id=${classroom._id}>${classroom.course} ${classroom.classroom}</option>
+    `).appendTo('#slt_classrooms')
+  });
+}
+
+
+// Render table grade
+const renderGrades = () => {
+  $('#tbl_grade_row_sessions').empty();
+  $('#tbl_grade_body').empty();
+  $(`
+      <th class="table-dark">Name</th>
+    `).appendTo('#tbl_grade_row_sessions');
+
+  if (!context.selectedClassroom) return;
+
+  const sessionMax = context.selectedClassroom.session;
+  const members = context.selectedClassroom.members;
+  
+  for(var session = 1; session <= sessionMax; session++) {
+    $(`
+      <th class="table-dark" id="${session - 1}">${session}</th>
+    `).appendTo('#tbl_grade_row_sessions');
+  }
+
+  members.forEach((member) => {
+    const tr = 
+    $(`
+      <tr id="${member._id}">
+        <td id="${member._id}_name">
+          ${member.firstName} ${member.lastName}
+        </td>
+      </tr>
+    `);
+
+    if (!member.grades) {
+      for(var session_index = 0; session_index < sessionMax; session_index++) {
+        $(`
+          <td class="grade" id="${member._id}_${session_index}" member_id="${member._id}" session_index="${session_index}">
+            -
+          </td>
+        `).appendTo(tr);
+      }
+    } else {
+      for(var session_index = 0; session_index < sessionMax; session_index++) {
+        $(`
+          <td class="grade" id="${member._id}_${session_index}" member_id="${member._id}" session_index="${session_index}">
+            ${member.grades[session_index] < 0 ? '-' : member.grades[session_index] }
+          </td>
+        `).appendTo(tr);
+      }
+    }
+    tr.appendTo('#tbl_grade_body');
+  });
+}
+
+
+// Render control panel
+const renderControlPanel = () => {
+  if(context.submittable) {
+    $('#tbl_grade_body .grade').addClass('changable');
+    $('#btn_grade').text('Submit');
+    $('#btn_grade').removeClass('btn-secondary');
+    $('#btn_grade').addClass('btn-primary');
+    $('#input_grade').attr('disabled', false);
+  }
+  else {
+    $('#tbl_grade_body .grade').removeClass('changable');
+    $('#btn_grade').text('Start');
+    $('#btn_grade').addClass('btn-secondary');
+    $('#btn_grade').removeClass('btn-primary');
+    $('#input_grade').attr('disabled', true);
+    $('#input_grade').val('');
+  }
+}
+
+
+
+// ACTIONS /////////////////////////////////////////
+
+// Stopwatch
 const stopWatch = (timeVal) => {
   let seconds = 0;
   let minutes = 0;
@@ -56,15 +271,7 @@ const stopWatch = (timeVal) => {
 }
 
 
-
-// classrooms => 1 classroom => members => 1 member => grades => 1 grade
-// Insonima => GET /api/grades?id=....
-// MVC
-// Context => Model
-// Render => View
-// Fetch, Init => Controller
-
-
+// Grade process
 const initGradeProcess = () => {
   $('#btn_grade').on('click', (event) => {
     if (context.submittable) {
@@ -83,21 +290,41 @@ const initGradeProcess = () => {
   });
 }
 
-const initClassroomSelection = () => {
-  $('#slt_classrooms').on('change', () => {
-    if(context.timeRunning) {
-      $('#btn_grade').click();
-      $('#time')[0].innerText = "00:00:00";
-    }
-    const classRoomId = $('#slt_classrooms option:selected').attr('id');
-    context.selectedClassroom = context.classRooms.find(classroom => classroom._id === classRoomId);
-    context.submittable = false;
-    renderControlPanel();
-    renderGrades(); // render empty grades of class, only members shown
-    fetchGrades(classRoomId);
-  });
-};
 
+// Cell selections
+const initGradeCellSelection = () => {
+  $('#tbl_grade_body').on('click', 'td.grade.changable', (event) => {
+    const text = $(event.target).text();
+    const grade = text.trim() === "-" ? 0 : parseFloat(text);
+    $('#input_grade').val(grade);
+    $('#input_grade').focus();
+    $('#input_grade').select();
+    
+    editGrade(event.target.attributes[2].nodeValue, event.target.id, $('#input_grade').val());
+    
+    const oldGradeId = $('#input_grade').attr('grade_id');
+    $(`#${oldGradeId}`).removeClass('highlight');
+    $(event.target).addClass('highlight');
+    $('#input_grade').attr('grade_id', event.target.id);
+    
+    sessionIndex = $(`#${event.target.id}`).attr('session_index');
+    memberID = $(`#${event.target.id}`).attr('member_id');
+    column = $(`#${sessionIndex}`)
+    row = $(`#${memberID + "_name"}`);
+    hightLight(column, row);
+  });
+}
+
+
+// Auto focus
+const initInput = () => {
+  $('#input_grade').on('focusout', function() {
+    $('#input_grade').off("input", handleGradeInput);
+  });
+}
+
+
+// Input
 const handleGradeInput = (event) => {
   const tdId = context.selectedGrade.tdId;
   const inputVal = $('#input_grade').val();
@@ -125,194 +352,28 @@ const handleGradeInput = (event) => {
   })
 }
 
+
+// Edit grade
 const editGrade = (memberID, gradeID, inputValue) => {
   context.selectedGrade.tdId = gradeID;
   context.selectedGrade.value = inputValue;
   context.selectedMemberID = memberID;
   $("#input_grade").on("input", handleGradeInput);
-  
 }
 
-const initInput = () => {
-  $('#input_grade').on('focusout', function() {
-    $('#input_grade').off("input", handleGradeInput);
-  });
-}
 
-const initGradeCellSelection = () => {
-  $('#tbl_grade_body').on('click', 'td.grade.changable', (event) => {
-    const text = $(event.target).text();
-    const grade = text.trim() === "-" ? 0 : parseFloat(text);
-    $('#input_grade').val(grade);
-    $('#input_grade').focus();
-    $('#input_grade').select();
-    // console.log(event);
-    
-    editGrade(event.target.attributes[2].nodeValue, event.target.id, $('#input_grade').val());
-    
-    const oldGradeId = $('#input_grade').attr('grade_id');
-    $(`#${oldGradeId}`).removeClass('highlight');
-    $(event.target).addClass('highlight');
-    $('#input_grade').attr('grade_id', event.target.id);
-   
-  });
-}
-
-const fetchClassrooms = async () => {
-  setLoading(true);
-  const res = await $.ajax({
-    url: "/api/classroom",
-    type: "GET",
-  });
-  setLoading(false);
-  if (res && res.data) {
-    context.classRooms = res.data.class;
-    renderClassroomSelections();
-  }
-};
-
-const fetchGrades = async (classroomId) => {
-  setLoading(true);
-  const res = await $.ajax({
-    url: `/api/grades?classroom_id=${classroomId}`,
-    type: "GET",
-  });
-  setLoading(false);
-  
-
-  if (res && res.data) {
-    context.selectedClassroom = res.data;
-    renderGrades();
-  };
-};
-
-const renderClassroomSelections = () => {
-  $('#slt_classrooms').empty();
-  $(`
-      <option id="...">...</option>
-    `).appendTo('#slt_classrooms')
-
-  context.classRooms.forEach((classroom) => {
-    $(`
-      <option id=${classroom._id}>${classroom.course} ${classroom.classroom}</option>
-    `).appendTo('#slt_classrooms')
-  });
-}
-
-const renderGrades = () => {
-  $('#tbl_grade_row_sessions').empty();
-  $('#tbl_grade_body').empty();
-  $(`
-      <th class="table-dark">Name</th>
-    `).appendTo('#tbl_grade_row_sessions');
-
-  if (!context.selectedClassroom) return;
-
-  const sessionMax = context.selectedClassroom.session;
-  const members = context.selectedClassroom.members;
-  
-  for(var session = 1; session <= sessionMax; session++) {
-    $(`
-      <th class="table-dark">${session}</th>
-    `).appendTo('#tbl_grade_row_sessions');
-  }
-
-  members.forEach((member) => {
-    const tr = 
-    $(`
-      <tr id="${member._id}">
-        <td>
-          ${member.lastName}
-        </td>
-      </tr>
-    `);
-
-    if (!member.grades) {
-      for(var session_index = 0; session_index < sessionMax; session_index++) {
-        $(`
-          <td class="grade" id="${member._id}_${session_index}" member_id="${member._id}" session_index="${session_index}">
-            -
-          </td>
-        `).appendTo(tr);
-      }
-    } else {
-      for(var session_index = 0; session_index < sessionMax; session_index++) {
-        $(`
-          <td class="grade" id="${member._id}_${session_index}" member_id="${member._id}" session_index="${session_index}">
-            ${member.grades[session_index] < 0 ? '-' : member.grades[session_index] }
-          </td>
-        `).appendTo(tr);
-      }
+// Select classroom
+const initClassroomSelection = () => {
+  $('#slt_classrooms').on('change', () => {
+    if(context.timeRunning) {
+      $('#btn_grade').click();
+      $('#time')[0].innerText = "00:00:00";
     }
-    tr.appendTo('#tbl_grade_body');
+    const classRoomId = $('#slt_classrooms option:selected').attr('id');
+    context.selectedClassroom = context.classRooms.find(classroom => classroom._id === classRoomId);
+    context.submittable = false;
+    renderControlPanel();
+    renderGrades(); // render empty grades of class, only members shown
+    fetchGrades(classRoomId);
   });
-}
-
-const renderControlPanel = () => {
-  if(context.submittable) {
-    $('#tbl_grade_body .grade').addClass('changable');
-    $('#btn_grade').text('Submit');
-    $('#btn_grade').removeClass('btn-secondary');
-    $('#btn_grade').addClass('btn-primary');
-    $('#input_grade').attr('disabled', false);
-  }
-  else {
-    $('#tbl_grade_body .grade').removeClass('changable');
-    $('#btn_grade').text('Start');
-    $('#btn_grade').addClass('btn-secondary');
-    $('#btn_grade').removeClass('btn-primary');
-    $('#input_grade').attr('disabled', true);
-    $('#input_grade').val('');
-  }
-}
-
-const setLoading = (loading) => {
-  context.loading = loading;
-  if (context.loading) {
-    $('#loading_indicator').addClass('ui active indeterminate inline loader');
-    $('#loading_indicator')[0].innerHTML = "";
-    $('#loading_indicator').removeClass('invisible');
-    $('.ui.dropdown').addClass("disabled");
-    $('#btn_grade').attr('disabled', true);  
-  } else {
-    $('.ui.dropdown').removeClass("disabled");
-    $('#loading_indicator').addClass('invisible');
-    $('#btn_grade').attr('disabled', false);
-  }
-}
-
-const submit = async (classroom_id, gradeJSON) => {
-  setLoading(true);
-  const res = await $.ajax({
-    url: `api/grades?classroom_id=${classroom_id}`,
-    type: "POST",
-    data: gradeJSON,
-    dataType: "json",
-    contentType: "application/json",
-  });
-  if (res && res.success) {
-    context.success = res.success;
-  }
-  setLoading(false);
-  if (context.success === 1) {
-    $('#loading_indicator').removeClass('ui active indeterminate inline loader');
-    $('#loading_indicator').removeClass('invisible');
-    $('#loading_indicator').addClass('text-success');
-    $('#loading_indicator')[0].innerHTML = "Update Success!";
-  } else {
-    $.alert({
-      title: "FAILED",
-      content: "Session expired, please login again!",
-      buttons: {
-        OK: () => {
-          $('#log_out').click();
-        }
-      }
-    });
-  };
-}
-
-
-const initSelectOptions = () => {
-  $('#slt_classrooms').dropdown();
-}
+};
