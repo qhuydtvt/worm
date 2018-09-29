@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
 from services import lms
-from .models import Grade, GradeLog
+from .models import Grade, GradeLog, Attendance
 from django.views.decorators.csrf import csrf_exempt
 from django.db import transaction
 import json
@@ -76,12 +76,19 @@ def api_grade_get(request, classroom_id):
   grades = Grade.objects.filter(classroom_id=classroom_id)
   grade_dict = {g.member_id: json.loads(g.grades) for g in grades}
   for member in classroom_data.members:
+    attendance = Attendance.objects.filter(member__member_id=member._id)
+    attendance_dict = {member._id: json.loads(att.attendances) for att in attendance}
     grades = grade_dict.get(member._id, [-1] * session)
-    if len(grades) < session:
+    atten = attendance_dict.get(member._id, [0] * session)
+    if len(grades) < session or len(atten) < session:
       grades.extend([-1] * (session - len(grades)))
-    elif len(grades) > session:
+      atten.extend([0] * (session - len(atten)))
+    elif len(grades) > session or len(atten) > session:
       grades = grades[0:session]
+      atten = atten[0:session]
+
     member.grades = grades
+    member.attendance = atten
   return JsonResponse({"data": classroom_data, })
 
 
@@ -101,6 +108,20 @@ def api_grade_post(request, classroom_id):
     return JsonResponse({"success": 1, "message": "data saved"})
   except BaseException:
     return JsonResponse({"success": 0, "message": "session expired"})
+
+
+@csrf_exempt
+@transaction.atomic
+def api_atten_post(request):
+  if request.method == "POST":
+    grades_json = json.loads(request.body)
+    member = Grade.objects.get_or_create(member_id=grades_json["member_id"], classroom_id=grades_json["classroom_id"])[0]
+    new_atten = Attendance.objects.get_or_create(member=member)[0]
+    new_atten.attendances = [int(atten) for atten in grades_json['attendance']]
+    new_atten.save()
+    return JsonResponse({"message": "data saved"})
+  else:
+    return JsonResponse({"message": "notthing to do here"})
 
 
 def api_grade_log(request):
@@ -125,16 +146,13 @@ def api_grade_log(request):
       for index, user in enumerate(teacher_info):
         if user["_id"] in teacher_time:
           teacher_info[index]["time"] = teacher_time[user["_id"]]
-
         else:
           teacher_info[index]["time"] = None
-      
       for index, classroom in enumerate(class_info):
         class_info[index].pop('teachers', None)
         class_info[index].pop('playlists', None)
         if classroom["_id"] in classroom_time:
           class_info[index]["time"] = classroom_time[classroom["_id"]]
-          
         else:
           class_info[index]["time"] = None
 
