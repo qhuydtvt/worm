@@ -16,6 +16,7 @@ const context = {
   },
   selectedMemberID: "",
   role: null,
+  currentSession: null
 };
 
 $(document).ready(() => {
@@ -102,6 +103,7 @@ const submitUI = () => {
   $('#loading_indicator').removeClass('invisible');
   $('#loading_indicator').addClass('text-success');
   $('#loading_indicator')[0].innerHTML = "Update Success!";
+  $('#loading_indicator')
 }
 
 
@@ -145,7 +147,9 @@ const initSelectOptions = () => {
 
 
 // Highlight column and row
-const hightLight = (column, row) => {
+const hightLight = (oldColumn, oldRow, column, row) => {
+  oldColumn.css('background-color', '');
+  oldRow.css('background-color', '');
   column.css('background-color', 'rgb(145, 145, 255)');
   row.css('background-color', 'rgb(145, 145, 255)');
 }
@@ -199,7 +203,7 @@ const renderGrades = () => {
     if (!member.grades) {
       for(var session_index = 0; session_index < sessionMax; session_index++) {
         $(`
-          <td class="grade" id="${member._id}_${session_index}" member_id="${member._id}" session_index="${session_index}">
+          <td class="grade changable" id="${member._id}_${session_index}" member_id="${member._id}" session_index="${session_index}">
             -
           </td>
         `).appendTo(tr);
@@ -207,7 +211,7 @@ const renderGrades = () => {
     } else {
       for(var session_index = 0; session_index < sessionMax; session_index++) {
         $(`
-          <td class="grade" id="${member._id}_${session_index}" member_id="${member._id}" session_index="${session_index}">
+          <td class="grade changable" id="${member._id}_${session_index}" member_id="${member._id}" session_index="${session_index}">
             ${member.grades[session_index] < 0 ? '-' : member.grades[session_index] }
           </td>
         `).appendTo(tr);
@@ -221,14 +225,14 @@ const renderGrades = () => {
 // Render control panel
 const renderControlPanel = () => {
   if(context.submittable) {
-    $('#tbl_grade_body .grade').addClass('changable');
+    // $('#tbl_grade_body .grade').addClass('changable');
     $('#btn_grade').text('Submit');
     $('#btn_grade').removeClass('btn-secondary');
     $('#btn_grade').addClass('btn-primary');
     $('#input_grade').attr('disabled', false);
   }
   else {
-    $('#tbl_grade_body .grade').removeClass('changable');
+    // $('#tbl_grade_body .grade').removeClass('changable');
     $('#btn_grade').text('Start');
     $('#btn_grade').addClass('btn-secondary');
     $('#btn_grade').removeClass('btn-primary');
@@ -294,29 +298,69 @@ const initGradeProcess = () => {
 // Cell selections
 const initGradeCellSelection = () => {
   $('#tbl_grade_body').on('click', 'td.grade.changable', (event) => {
+    context.currentSession = event.currentTarget.cellIndex;
+    context.currentMembIndex = event.target.parentElement.rowIndex;
+    
+    const tdId = event.target.id;
     const text = $(event.target).text();
     const grade = text.trim() === "-" ? 0 : parseFloat(text);
     $('#input_grade').val(grade);
     $('#input_grade').focus();
     $('#input_grade').select();
     
-    editGrade(event.target.attributes[2].nodeValue, event.target.id, $('#input_grade').val());
+    editGrade(event.target.attributes[2].nodeValue, tdId, $('#input_grade').val());
+    
+    
     
     const oldGradeId = $('#input_grade').attr('grade_id');
     $(`#${oldGradeId}`).removeClass('highlight');
     $(event.target).addClass('highlight');
-    $('#input_grade').attr('grade_id', event.target.id);
+    $('#input_grade').attr('grade_id', tdId);
     
-    sessionIndex = $(`#${event.target.id}`).attr('session_index');
-    memberID = $(`#${event.target.id}`).attr('member_id');
+    sessionIndex = $(`#${tdId}`).attr('session_index');
+    memberID = $(`#${tdId}`).attr('member_id') + "_name";
     column = $(`#${sessionIndex}`)
-    row = $(`#${memberID + "_name"}`);
-    hightLight(column, row);
+    row = $(`#${memberID}`);
+    const oldSessionIndex = $('#input_grade').attr('column_id')
+    const oldMemberID = $('#input_grade').attr('row_id')
+    
+    $('#input_grade').attr('column_id', sessionIndex);
+    $('#input_grade').attr('row_id', memberID);
+    const oldColumn = $(`#${oldSessionIndex}`)
+    const oldRow = $(`#${oldMemberID}`)
+    hightLight(oldColumn, oldRow, column, row)
+
+    if($(`#${tdId}`)[0].children.length === 1) {
+      $('#check_point')[0].checked = true;
+    } else {
+      $('#check_point')[0].checked = false;
+    }
+    checkBox();
   });
 }
 
 
-// Auto focus
+// init Check Box
+const handleCheck = (event) => {
+  const tdId = context.selectedGrade.tdId;
+  $(`#${tdId} i`).remove();
+  if(event.target.checked){
+    $(`<i class="fas fa-check-circle float-left pl-1" style="padding-top:2px;"></i>`).appendTo($(`#${tdId}`));
+    jumpTd();
+    // console.log($(`#${tdId}`));
+    
+    
+  }
+}
+
+
+// click Checkbox
+const checkBox = () => {
+  $('#check_point').on('click', handleCheck);
+}
+
+
+// Init input
 const initInput = () => {
   $('#input_grade').on('focusout', function() {
     $('#input_grade').off("input", handleGradeInput);
@@ -329,7 +373,7 @@ const handleGradeInput = (event) => {
   const tdId = context.selectedGrade.tdId;
   const inputVal = $('#input_grade').val();
   if (inputVal === ""){
-    $(tdId).prevObject[0].all[tdId].innerText = "-";    
+    $(tdId).prevObject[0].all[tdId].firstChild.data = "-";    
   } else {
     if (inputVal < 0) {
       context.selectedGrade.value = 0;
@@ -339,7 +383,11 @@ const handleGradeInput = (event) => {
       context.selectedGrade.value = inputVal;  
     }
     tdValue = context.selectedGrade.value;
-    $(tdId).prevObject[0].all[tdId].innerText = parseFloat(tdValue);
+    // console.log($(tdId));
+    
+    $(tdId).prevObject[0].all[tdId].firstChild.data = parseFloat(tdValue);
+    // console.log($(tdId));
+    
   }
   tdIndex = parseInt(tdId.split("_")[1]);
   context.selectedClassroom.time = context.time.hours + ":" + context.time.minutes + ":" + context.time.seconds;
@@ -377,3 +425,22 @@ const initClassroomSelection = () => {
     fetchGrades(classRoomId);
   });
 };
+
+
+// Td cell Jump
+const jumpTd = () => {
+  const tbl_body = $('#tbl_grade_body')[0].childNodes;
+  for (let memb = 0; memb < tbl_body.length; memb++) {
+    member = tbl_body[memb];
+    if (member.rowIndex === context.currentMembIndex + 1) {
+      for (let td = 3; td < member.childNodes.length; td++) {
+        tdCell = member.childNodes[td];
+        if (tdCell.cellIndex === context.currentSession) {
+          $(`#${tdCell.id}`).click();
+          break;
+        }
+      }
+      break;
+    }
+  }
+}

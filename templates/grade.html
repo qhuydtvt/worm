@@ -25,7 +25,8 @@
     <!-- MY JS FILE -->
     <script type="text/javascript" src="{% static 'grade.js' %}"></script>
 
-    
+    <!-- FONT AWESOME -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
  </head>
 <body class="mt-5">
      <div class="container ">
@@ -38,9 +39,12 @@
                 Start
             </button>
             <input type="number" class="ml-3" disabled="true" id="input_grade">
-            <span id="time" class="ml-3">
-                00:00:00
-            </span>
+            <div class="d-flex flex-column align-items-center ml-3">
+                <span id="time" class="">
+                    00:00:00
+                </span>
+                <input type="checkbox" id="check_point" style="width: 22px; height: 22px;">
+            </div>
             <div class="ml-auto d-flex">
                 <div class="mr-3">
                     <a href="{% url 'grade:summary' %}">

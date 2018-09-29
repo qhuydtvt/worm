@@ -3,9 +3,9 @@
   justify-items: center;
 }
 
-#time {
+/* #time {
   line-height: 38px;
-}
+} */
 
 #slt_classrooms {
   margin-top: 0px !important;
@@ -41,10 +41,16 @@
 #tbl_grade_row_sessions th:nth-child(n + 2),
 #tbl_grade_body td:nth-child(n + 2) {
   margin-right: 8px !important;
-  text-align: right !important;
-  padding-right: 8px !important;
+  /* text-align: right !important; */
+  padding-right: 3px !important;
   border-width: 2px;
 }
+
+#tbl_grade_row_sessions th:nth-child(n + 2),
+#tbl_grade_body {
+  text-align: right !important;
+}
+
 
 .grade {
   margin: 4px !important;
@@ -72,3 +78,7 @@ tr {
 body {
   font-size: 15px !important;
 }
+
+/* .fas .fa-circle {
+  text-align: left !important;
+} */
