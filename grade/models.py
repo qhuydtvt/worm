@@ -14,6 +14,18 @@ class Grade(models.Model):
             "grades": self.grades}
 
 
+class Attendance(models.Model):
+  member = models.ForeignKey(Grade, on_delete=models.CASCADE)
+  attendances = models.CharField(max_length=258)
+
+  def __str__(self):
+    return str(self.member)
+
+  def json(self):
+    return {"member": self.member,
+            "attendances": self.attendances}
+
+
 class GradeLog(models.Model):
   classroom_id = models.CharField(max_length=50)
   teacher_id = models.CharField(max_length=50)
