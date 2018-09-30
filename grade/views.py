@@ -115,12 +115,11 @@ def api_grade_post(request, classroom_id):
 def api_atten_post(request):
   if request.method == "POST":
     grades_json = json.loads(request.body)
-    member = Grade.objects.get_or_create(member_id=grades_json["member_id"], classroom_id=grades_json["classroom_id"])[0]
+    member = Grade.objects.get_or_create(member_id=grades_json["member_id"],
+                                         classroom_id=grades_json["classroom_id"])[0]
     new_atten = Attendance.objects.get_or_create(member=member)[0]
     new_atten.attendances = [int(atten) for atten in grades_json['attendance']]
     new_atten.save()
-    print(member)
-    print(new_atten)
     return JsonResponse({"message": "data saved"})
   else:
     return JsonResponse({"message": "notthing to do here"})

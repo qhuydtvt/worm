@@ -6,7 +6,7 @@ from django.utils import timezone
 class Grade(models.Model):
   classroom_id = models.CharField(max_length=50)
   member_id = models.CharField(max_length=50)
-  grades = models.CharField(max_length=258)
+  grades = models.CharField(max_length=258, default="[-1]")
 
   def json(self):
     return {"classroom_id": self.classroom_id,
