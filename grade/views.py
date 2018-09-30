@@ -119,6 +119,8 @@ def api_atten_post(request):
     new_atten = Attendance.objects.get_or_create(member=member)[0]
     new_atten.attendances = [int(atten) for atten in grades_json['attendance']]
     new_atten.save()
+    print(member)
+    print(new_atten)
     return JsonResponse({"message": "data saved"})
   else:
     return JsonResponse({"message": "notthing to do here"})

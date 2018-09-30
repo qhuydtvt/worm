@@ -7,6 +7,8 @@ const context = {
   timeRunning: false, 
   selectedGrade: {
     tdId: "",
+    xTd: 0,
+    yTd: 0,
     value: ""
   },
   time: {
@@ -15,8 +17,9 @@ const context = {
     hours: 0,
   },
   selectedMemberID: "",
+  lastMemberID: "",
   role: null,
-  currentSession: null
+  currentSession: null,
 };
 
 $(document).ready(() => {
@@ -26,7 +29,8 @@ $(document).ready(() => {
   initGradeProcess(); // Config grading: CLick start => Edit grade => Submit
   fetchClassrooms(); // Load classrooms 
   checkAdmin();
-  initSelectOptions();
+  initSelectOptions();  
+  checkBox();
 });
 
 // API /////////////////////////////////////////////
@@ -59,6 +63,20 @@ const fetchClassrooms = async () => {
     renderClassroomSelections();
   }
 };
+
+
+const submitAttendance = async (classroom_id, attendanceJSON) => {
+  setLoading(true);
+  const res = await $.ajax({
+    url: `api/attendance`,
+    type: "POST",
+    data: attendanceJSON,
+    dataType: "json",
+    contentType: "application/json",
+  });
+  setLoading(false);
+  jumpTd();
+}
 
 
 // POST when user click Submit button
@@ -189,7 +207,7 @@ const renderGrades = () => {
       <th class="table-dark" id="${session - 1}">${session}</th>
     `).appendTo('#tbl_grade_row_sessions');
   }
-
+  countMember = 0;
   members.forEach((member) => {
     const tr = 
     $(`
@@ -199,22 +217,32 @@ const renderGrades = () => {
         </td>
       </tr>
     `);
-
+    countMember += 1;
     if (!member.grades) {
       for(var session_index = 0; session_index < sessionMax; session_index++) {
         $(`
-          <td class="grade changable" id="${member._id}_${session_index}" member_id="${member._id}" session_index="${session_index}">
+          <td class="grade changable" id="${member._id}_${session_index}" member_id="${member._id}" session_index="${session_index}" x="${countMember}" y="${session_index + 1}">
             -
           </td>
         `).appendTo(tr);
       }
-    } else {
+    }
+     else {
       for(var session_index = 0; session_index < sessionMax; session_index++) {
-        $(`
-          <td class="grade changable" id="${member._id}_${session_index}" member_id="${member._id}" session_index="${session_index}">
+        if (member.attendance[session_index]) {
+          $(`
+          <td class="grade changable" id="${member._id}_${session_index}" member_id="${member._id}" session_index="${session_index}" x="${countMember}" y="${session_index + 1}">
+            <i class="fas fa-check-circle float-left pl-1" style="padding-top:2px;"></i>
             ${member.grades[session_index] < 0 ? '-' : member.grades[session_index] }
           </td>
         `).appendTo(tr);
+        } else {
+          $(`
+          <td class="grade changable" id="${member._id}_${session_index}" member_id="${member._id}" session_index="${session_index}" x="${countMember}" y="${session_index + 1}">
+            ${member.grades[session_index] < 0 ? '-' : member.grades[session_index] }
+          </td>
+        `).appendTo(tr);
+        };
       }
     }
     tr.appendTo('#tbl_grade_body');
@@ -302,15 +330,16 @@ const initGradeCellSelection = () => {
     context.currentMembIndex = event.target.parentElement.rowIndex;
     
     const tdId = event.target.id;
+    const xTd = parseInt(event.target.attributes[4].nodeValue);
+    const yTd = parseInt(event.target.attributes[5].nodeValue);
+    
     const text = $(event.target).text();
     const grade = text.trim() === "-" ? 0 : parseFloat(text);
     $('#input_grade').val(grade);
     $('#input_grade').focus();
     $('#input_grade').select();
     
-    editGrade(event.target.attributes[2].nodeValue, tdId, $('#input_grade').val());
-    
-    
+    editGrade(event.target.attributes[2].nodeValue, tdId, xTd, yTd, $('#input_grade').val());
     
     const oldGradeId = $('#input_grade').attr('grade_id');
     $(`#${oldGradeId}`).removeClass('highlight');
@@ -335,28 +364,35 @@ const initGradeCellSelection = () => {
     } else {
       $('#check_point')[0].checked = false;
     }
-    checkBox();
   });
-}
-
-
-// init Check Box
-const handleCheck = (event) => {
-  const tdId = context.selectedGrade.tdId;
-  $(`#${tdId} i`).remove();
-  if(event.target.checked){
-    $(`<i class="fas fa-check-circle float-left pl-1" style="padding-top:2px;"></i>`).appendTo($(`#${tdId}`));
-    jumpTd();
-    // console.log($(`#${tdId}`));
-    
-    
-  }
 }
 
 
 // click Checkbox
 const checkBox = () => {
-  $('#check_point').on('click', handleCheck);
+  $('#check_point').on('click', (event) => {
+    tdId = context.selectedGrade.tdId;
+    memberID = context.selectedMemberID;
+    memberIndex = $(`#${tdId}`)[0].parentNode.sectionRowIndex;
+    attendance = context.selectedClassroom.members[memberIndex].attendance;
+
+    classroomID = context.selectedClassroom._id;
+    if($(`#${tdId}`)[0].children.length === 1) {
+      $(`#${tdId} i`).remove();
+      attendance[context.currentSession - 1] = 0;
+    } else {
+      $(`<i class="fas fa-check-circle float-left pl-1" style="padding-top:2px;"></i>`).appendTo($(`#${tdId}`));
+      attendance[context.currentSession - 1] = 1;
+    }
+
+    attendanceJSON = JSON.stringify({
+      member_id: memberID,
+      classroom_id: classroomID,
+      attendance: attendance
+    })
+    console.log(attendanceJSON); 
+    submitAttendance(classroomID, attendanceJSON)
+  });
 }
 
 
@@ -383,11 +419,7 @@ const handleGradeInput = (event) => {
       context.selectedGrade.value = inputVal;  
     }
     tdValue = context.selectedGrade.value;
-    // console.log($(tdId));
-    
     $(tdId).prevObject[0].all[tdId].firstChild.data = parseFloat(tdValue);
-    // console.log($(tdId));
-    
   }
   tdIndex = parseInt(tdId.split("_")[1]);
   context.selectedClassroom.time = context.time.hours + ":" + context.time.minutes + ":" + context.time.seconds;
@@ -402,10 +434,13 @@ const handleGradeInput = (event) => {
 
 
 // Edit grade
-const editGrade = (memberID, gradeID, inputValue) => {
+const editGrade = (memberID, gradeID, xTd, yTd, inputValue) => {
   context.selectedGrade.tdId = gradeID;
+  context.selectedGrade.xTd = xTd;
+  context.selectedGrade.yTd = yTd;
   context.selectedGrade.value = inputValue;
   context.selectedMemberID = memberID;
+  // console.log(context.selectedMemberID);
   $("#input_grade").on("input", handleGradeInput);
 }
 
@@ -429,18 +464,7 @@ const initClassroomSelection = () => {
 
 // Td cell Jump
 const jumpTd = () => {
-  const tbl_body = $('#tbl_grade_body')[0].childNodes;
-  for (let memb = 0; memb < tbl_body.length; memb++) {
-    member = tbl_body[memb];
-    if (member.rowIndex === context.currentMembIndex + 1) {
-      for (let td = 3; td < member.childNodes.length; td++) {
-        tdCell = member.childNodes[td];
-        if (tdCell.cellIndex === context.currentSession) {
-          $(`#${tdCell.id}`).click();
-          break;
-        }
-      }
-      break;
-    }
-  }
+  const nextXTd = context.selectedGrade.xTd + 1;
+  const nextYTd = context.selectedGrade.yTd;
+  $(`[x|='${nextXTd}'][y|='${nextYTd}']`).click();
 }
