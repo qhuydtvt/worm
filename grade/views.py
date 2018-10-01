@@ -114,11 +114,11 @@ def api_grade_post(request, classroom_id):
 @transaction.atomic
 def api_atten_post(request):
   if request.method == "POST":
-    grades_json = json.loads(request.body)
-    member = Grade.objects.get_or_create(member_id=grades_json["member_id"],
-                                         classroom_id=grades_json["classroom_id"])[0]
+    data = json.loads(request.body)
+    member = Grade.objects.get_or_create(member_id=data["member_id"],
+                                         classroom_id=data["classroom_id"])[0]
     new_atten = Attendance.objects.get_or_create(member=member)[0]
-    new_atten.attendances = [int(atten) for atten in grades_json['attendance']]
+    new_atten.attendances = [int(atten) for atten in data['attendance']]
     new_atten.save()
     return JsonResponse({"message": "data saved"})
   else:
