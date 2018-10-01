@@ -22,11 +22,9 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/1.11.8/semantic.min.css"/>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/1.11.8/semantic.min.js"></script>
 
-    <!-- MY JS FILE -->
-    <script type="text/javascript" src="{% static 'grade.js' %}"></script>
-
     <!-- FONT AWESOME -->
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
+    <link rel="stylesheet" href="{% static 'fontAwesome/css/all.css' %}">
+    <!-- <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous"> -->
  </head>
 <body class="mt-5">
      <div class="container ">
@@ -38,7 +36,7 @@
             <button id="btn_grade" type="button" class="btn btn-secondary ml-3">
                 Start
             </button>
-            <input type="number" class="ml-3" disabled="true" id="input_grade">
+            <input type="number" class="ml-3" disabled="true" id="input_grade" max="10" min="0" maxlength="2">
             <div class="d-flex flex-column align-items-center ml-3">
                 <span id="time" class="">
                     00:00:00
@@ -81,6 +79,7 @@
         </table>
     </div>
 
-
+ <!-- MY JS FILE -->
+ <script type="text/javascript" src="{% static 'grade.js' %}"></script>
 </body>
 </html>
