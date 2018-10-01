@@ -387,17 +387,24 @@ const checkBox = () => {
     if($(`#${tdId}`)[0].children.length === 1) {
       $(`#${tdId} i`).remove();
       attendance[context.currentSession - 1] = 0;
+      attendanceJSON = JSON.stringify({
+        member_id: memberID,
+        classroom_id: classroomID,
+        attendance: attendance
+      })
+      submitAttendance(attendanceJSON)
     } else {
       $(`<i class="fas fa-check-circle float-left pl-1" style="padding-top:2px;"></i>`).appendTo($(`#${tdId}`));
       attendance[context.currentSession - 1] = 1;
+      attendanceJSON = JSON.stringify({
+        member_id: memberID,
+        classroom_id: classroomID,
+        attendance: attendance
+      })
+      submitAttendance(attendanceJSON)
     }
 
-    attendanceJSON = JSON.stringify({
-      member_id: memberID,
-      classroom_id: classroomID,
-      attendance: attendance
-    })
-    submitAttendance(attendanceJSON)
+    
   });
 }
 
