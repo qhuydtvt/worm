@@ -45,6 +45,8 @@ const fetchGrades = async (classroomId) => {
   setLoading(false);
   if (res && res.data) {
     context.selectedClassroom = res.data;
+    console.log(context.selectedClassroom);
+    
     renderGrades();
   };
 };
@@ -65,7 +67,7 @@ const fetchClassrooms = async () => {
 };
 
 
-const submitAttendance = async (classroom_id, attendanceJSON) => {
+const submitAttendance = async (attendanceJSON) => {
   setLoading(true);
   const res = await $.ajax({
     url: `api/attendance`,
@@ -133,8 +135,10 @@ const setLoading = (loading) => {
     $('#loading_indicator')[0].innerHTML = "";
     $('#loading_indicator').removeClass('invisible');
     $('.ui.dropdown').addClass("disabled");
-    $('#btn_grade').attr('disabled', true);  
+    $('#btn_grade').attr('disabled', true);
+    $('#check_point').prop('disabled', true);
   } else {
+    $('#check_point').prop('disabled', false);
     $('.ui.dropdown').removeClass("disabled");
     $('#btn_grade').attr('disabled', false);
     if (context.role === 0) {
@@ -201,7 +205,7 @@ const renderGrades = () => {
 
   const sessionMax = context.selectedClassroom.session;
   const members = context.selectedClassroom.members;
-  
+
   for(var session = 1; session <= sessionMax; session++) {
     $(`
       <th class="table-dark" id="${session - 1}">${session}</th>
@@ -332,6 +336,7 @@ const initGradeCellSelection = () => {
     const tdId = event.target.id;
     const xTd = parseInt(event.target.attributes[4].nodeValue);
     const yTd = parseInt(event.target.attributes[5].nodeValue);
+    console.log($(tdId).prevObject[0].all[tdId].firstChild.data);
     
     const text = $(event.target).text();
     const grade = text.trim() === "-" ? 0 : parseFloat(text);
@@ -390,8 +395,7 @@ const checkBox = () => {
       classroom_id: classroomID,
       attendance: attendance
     })
-    console.log(attendanceJSON); 
-    submitAttendance(classroomID, attendanceJSON)
+    submitAttendance(attendanceJSON)
   });
 }
 
@@ -412,14 +416,20 @@ const handleGradeInput = (event) => {
     $(tdId).prevObject[0].all[tdId].firstChild.data = "-";    
   } else {
     if (inputVal < 0) {
+      // $('#input_grade').val() = 0;
       context.selectedGrade.value = 0;
     } else if (inputVal > 10) {
+      // $('#input_grade').val() = 10;
       context.selectedGrade.value = 10;
     } else {
       context.selectedGrade.value = inputVal;  
     }
     tdValue = context.selectedGrade.value;
-    $(tdId).prevObject[0].all[tdId].firstChild.data = parseFloat(tdValue);
+    if($(`#${tdId}`)[0].children.length === 1) {
+      $(tdId).prevObject[0].all[tdId].innerHTML = '<i class="fas fa-check-circle float-left pl-1" style="padding-top:2px;"></i>' + parseFloat(tdValue)
+    }
+    
+    else $(tdId).prevObject[0].all[tdId].innerHTML = parseFloat(tdValue);
   }
   tdIndex = parseInt(tdId.split("_")[1]);
   context.selectedClassroom.time = context.time.hours + ":" + context.time.minutes + ":" + context.time.seconds;
@@ -440,7 +450,6 @@ const editGrade = (memberID, gradeID, xTd, yTd, inputValue) => {
   context.selectedGrade.yTd = yTd;
   context.selectedGrade.value = inputValue;
   context.selectedMemberID = memberID;
-  // console.log(context.selectedMemberID);
   $("#input_grade").on("input", handleGradeInput);
 }
 
@@ -453,7 +462,8 @@ const initClassroomSelection = () => {
       $('#time')[0].innerText = "00:00:00";
     }
     const classRoomId = $('#slt_classrooms option:selected').attr('id');
-    context.selectedClassroom = context.classRooms.find(classroom => classroom._id === classRoomId);
+    // context.selectedClassroom = context.classRooms.find(classroom => classroom._id === classRoomId);
+    // console.log(context.selectedClassroom)
     context.submittable = false;
     renderControlPanel();
     renderGrades(); // render empty grades of class, only members shown
