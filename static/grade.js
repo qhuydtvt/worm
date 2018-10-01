@@ -419,6 +419,18 @@ const initGradeCellSelection = () => {
             borderRadius: "100%"})
         }
       );
+      $('#times_circle').hover(
+        function() {
+          $(this).css({backgroundColor: "red",
+            color: "white",
+            borderRadius: "100%"})
+        },
+        function() {
+          $(this).css({backgroundColor: "",
+            color: "red",
+            borderRadius: "0%"})
+        }
+      );
       $('#times_circle').css({
         "background-color": "",
         "color": "red",
@@ -440,6 +452,18 @@ const initGradeCellSelection = () => {
           $(this).css({backgroundColor: "red",
             color: "white",
             borderRadius: "100%"})
+        }
+      );
+      $('#check_circle').hover(
+        function() {
+          $(this).css({backgroundColor: "green",
+            color: "white",
+            borderRadius: "100%"})
+        },
+        function() {
+          $(this).css({backgroundColor: "",
+            color: "green",
+            borderRadius: "0%"})
         }
       );
     }
