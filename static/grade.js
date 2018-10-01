@@ -31,7 +31,9 @@ $(document).ready(() => {
   checkAdmin();
   initSelectOptions();  
   checkBox();
+  hover();
 });
+
 
 // API /////////////////////////////////////////////
 
@@ -44,9 +46,7 @@ const fetchGrades = async (classroomId) => {
   });
   setLoading(false);
   if (res && res.data) {
-    context.selectedClassroom = res.data;
-    console.log(context.selectedClassroom);
-    
+    context.selectedClassroom = res.data;   
     renderGrades();
   };
 };
@@ -67,6 +67,7 @@ const fetchClassrooms = async () => {
 };
 
 
+// POST Attendance
 const submitAttendance = async (attendanceJSON) => {
   setLoading(true);
   const res = await $.ajax({
@@ -122,6 +123,11 @@ const submitUI = () => {
   $('#loading_indicator').removeClass('ui active indeterminate inline loader');
   $('#loading_indicator').removeClass('invisible');
   $('#loading_indicator').addClass('text-success');
+  $('#loading_indicator').css({
+    height: "33.8px",
+    paddingTop: "10px",
+    paddingLeft: "1px"
+  })
   $('#loading_indicator')[0].innerHTML = "Update Success!";
   $('#loading_indicator')
 }
@@ -136,9 +142,10 @@ const setLoading = (loading) => {
     $('#loading_indicator').removeClass('invisible');
     $('.ui.dropdown').addClass("disabled");
     $('#btn_grade').attr('disabled', true);
-    $('#check_point').prop('disabled', true);
+    $('#check_circle').off('click');
+    $('#times_circle').off('click');
   } else {
-    $('#check_point').prop('disabled', false);
+    checkBox();
     $('.ui.dropdown').removeClass("disabled");
     $('#btn_grade').attr('disabled', false);
     if (context.role === 0) {
@@ -158,6 +165,11 @@ const adminUI = () => {
   $('#loading_indicator').removeClass('ui active indeterminate inline loader');
   $('#loading_indicator').removeClass('invisible');
   $('#loading_indicator').addClass('text-warning');
+  $('#loading_indicator').css({
+    height: "33.8px",
+    paddingTop: "10px",
+    paddingLeft: "1px"
+  })
   $('#loading_indicator')[0].innerHTML = "You're not teacher. Please login as teacher to grade!";
 }
 
@@ -174,6 +186,35 @@ const hightLight = (oldColumn, oldRow, column, row) => {
   oldRow.css('background-color', '');
   column.css('background-color', 'rgb(145, 145, 255)');
   row.css('background-color', 'rgb(145, 145, 255)');
+}
+
+
+// Hover
+const hover = () => {
+  $('#check_circle').hover(
+    function() {
+      $(this).css({backgroundColor: "green",
+        color: "white",
+        borderRadius: "100%"})
+    },
+    function() {
+      $(this).css({backgroundColor: "",
+        color: "green",
+        borderRadius: "0%"})
+    }
+  );
+  $('#times_circle').hover(
+    function() {
+      $(this).css({backgroundColor: "red",
+        color: "white",
+        borderRadius: "100%"})
+    },
+    function() {
+      $(this).css({backgroundColor: "",
+        color: "red",
+        borderRadius: "0%"})
+    }
+  )
 }
 
 // RENDER //////////////////////////////////////////////////
@@ -236,7 +277,7 @@ const renderGrades = () => {
         if (member.attendance[session_index]) {
           $(`
           <td class="grade changable" id="${member._id}_${session_index}" member_id="${member._id}" session_index="${session_index}" x="${countMember}" y="${session_index + 1}">
-            <i class="fas fa-check-circle float-left pl-1" style="padding-top:2px;"></i>
+            <i class="fas fa-check-circle float-left pl-1" style="padding-top:2px; color:green"></i>
             ${member.grades[session_index] < 0 ? '-' : member.grades[session_index] }
           </td>
         `).appendTo(tr);
@@ -338,7 +379,6 @@ const initGradeCellSelection = () => {
     const tdId = event.target.id;
     const xTd = parseInt(event.target.attributes[4].nodeValue);
     const yTd = parseInt(event.target.attributes[5].nodeValue);
-    console.log($(tdId).prevObject[0].all[tdId].firstChild.data);
     
     const text = $(event.target).text();
     const grade = text.trim() === "-" ? 0 : parseFloat(text);
@@ -367,17 +407,49 @@ const initGradeCellSelection = () => {
     hightLight(oldColumn, oldRow, column, row)
 
     if($(`#${tdId}`)[0].children.length === 1) {
-      $('#check_point')[0].checked = true;
+      $('#check_circle').css({
+        "background-color": "green",
+        "color": "white",
+        "border-radius": "100%"
+      });
+      $('#check_circle').hover(
+        function() {
+          $(this).css({backgroundColor: "green",
+            color: "white",
+            borderRadius: "100%"})
+        }
+      );
+      $('#times_circle').css({
+        "background-color": "",
+        "color": "red",
+        "border-radius": "0%"
+      })
     } else {
-      $('#check_point')[0].checked = false;
+      $('#check_circle').css({
+        "background-color": "",
+        "color": "green",
+        "border-radius": "0%"
+      });
+      $('#times_circle').css({
+        "background-color": "red",
+        "color": "white",
+        "border-radius": "100%"
+      });
+      $('#times_circle').hover(
+        function() {
+          $(this).css({backgroundColor: "red",
+            color: "white",
+            borderRadius: "100%"})
+        }
+      );
     }
   });
 }
 
 
-// click Checkbox
+// click Attendance
 const checkBox = () => {
-  $('#check_point').on('click', (event) => {
+  $('#check_circle').on('click', (event) => {
     tdId = context.selectedGrade.tdId;
     memberID = context.selectedMemberID;
     memberIndex = $(`#${tdId}`)[0].parentNode.sectionRowIndex;
@@ -385,19 +457,59 @@ const checkBox = () => {
 
     classroomID = context.selectedClassroom._id;
     if($(`#${tdId}`)[0].children.length === 1) {
+      jumpTd();
+    } else {
+      $('#check_circle').css({
+        "background-color": "green",
+        "color": "white",
+        "border-radius": "100%"
+      });
+      $('#times_circle').css({
+        "background-color": "",
+        "color": "red",
+        "border-radius": "0%"
+      });
+      $(`<i class="fas fa-check-circle float-left pl-1" style="padding-top:2px; color:green"></i>`).appendTo($(`#${tdId}`));        
+      attendance[context.currentSession - 1] = 1;
+      attendanceJSON = JSON.stringify({
+        member_id: memberID,
+        classroom_id: classroomID,
+        attendance: attendance
+      });
+      submitAttendance(attendanceJSON);
+    }
+  });
+
+  $('#times_circle').on('click', (event) => {
+    tdId = context.selectedGrade.tdId;
+    memberID = context.selectedMemberID;
+    memberIndex = $(`#${tdId}`)[0].parentNode.sectionRowIndex;
+    attendance = context.selectedClassroom.members[memberIndex].attendance;
+
+    classroomID = context.selectedClassroom._id;
+    if($(`#${tdId}`)[0].children.length === 1) {
+      $('#times_circle').css({
+        "background-color": "red",
+        "color": "white",
+        "border-radius": "100%"
+      });
+      $('#check_circle').css({
+        "background-color": "",
+        "color": "green",
+        "border-radius": "0%"
+      });
       $(`#${tdId} i`).remove();
       attendance[context.currentSession - 1] = 0;
+      attendanceJSON = JSON.stringify({
+        member_id: memberID,
+        classroom_id: classroomID,
+        attendance: attendance
+      });
+      submitAttendance(attendanceJSON);
     } else {
-      $(`<i class="fas fa-check-circle float-left pl-1" style="padding-top:2px;"></i>`).appendTo($(`#${tdId}`));
-      attendance[context.currentSession - 1] = 1;
+      jumpTd();
     }
-
-    attendanceJSON = JSON.stringify({
-      member_id: memberID,
-      classroom_id: classroomID,
-      attendance: attendance
-    })
-    submitAttendance(attendanceJSON)
+    
   });
 }
 
@@ -428,7 +540,7 @@ const handleGradeInput = (event) => {
     }
     tdValue = context.selectedGrade.value;
     if($(`#${tdId}`)[0].children.length === 1) {
-      $(tdId).prevObject[0].all[tdId].innerHTML = '<i class="fas fa-check-circle float-left pl-1" style="padding-top:2px;"></i>' + parseFloat(tdValue)
+      $(tdId).prevObject[0].all[tdId].innerHTML = '<i class="fas fa-check-circle float-left pl-1" style="padding-top:2px; color:green"></i>' + parseFloat(tdValue)
     }
     
     else $(tdId).prevObject[0].all[tdId].innerHTML = parseFloat(tdValue);
@@ -465,7 +577,6 @@ const initClassroomSelection = () => {
     }
     const classRoomId = $('#slt_classrooms option:selected').attr('id');
     context.selectedClassroom = context.classRooms.find(classroom => classroom._id === classRoomId);
-    // console.log(context.selectedClassroom)
     context.submittable = false;
     renderControlPanel();
     renderGrades(); // render empty grades of class, only members shown
@@ -480,3 +591,4 @@ const jumpTd = () => {
   const nextYTd = context.selectedGrade.yTd;
   $(`[x|='${nextXTd}'][y|='${nextYTd}']`).click();
 }
+
