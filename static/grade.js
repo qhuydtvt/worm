@@ -262,13 +262,15 @@ const renderControlPanel = () => {
     $('#btn_grade').removeClass('btn-secondary');
     $('#btn_grade').addClass('btn-primary');
     $('#input_grade').attr('disabled', false);
+    $('#input_grade').css('background-color', '');
   }
   else {
     // $('#tbl_grade_body .grade').removeClass('changable');
-    $('#btn_grade').text('Start');
+    $('#btn_grade').text('Enable Grade');
     $('#btn_grade').addClass('btn-secondary');
     $('#btn_grade').removeClass('btn-primary');
     $('#input_grade').attr('disabled', true);
+    $('#input_grade').css('background-color', '#b5b5b5');
     $('#input_grade').val('');
   }
 }
@@ -462,7 +464,7 @@ const initClassroomSelection = () => {
       $('#time')[0].innerText = "00:00:00";
     }
     const classRoomId = $('#slt_classrooms option:selected').attr('id');
-    // context.selectedClassroom = context.classRooms.find(classroom => classroom._id === classRoomId);
+    context.selectedClassroom = context.classRooms.find(classroom => classroom._id === classRoomId);
     // console.log(context.selectedClassroom)
     context.submittable = false;
     renderControlPanel();
