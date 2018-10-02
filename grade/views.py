@@ -29,7 +29,6 @@ def get_user_lms():
   data = r.json()
   teacher = []
   for user in data['data']['users']:
-    print(user)
     if user['role'] == 1:
       teacher.append(user)
   return teacher
