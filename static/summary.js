@@ -10,6 +10,7 @@ const context = {
 $(document).ready(() => {
   initDate();
   selectDate();
+  fetchSummary(($('#start_date')[0].value), ($('#stop_date')[0].value));
 });
 
 const initDate = (() => {
@@ -131,7 +132,7 @@ const fetchSummary = async (start_date, stop_date) => {
     setIncorrect(true);
   } else {
     setIncorrect(false);
-    if (res && res.teachers && res.classrooms && res.total_days) {
+    if (res && res.teachers && res.classrooms) {
       context.summaryTeachers = res.teachers;
       context.summaryClassrooms = res.classrooms;
       context.totalDays = res.total_days;
