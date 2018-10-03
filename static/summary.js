@@ -10,6 +10,7 @@ const context = {
 $(document).ready(() => {
   initDate();
   selectDate();
+  fetchSummary(($('#start_date')[0].value), ($('#stop_date')[0].value));
 });
 
 const initDate = (() => {
@@ -65,7 +66,9 @@ const renderTeachers = (() => {
   avgTotalSecond = (totalSec / teachers.length);
   avgTotalSecondPerDay = (totalSecPerDay / teachers.length)
   strAvgTotalSecond = new Date(avgTotalSecond * 1000).toISOString().substr(11, 8);
+  // strAvgTotalSecond = avgTotalSecond * 1000;
   strAvgTotalSecondPerDay = new Date(avgTotalSecondPerDay * 1000).toISOString().substr(11, 8);
+  // strAvgTotalSecondPerDay = avgTotalSecondPerDay * 1000;
   const trAvg = $(`
       <tr class="font-weight-bold">
         <td>Average Time</td>
@@ -102,6 +105,9 @@ const renderClassrooms = (() => {
   avgTotalSecond = (totalSec / classrooms.length);
   avgTotalSecondPerDay = (totalSecPerDay / classrooms.length)
   strAvgTotalSecond = new Date(avgTotalSecond * 1000).toISOString().substr(11, 8);
+  // strAvgTotalSecond = avgTotalSecondPerDay;
+  // console.log("dkmm");
+  
   strAvgTotalSecondPerDay = new Date(avgTotalSecondPerDay * 1000).toISOString().substr(11, 8);
   const trAvg = $(`
       <tr class="font-weight-bold">
@@ -114,6 +120,8 @@ const renderClassrooms = (() => {
 
 
 const fetchSummary = async (start_date, stop_date) => {
+  $('#tbl_teacher_body').empty();
+  $('#tbl_classroom_body').empty();
   setLoading(true);
   const res = await $.ajax({
     url: `/worm/api/log?start_time=${start_date}&stop_time=${stop_date}`,
@@ -124,7 +132,7 @@ const fetchSummary = async (start_date, stop_date) => {
     setIncorrect(true);
   } else {
     setIncorrect(false);
-    if (res && res.teachers && res.classrooms && res.total_days) {
+    if (res && res.teachers && res.classrooms) {
       context.summaryTeachers = res.teachers;
       context.summaryClassrooms = res.classrooms;
       context.totalDays = res.total_days;
