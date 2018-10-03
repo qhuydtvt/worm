@@ -86,7 +86,7 @@ const submitAttendance = async (attendanceJSON) => {
 const submit = async (classroom_id, gradeJSON) => {
   setLoading(true);
   const res = await $.ajax({
-    url: `api/grades?classroom_id=${classroom_id}`,
+    url: `/worm/api/grades?classroom_id=${classroom_id}`,
     type: "POST",
     data: gradeJSON,
     dataType: "json",
@@ -101,7 +101,7 @@ const submit = async (classroom_id, gradeJSON) => {
 const checkAdmin = async () => {
   setLoading(true);
   const res = await $.ajax({
-    url: "/worm/grades?classroom",
+    url: "/worm/grades",
     type: "GET",
   });
   setLoading(false);
