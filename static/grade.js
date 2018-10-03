@@ -41,7 +41,7 @@ $(document).ready(() => {
 const fetchGrades = async (classroomId) => {
   setLoading(true);
   const res = await $.ajax({
-    url: `/api/grades?classroom_id=${classroomId}`,
+    url: `/worm/api/grades?classroom_id=${classroomId}`,
     type: "GET",
   });
   setLoading(false);
@@ -71,7 +71,7 @@ const fetchClassrooms = async () => {
 const submitAttendance = async (attendanceJSON) => {
   setLoading(true);
   const res = await $.ajax({
-    url: `api/attendance`,
+    url: `/worm/api/attendance`,
     type: "POST",
     data: attendanceJSON,
     dataType: "json",
@@ -101,7 +101,7 @@ const submit = async (classroom_id, gradeJSON) => {
 const checkAdmin = async () => {
   setLoading(true);
   const res = await $.ajax({
-    url: "/api/grades?classroom",
+    url: "/worm/grades?classroom",
     type: "GET",
   });
   setLoading(false);
