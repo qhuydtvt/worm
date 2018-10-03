@@ -101,7 +101,7 @@ const submit = async (classroom_id, gradeJSON) => {
 const checkAdmin = async () => {
   setLoading(true);
   const res = await $.ajax({
-    url: "/worm/grades",
+    url: "/worm/api/grades",
     type: "GET",
   });
   setLoading(false);
