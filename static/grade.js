@@ -44,26 +44,26 @@ const fetchGrades = async (classroomId) => {
     url: `/worm/api/grades?classroom_id=${classroomId}`,
     type: "GET",
   });
-  setLoading(false);
   if (res && res.data) {
     context.selectedClassroom = res.data;   
     renderGrades();
   };
+  setLoading(false);
 };
 
 
 // GET all classrooms
 const fetchClassrooms = async () => {
-  setLoading(true);
+  // setLoading(true);
   const res = await $.ajax({
     url: "/worm/api/classroom",
     type: "GET",
   });
-  setLoading(false);
   if (res && res.data) {
     context.classRooms = res.data.class;
     renderClassroomSelections();
   }
+  // setLoading(false);
 };
 
 
@@ -104,7 +104,6 @@ const checkAdmin = async () => {
     url: "/worm/api/grades",
     type: "GET",
   });
-  setLoading(false);
   
   if (res) {
     context.role = res.role;
@@ -112,6 +111,7 @@ const checkAdmin = async () => {
       adminUI();
     }
   }
+  setLoading(false);
 }
 
 
@@ -193,25 +193,25 @@ const hightLight = (oldColumn, oldRow, column, row) => {
 const hover = () => {
   $('#check_circle').hover(
     function() {
-      $(this).css({backgroundColor: "green",
+      $(this).css({backgroundColor: "black",
         color: "white",
         borderRadius: "100%"})
     },
     function() {
       $(this).css({backgroundColor: "",
-        color: "green",
+        color: "black",
         borderRadius: "0%"})
     }
   );
   $('#times_circle').hover(
     function() {
-      $(this).css({backgroundColor: "red",
+      $(this).css({backgroundColor: "black",
         color: "white",
         borderRadius: "100%"})
     },
     function() {
       $(this).css({backgroundColor: "",
-        color: "red",
+        color: "black",
         borderRadius: "0%"})
     }
   )
@@ -220,17 +220,18 @@ const hover = () => {
 // RENDER //////////////////////////////////////////////////
 
 // Render classrooms selections
-const renderClassroomSelections = () => {
+const renderClassroomSelections = async () => {
   $('#slt_classrooms').empty();
-  $(`
-      <option id="...">...</option>
-    `).appendTo('#slt_classrooms')
-
-  context.classRooms.forEach((classroom) => {
+  // $(`
+  //     <option id="...">...</option>
+  //   `).appendTo('#slt_classrooms')
+  setLoading(true);
+  await context.classRooms.forEach((classroom) => {
     $(`
       <option id=${classroom._id}>${classroom.course} ${classroom.classroom}</option>
     `).appendTo('#slt_classrooms')
   });
+  setLoading(false);
 }
 
 
@@ -277,7 +278,7 @@ const renderGrades = () => {
         if (member.attendance[session_index]) {
           $(`
           <td class="grade changable" id="${member._id}_${session_index}" member_id="${member._id}" session_index="${session_index}" x="${countMember}" y="${session_index + 1}">
-            <i class="fas fa-check-circle float-left pl-1" style="padding-top:2px; color:green"></i>
+            <i class="fas fa-check-circle float-left pl-1" style="padding-top:2px; color:black"></i>
             ${member.grades[session_index] < 0 ? '-' : member.grades[session_index] }
           </td>
         `).appendTo(tr);
@@ -408,61 +409,61 @@ const initGradeCellSelection = () => {
 
     if($(`#${tdId}`)[0].children.length === 1) {
       $('#check_circle').css({
-        "background-color": "green",
+        "background-color": "black",
         "color": "white",
         "border-radius": "100%"
       });
       $('#check_circle').hover(
         function() {
-          $(this).css({backgroundColor: "green",
+          $(this).css({backgroundColor: "black",
             color: "white",
             borderRadius: "100%"})
         }
       );
       $('#times_circle').hover(
         function() {
-          $(this).css({backgroundColor: "red",
+          $(this).css({backgroundColor: "black",
             color: "white",
             borderRadius: "100%"})
         },
         function() {
           $(this).css({backgroundColor: "",
-            color: "red",
+            color: "black",
             borderRadius: "0%"})
         }
       );
       $('#times_circle').css({
         "background-color": "",
-        "color": "red",
+        "color": "black",
         "border-radius": "0%"
       })
     } else {
       $('#check_circle').css({
         "background-color": "",
-        "color": "green",
+        "color": "black",
         "border-radius": "0%"
       });
       $('#times_circle').css({
-        "background-color": "red",
+        "background-color": "black",
         "color": "white",
         "border-radius": "100%"
       });
       $('#times_circle').hover(
         function() {
-          $(this).css({backgroundColor: "red",
+          $(this).css({backgroundColor: "black",
             color: "white",
             borderRadius: "100%"})
         }
       );
       $('#check_circle').hover(
         function() {
-          $(this).css({backgroundColor: "green",
+          $(this).css({backgroundColor: "black",
             color: "white",
             borderRadius: "100%"})
         },
         function() {
           $(this).css({backgroundColor: "",
-            color: "green",
+            color: "black",
             borderRadius: "0%"})
         }
       );
@@ -484,16 +485,16 @@ const checkBox = () => {
       jumpTd();
     } else {
       $('#check_circle').css({
-        "background-color": "green",
+        "background-color": "black",
         "color": "white",
         "border-radius": "100%"
       });
       $('#times_circle').css({
         "background-color": "",
-        "color": "red",
+        "color": "black",
         "border-radius": "0%"
       });
-      $(`<i class="fas fa-check-circle float-left pl-1" style="padding-top:2px; color:green"></i>`).appendTo($(`#${tdId}`));        
+      $(`<i class="fas fa-check-circle float-left pl-1" style="padding-top:2px; color:black"></i>`).appendTo($(`#${tdId}`));        
       attendance[context.currentSession - 1] = 1;
       attendanceJSON = JSON.stringify({
         member_id: memberID,
@@ -513,13 +514,13 @@ const checkBox = () => {
     classroomID = context.selectedClassroom._id;
     if($(`#${tdId}`)[0].children.length === 1) {
       $('#times_circle').css({
-        "background-color": "red",
+        "background-color": "black",
         "color": "white",
         "border-radius": "100%"
       });
       $('#check_circle').css({
         "background-color": "",
-        "color": "green",
+        "color": "black",
         "border-radius": "0%"
       });
       $(`#${tdId} i`).remove();
@@ -564,7 +565,7 @@ const handleGradeInput = (event) => {
     }
     tdValue = context.selectedGrade.value;
     if($(`#${tdId}`)[0].children.length === 1) {
-      $(tdId).prevObject[0].all[tdId].innerHTML = '<i class="fas fa-check-circle float-left pl-1" style="padding-top:2px; color:green"></i>' + parseFloat(tdValue)
+      $(tdId).prevObject[0].all[tdId].innerHTML = '<i class="fas fa-check-circle float-left pl-1" style="padding-top:2px; color:black"></i>' + parseFloat(tdValue)
     }
     
     else $(tdId).prevObject[0].all[tdId].innerHTML = parseFloat(tdValue);

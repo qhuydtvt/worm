@@ -28,6 +28,8 @@ const initDate = (() => {
 const selectDate = (() => {
   start_date = (($('#start_date')[0].value));
   stop_date = (($('#stop_date')[0].value));
+  
+  
   $('#start_date').on('change', (event) => {
     start_date = event.target.value;
     fetchSummary(start_date, stop_date);
@@ -50,6 +52,7 @@ const renderTeachers = (() => {
       teacher.time = ["0:00:00","0:00:00"];
     }
     round2Decimal(teacher.time[1]);
+    
     const tr = 
     $(`
       <tr id="${teacher._id}">
@@ -66,9 +69,7 @@ const renderTeachers = (() => {
   avgTotalSecond = (totalSec / teachers.length);
   avgTotalSecondPerDay = (totalSecPerDay / teachers.length)
   strAvgTotalSecond = new Date(avgTotalSecond * 1000).toISOString().substr(11, 8);
-  // strAvgTotalSecond = avgTotalSecond * 1000;
   strAvgTotalSecondPerDay = new Date(avgTotalSecondPerDay * 1000).toISOString().substr(11, 8);
-  // strAvgTotalSecondPerDay = avgTotalSecondPerDay * 1000;
   const trAvg = $(`
       <tr class="font-weight-bold">
         <td>Average Time</td>
@@ -105,9 +106,6 @@ const renderClassrooms = (() => {
   avgTotalSecond = (totalSec / classrooms.length);
   avgTotalSecondPerDay = (totalSecPerDay / classrooms.length)
   strAvgTotalSecond = new Date(avgTotalSecond * 1000).toISOString().substr(11, 8);
-  // strAvgTotalSecond = avgTotalSecondPerDay;
-  // console.log("dkmm");
-  
   strAvgTotalSecondPerDay = new Date(avgTotalSecondPerDay * 1000).toISOString().substr(11, 8);
   const trAvg = $(`
       <tr class="font-weight-bold">
