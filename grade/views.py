@@ -24,8 +24,8 @@ def get_classroom_lms():
 
 
 def get_user_lms():
-  r = lms.users.get()
   lms.users.url += "?listAll=1" 
+  r = lms.users.get()
   data = r.json()
   teacher = []
   for user in data['data']['users']:
@@ -136,11 +136,11 @@ def api_grade_log(request):
   if request.user.is_authenticated:
     grade_log = GradeLog.objects.filter(grade_day__range=[start_time, time_plus])
     if len(grade_log) > 0:
-      #teachers
+      # teachers
       log = get_log(grade_log)
       teacher_time = controller.cal_teacher_time(log, day.days)
       teacher_info = get_user_lms()
-      #classrooms
+      # classrooms
       classroom_time = controller.cal_classroom_time(log, day.days)
       class_info = controller.classroom_info["data"]['class']
 
@@ -185,4 +185,3 @@ def get_log(grade_log):
     else:
       data[log.classroom_id].append(data_dict)
   return data
-
