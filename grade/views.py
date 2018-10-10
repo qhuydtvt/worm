@@ -10,9 +10,6 @@ from addict import Dict
 import datetime
 from . import controller
 
-lms.users.url += "?listAll=1"
-lms.classroom.url += "listAll=1"
-
 
 def classroom_lms(request):
   r = lms.classroom.get()
@@ -27,6 +24,7 @@ def get_classroom_lms():
 
 
 def get_user_lms():
+  lms.users.url += "?listAll=1"
   r = lms.users.get()
   data = r.json()
   teacher = []
