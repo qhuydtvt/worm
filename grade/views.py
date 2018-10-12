@@ -46,24 +46,21 @@ def summary(request):
 
 @csrf_exempt
 def api_grade(request):
-  if request.user.is_authenticated:
-    if 'classroom_id' not in request.GET:
-      try:
-        teacher_id = request.session['teacher_id']
-        return JsonResponse({'success': 0,
-                             'message': '\'classroom_id\' not specified',
-                             "role": teacher_id})
-      except BaseException:
-        return JsonResponse({'success': 0,
-                             'message': '\'classroom_id\' not specified',
-                             "role": 0})
-    classroom_id = request.GET["classroom_id"]
-    if request.method == "GET":
-      return api_grade_get(request, classroom_id)
-    elif request.method == "POST":
-      return api_grade_post(request, classroom_id)
-  else:
-    return JsonResponse({"success": 0, "message:": "method not allowed"})
+  if 'classroom_id' not in request.GET:
+    try:
+      teacher_id = request.session['teacher_id']
+      return JsonResponse({'success': 0,
+                            'message': '\'classroom_id\' not specified',
+                            "role": teacher_id})
+    except BaseException:
+      return JsonResponse({'success': 0,
+                            'message': '\'classroom_id\' not specified',
+                            "role": 0})
+  classroom_id = request.GET["classroom_id"]
+  if request.method == "GET":
+    return api_grade_get(request, classroom_id)
+  elif request.method == "POST":
+    return api_grade_post(request, classroom_id)
 
 
 def api_grade_get(request, classroom_id):
