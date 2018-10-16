@@ -1,6 +1,7 @@
 import time
 import datetime
 from services import lms
+from django.core.cache import cache
 
 
 def cal_time(value):
@@ -30,25 +31,26 @@ def cal_teacher_time(data, num_day):
 
 
 def get_classroom_lms():
+  TOKEN = cache.get('access_token')
+  lms.classroom.url += "?listAll=1&access_token=" + TOKEN
   r = lms.classroom.get()
   data = r.json()
+  lms.classroom.url = lms.reset_url_classroom
   return data
 
 
-classroom_info = get_classroom_lms()
-
-
 def cal_classroom_time(data, num_day):
-    if num_day == 0:
-        num_day = 1
-    log = {}
-    total = 0
-    for key, value in data.items():
-        time_list = cal_time(value)
-        total = sum(time_list)
-        time_list = []
-        for classroom in classroom_info['data']['class']:
-            if classroom["_id"] == key:
-                avg_time = total / num_day / len(classroom["members"])
-                log[key] = [str(datetime.timedelta(seconds=total)), str(datetime.timedelta(seconds=avg_time))]
-    return log
+  classroom_info = get_classroom_lms()
+  if num_day == 0:
+      num_day = 1
+  log = {}
+  total = 0
+  for key, value in data.items():
+      time_list = cal_time(value)
+      total = sum(time_list)
+      time_list = []
+      for classroom in classroom_info['data']['class']:
+          if classroom["_id"] == key:
+              avg_time = total / num_day / len(classroom["members"])
+              log[key] = [str(datetime.timedelta(seconds=total)), str(datetime.timedelta(seconds=avg_time))]
+  return log

@@ -92,6 +92,15 @@ TEMPLATES = [
 WSGI_APPLICATION = 'worm.wsgi.application'
 
 
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'LOCATION': 'unique-snowflake',
+        'TIMEOUT': None,
+    }
+}
+
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
