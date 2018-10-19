@@ -27,6 +27,7 @@ def get_classroom_lms(request):
   lms.classroom.url += "?listAll=1"
   r = lms.classroom.get(headers=headers)
   data = r.json()
+  print(data)
   lms.classroom.url = lms.reset_url_classroom
   return data
 
