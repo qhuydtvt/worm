@@ -17,7 +17,7 @@ def index(request):
 
       data = {"username": username,
               "password": password}
-      r = TKRest('https://learn.techkids.vn/api')
+      r = TKRest('https://learn.techkids.vn/api/')
       r = r.auth.post(data)
 
       if r.json()['success'] == 1:
