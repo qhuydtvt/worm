@@ -39,7 +39,6 @@ ALLOWED_HOSTS = [
     'localhost:3000'
 ]
 
-
 # Application definition
 
 INSTALLED_APPS = [
