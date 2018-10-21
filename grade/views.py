@@ -77,18 +77,18 @@ def api_grade(request):
                            'message': '\'classroom_id\' not specified',
                            "role": 0})
   classroom_id = request.GET["classroom_id"]
-  if request.method == "GET":
-    return api_grade_get(request, classroom_id)
-  elif request.method == "POST":
-    return api_grade_post(request, classroom_id)
-
-
-def api_grade_get(request, classroom_id):
   if 'access_token' in request.GET:
     token = request.GET["access_token"]
     headers = {"access_token": token}
   else:
     headers = get_token(request)
+  if request.method == "GET":
+    return api_grade_get(request, classroom_id, headers)
+  elif request.method == "POST":
+    return api_grade_post(request, classroom_id)
+
+
+def api_grade_get(request, classroom_id, headers):
   classroom_r = lms.classroom.get(classroom_id, headers=headers)
   classroom_response = classroom_r.json()
   if 'data' not in classroom_response:
