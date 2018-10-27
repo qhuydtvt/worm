@@ -5,6 +5,7 @@ from django.contrib.auth import login, logout
 from .forms import LoginForm
 from django.contrib import messages
 from tk_rest import TKRest
+from django.core.cache import cache
 
 
 def index(request):
@@ -20,13 +21,17 @@ def index(request):
       r = r.auth.post(data)
 
       if r.json()['success'] == 1:
-        request.session['teacher_id'] = r.json()['data']['id']
-        user, create = User.objects.get_or_create(username=username,
-                                                  password=password,
-                                                  is_staff=True)
-        login(request, user)
-        return HttpResponseRedirect('/worm/')
-
+        if r.json()['data']['user']['role'] == 1:
+          request.session['teacher_id'] = r.json()['data']['user']['id']
+          cache.set("access_token", r.json()['data']['access_token'])
+          user, create = User.objects.get_or_create(username=username,
+                                                    password=password,
+                                                    is_staff=True)
+          login(request, user)
+          return HttpResponseRedirect('/worm/')
+        else:
+          messages.warning(request, 'Your account does not have permission to access!')
+          return render(request, 'login.html', {"form": form})
       else:
         messages.warning(request, 'Username or password incorrect!')
         return render(request, 'login.html', {"form": form})
@@ -37,4 +42,5 @@ def index(request):
 
 def logout_view(request):
   logout(request)
+  cache.delete('access_token')
   return HttpResponseRedirect('/worm/')

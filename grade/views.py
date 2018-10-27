@@ -1,6 +1,7 @@
 from django.shortcuts import render
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth import logout
 from services import lms
 from .models import Grade, GradeLog, Attendance
 from django.views.decorators.csrf import csrf_exempt
@@ -9,65 +10,87 @@ import json
 from addict import Dict
 import datetime
 from . import controller
+from django.core.cache import cache
 
 
-def classroom_lms(request):
-  r = lms.classroom.get()
+def get_token(request):
+  TOKEN = cache.get('access_token')
+  if TOKEN is None:
+    return TOKEN
+  else:
+    headers = {"access_token": TOKEN}
+    return headers
+
+
+def get_classroom_lms(request):
+  headers = get_token(request)
+  lms.classroom.url += "?listAll=1"
+  r = lms.classroom.get(headers=headers)
   data = r.json()
-  return JsonResponse(data)
-
-
-def get_classroom_lms():
-  r = lms.classroom.get()
-  data = r.json()
+  lms.classroom.url = lms.reset_url_classroom
   return data
 
 
-def get_user_lms():
-  lms.users.url += "?listAll=1" 
-  r = lms.users.get()
+def classroom_lms(request):
+  data = get_classroom_lms(request)
+  return JsonResponse(data)
+
+
+def get_user_lms(request):
+  headers = get_token(request)
+  lms.users.url += "?listAll=1"
+  r = lms.users.get(headers=headers)
   data = r.json()
   teacher = []
   for user in data['data']['users']:
     if user['role'] == 1:
       teacher.append(user)
+  lms.users.url = lms.reset_url_users
   return teacher
 
 
 @login_required
 def grade(request):
+  data = get_classroom_lms(request)
+  if "data" not in data:
+    logout(request)
+    return HttpResponseRedirect('/worm/login/logout')
+  else:
     return render(request, "grade.html")
 
 
 @login_required
 def summary(request):
-    return render(request, "summary.html")
+  return render(request, "summary.html")
 
 
 @csrf_exempt
 def api_grade(request):
-  if request.user.is_authenticated:
-    if 'classroom_id' not in request.GET:
-      try:
-        teacher_id = request.session['teacher_id']
-        return JsonResponse({'success': 0,
-                             'message': '\'classroom_id\' not specified',
-                             "role": teacher_id})
-      except BaseException:
-        return JsonResponse({'success': 0,
-                             'message': '\'classroom_id\' not specified',
-                             "role": 0})
-    classroom_id = request.GET["classroom_id"]
-    if request.method == "GET":
-      return api_grade_get(request, classroom_id)
-    elif request.method == "POST":
-      return api_grade_post(request, classroom_id)
+  if 'classroom_id' not in request.GET:
+    try:
+      teacher_id = request.session['teacher_id']
+      return JsonResponse({'success': 0,
+                           'message': '\'classroom_id\' not specified',
+                           "role": teacher_id})
+    except BaseException:
+      return JsonResponse({'success': 0,
+                           'message': '\'classroom_id\' not specified',
+                           "role": 0})
+  classroom_id = request.GET["classroom_id"]
+  if 'access_token' in request.GET:
+    token = request.GET["access_token"]
+    headers = {"access_token": token}
   else:
-    return JsonResponse({"success": 0, "message:": "method not allowed"})
+    headers = get_token(request)
+  if request.method == "GET":
+    return api_grade_get(request, classroom_id, headers)
+  elif request.method == "POST":
+    return api_grade_post(request, classroom_id)
 
 
-def api_grade_get(request, classroom_id):
-  classroom_response = lms.classroom.get(classroom_id).json()
+def api_grade_get(request, classroom_id, headers):
+  classroom_r = lms.classroom.get(classroom_id, headers=headers)
+  classroom_response = classroom_r.json()
   if 'data' not in classroom_response:
     return JsonResponse({"success": 0, "message": 'Could not find classroom', })
   classroom_data = Dict(classroom_response['data'])
@@ -139,10 +162,11 @@ def api_grade_log(request):
       # teachers
       log = get_log(grade_log)
       teacher_time = controller.cal_teacher_time(log, day.days)
-      teacher_info = get_user_lms()
+      teacher_info = get_user_lms(request)
       # classrooms
       classroom_time = controller.cal_classroom_time(log, day.days)
-      class_info = controller.classroom_info["data"]['class']
+      class_info_response = get_classroom_lms(request)
+      class_info = class_info_response["data"]['class']
 
       for index, user in enumerate(teacher_info):
         if user["_id"] in teacher_time:

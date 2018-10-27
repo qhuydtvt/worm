@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     'grade',
     'worm',
     'services',
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
@@ -63,7 +64,18 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware',
 ]
+
+CORS_ORIGIN_ALLOW_ALL = True
+CORS_ALLOW_CREDENTIALS = True
+CORS_ORIGIN_WHITELIST = (
+    'localhost:3000',
+)
+CORS_ORIGIN_REGEX_WHITELIST = (
+    'localhost:3000',
+)
 
 MIDDLEWARE_CLASSES = [
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -90,6 +102,15 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'worm.wsgi.application'
+
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'LOCATION': 'unique-snowflake',
+        'TIMEOUT': None,
+    }
+}
 
 
 DATABASES = {
