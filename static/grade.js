@@ -23,15 +23,15 @@ const context = {
 };
 
 $(document).ready(async () => {
-  await renderGrades(); // Render empty grade tables
-  await initClassroomSelection(); // Config classroom => when users select classrooms
-  await initGradeCellSelection(); // Config grade cell => when users select grade
-  await initGradeProcess(); // Config grading: CLick start => Edit grade => Submit
+  renderGrades(); // Render empty grade tables
+  initClassroomSelection(); // Config classroom => when users select classrooms
+  initGradeCellSelection(); // Config grade cell => when users select grade
+  initGradeProcess(); // Config grading: CLick start => Edit grade => Submit
   await fetchClassrooms(); // Load classrooms 
-  await checkAdmin();
-  await initSelectOptions();  
-  await checkBox();
-  await hover();
+  checkAdmin();
+  initSelectOptions();  
+  checkBox();
+  hover();
   setLoading(false);
 });
 
@@ -46,8 +46,8 @@ const fetchGrades = async (classroomId) => {
     type: "GET",
   });
   if (res && res.data) {
-    context.selectedClassroom = res.data;   
-    renderGrades();
+    context.selectedClassroom = await res.data;
+    await renderGrades();
   };
   setLoading(false);
 };
@@ -56,6 +56,7 @@ const fetchGrades = async (classroomId) => {
 // GET all classrooms
 const fetchClassrooms = async () => {
   setLoading(true);
+  
   const res = await $.ajax({
     url: "/api/classroom",
     type: "GET",
@@ -64,7 +65,7 @@ const fetchClassrooms = async () => {
     context.classRooms = res.data.class;
     renderClassroomSelections();
   }
-  // setLoading(false);
+  setLoading(false);
 };
 
 
@@ -221,17 +222,16 @@ const hover = () => {
 // RENDER //////////////////////////////////////////////////
 
 // Render classrooms selections
-const renderClassroomSelections = async () => {
+const renderClassroomSelections = () => {
   $('#slt_classrooms').empty();
   $(`
       <option id="...">...</option>
     `).appendTo('#slt_classrooms')
-  await context.classRooms.forEach((classroom) => {
+  context.classRooms.forEach((classroom) => {
     $(`
       <option id=${classroom._id}>${classroom.course} ${classroom.classroom}</option>
     `).appendTo('#slt_classrooms')
   });
-  // setLoading(false);
 }
 
 
