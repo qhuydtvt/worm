@@ -25,7 +25,7 @@ def index(request):
                                                   password=password,
                                                   is_staff=True)
         login(request, user)
-        return HttpResponseRedirect('/')
+        return HttpResponseRedirect('/worm/')
 
       else:
         messages.warning(request, 'Username or password incorrect!')
@@ -37,4 +37,4 @@ def index(request):
 
 def logout_view(request):
   logout(request)
-  return HttpResponseRedirect('/')
+  return HttpResponseRedirect('/worm/')

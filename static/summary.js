@@ -122,7 +122,7 @@ const fetchSummary = async (start_date, stop_date) => {
   $('#tbl_classroom_body').empty();
   setLoading(true);
   const res = await $.ajax({
-    url: `/api/log?start_time=${start_date}&stop_time=${stop_date}`,
+    url: `/worm/api/log?start_time=${start_date}&stop_time=${stop_date}`,
     type: "GET"
   });
   setLoading(false);
