@@ -41,6 +41,7 @@ $(document).ready(async () => {
 // GET one classroom
 const fetchGrades = async (classroomId) => {
   setLoading(true);
+  
   const res = await $.ajax({
     url: `/worm/api/grades?classroom_id=${classroomId}`,
     type: "GET",
@@ -141,7 +142,8 @@ const setLoading = (loading) => {
   if (context.loading) {
     $('#loading_indicator').addClass('ui active indeterminate inline loader');
     $('#loading_indicator')[0].innerHTML = "";
-    $('#loading_indicator').removeClass('invisible');
+    // $('#loading_indicator').css('display','block');
+    $('#loading_indicator').removeClass("invisible");
     $('.ui.dropdown').addClass("disabled");
     $('#btn_grade').attr('disabled', true);
     $('#check_circle').off('click');
@@ -153,7 +155,8 @@ const setLoading = (loading) => {
     if (context.role === 0) {
       adminUI();
     } else {
-      $('#loading_indicator').addClass('invisible');
+      // $('#loading_indicator').css('display', 'none');
+      $('#loading_indicator').addClass("invisible");
     }
   }
 }
@@ -600,6 +603,11 @@ const initClassroomSelection = () => {
       $('#btn_grade').click();
       $('#time')[0].innerText = "00:00:00";
     }
+    if ($('#slt_classrooms')[0].value !== "...") {
+      $('#tbl_grade').css('display','block');
+    };
+    
+    
     const classRoomId = $('#slt_classrooms option:selected').attr('id');
     context.selectedClassroom = context.classRooms.find(classroom => classroom._id === classRoomId);
     context.submittable = false;
