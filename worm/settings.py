@@ -29,7 +29,7 @@ SECRET_KEY = '%yz*_8ws2dbw0pkr%%=n!i!j!i3fp@duby222bwv6hd!kn4zph'
 DEBUG = True
 
 ALLOWED_HOSTS = [
-    'worm-dev.herokuapp.com',
+    'dev-worm.herokuapp.com',
     'worm-test.herokuapp.com',
     'worm-d.herokuapp.com',
     'localhost',
