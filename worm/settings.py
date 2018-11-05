@@ -116,7 +116,7 @@ CACHES = {
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'worm',
+        'NAME': get_env_variable("PSQL_WORM_DB_NAME"),
         'USER': get_env_variable("PSQL_USERNAME"),
         'PASSWORD': get_env_variable("PSQL_PASSWORD"),
         'HOST': get_env_variable("PSQL_HOST"),
