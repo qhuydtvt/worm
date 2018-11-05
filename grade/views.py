@@ -102,10 +102,10 @@ def api_grade_get(request, classroom_id, headers):
     attendance = Attendance.objects.filter(member__member_id=member._id)
     attendance_dict = {member._id: json.loads(att.attendances) for att in attendance}
     grades = grade_dict.get(member._id, [-1] * session)
-    atten = attendance_dict.get(member._id, [0] * session)
+    atten = attendance_dict.get(member._id, [-1] * session)
     if len(grades) < session or len(atten) < session:
       grades.extend([-1] * (session - len(grades)))
-      atten.extend([0] * (session - len(atten)))
+      atten.extend([-1] * (session - len(atten)))
     elif len(grades) > session or len(atten) > session:
       grades = grades[0:session]
       atten = atten[0:session]

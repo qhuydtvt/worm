@@ -278,14 +278,15 @@ const renderGrades = () => {
     }
      else {
       for(var session_index = 0; session_index < sessionMax; session_index++) {
-        if (member.attendance[session_index]) {
+        
+        if (member.attendance[session_index] === 1) {
           $(`
           <td class="grade changable" id="${member._id}_${session_index}" member_id="${member._id}" session_index="${session_index}" x="${countMember}" y="${session_index + 1}">
             <i class="fas fa-check-circle float-left pl-1" style="padding-top:2px; color:black"></i>
             ${member.grades[session_index] < 0 ? '-' : member.grades[session_index] }
           </td>
         `).appendTo(tr);
-        } else {
+        } else{
           $(`
           <td class="grade changable" id="${member._id}_${session_index}" member_id="${member._id}" session_index="${session_index}" x="${countMember}" y="${session_index + 1}">
             ${member.grades[session_index] < 0 ? '-' : member.grades[session_index] }

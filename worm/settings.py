@@ -115,15 +115,14 @@ CACHES = {
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': get_env_variable("MYSQL_WORM_DB_NAME"),
-        'USER': get_env_variable("MYSQL_USERNAME"),
-        'PASSWORD': get_env_variable("MYSQL_PASSWORD"),
-        'HOST': get_env_variable("MYSQL_HOST"),
-        'PORT': get_env_variable("MYSQL_PORT"),
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'worm',
+        'USER': get_env_variable("PSQL_USERNAME"),
+        'PASSWORD': get_env_variable("PSQL_PASSWORD"),
+        'HOST': get_env_variable("PSQL_HOST"),
+        'PORT': get_env_variable("PSQL_PORT"),
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/2.1/ref/settings/#auth-password-validators
