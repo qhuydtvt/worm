@@ -103,6 +103,7 @@
 .grade.changable:hover,
 .grade.changable.highlight {
   background-color: rgb(145, 145, 255);
+  transition: 0.05s;
 }
 
 #slt_classrooms,

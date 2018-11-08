@@ -9,7 +9,8 @@ const context = {
     tdId: "",
     xTd: 0,
     yTd: 0,
-    value: ""
+    value: "",
+    attendance: -1,
   },
   time: {
     seconds: 0,
@@ -20,6 +21,7 @@ const context = {
   lastMemberID: "",
   role: null,
   currentSession: null,
+  sessionMax: null
 };
 
 $(document).ready(async () => {
@@ -27,7 +29,7 @@ $(document).ready(async () => {
   initClassroomSelection(); // Config classroom => when users select classrooms
   initGradeCellSelection(); // Config grade cell => when users select grade
   initGradeProcess(); // Config grading: CLick start => Edit grade => Submit
-  await fetchClassrooms(); // Load classrooms 
+  await fetchClassrooms(); // Load classrooms
   checkAdmin();
   initSelectOptions();  
   checkBox();
@@ -49,6 +51,7 @@ const fetchGrades = async (classroomId) => {
   if (res && res.data) {
     context.selectedClassroom = await res.data;
     await renderGrades();
+    context.sessionMax = res.data.session;
   };
   setLoading(false);
 };
@@ -142,7 +145,6 @@ const setLoading = (loading) => {
   if (context.loading) {
     $('#loading_indicator').addClass('ui active indeterminate inline loader');
     $('#loading_indicator')[0].innerHTML = "";
-    // $('#loading_indicator').css('display','block');
     $('#loading_indicator').removeClass("invisible");
     $('.ui.dropdown').addClass("disabled");
     $('#btn_grade').attr('disabled', true);
@@ -155,7 +157,6 @@ const setLoading = (loading) => {
     if (context.role === 0) {
       adminUI();
     } else {
-      // $('#loading_indicator').css('display', 'none');
       $('#loading_indicator').addClass("invisible");
     }
   }
@@ -252,9 +253,19 @@ const renderGrades = () => {
   const members = context.selectedClassroom.members;
 
   for(var session = 1; session <= sessionMax; session++) {
-    $(`
+    if (session === sessionMax - 1) {
+      $(`
+      <th class="table-dark" id="${session - 1}">P</th>
+    `).appendTo('#tbl_grade_row_sessions');
+    } else if (session === sessionMax) {
+      $(`
+      <th class="table-dark" id="${session - 1}">D</th>
+    `).appendTo('#tbl_grade_row_sessions');
+    } else {
+      $(`
       <th class="table-dark" id="${session - 1}">${session}</th>
     `).appendTo('#tbl_grade_row_sessions');
+    } 
   }
   countMember = 0;
   members.forEach((member) => {
@@ -278,17 +289,36 @@ const renderGrades = () => {
     }
      else {
       for(var session_index = 0; session_index < sessionMax; session_index++) {
-        
         if (member.attendance[session_index] === 1) {
           $(`
-          <td class="grade changable" id="${member._id}_${session_index}" member_id="${member._id}" session_index="${session_index}" x="${countMember}" y="${session_index + 1}">
+          <td class="grade changable" id="${member._id}_${session_index}" member_id="${member._id}" session_index="${session_index}" x="${countMember}" y="${session_index + 1}" attendance="1">
             <i class="fas fa-check-circle float-left pl-1" style="padding-top:2px; color:black"></i>
             ${member.grades[session_index] < 0 ? '-' : member.grades[session_index] }
           </td>
         `).appendTo(tr);
-        } else{
+        } else if(member.attendance[session_index] === 0){
           $(`
-          <td class="grade changable" id="${member._id}_${session_index}" member_id="${member._id}" session_index="${session_index}" x="${countMember}" y="${session_index + 1}">
+          <td class="grade changable" id="${member._id}_${session_index}" member_id="${member._id}" session_index="${session_index}" x="${countMember}" y="${session_index + 1}" attendance="0">
+            ${member.grades[session_index] < 0 ? '-' : member.grades[session_index] }
+          </td>
+        `).appendTo(tr);
+        } else if (member.attendance[session_index] === 2) {
+          $(`
+          <td class="grade changable" id="${member._id}_${session_index}" member_id="${member._id}" session_index="${session_index}" x="${countMember}" y="${session_index + 1}" attendance="2">
+            <i class="fas fa-check-circle float-left pl-1" style="padding-top:2px; color:black"></i>
+            ${member.grades[session_index] < 0 ? '-' : member.grades[session_index] }
+          </td>
+        `).appendTo(tr);
+        } else if (member.attendance[session_index] === 3) {
+          $(`
+          <td class="grade changable" id="${member._id}_${session_index}" member_id="${member._id}" session_index="${session_index}" x="${countMember}" y="${session_index + 1}" attendance="3">
+            <i class="fas fa-check-circle float-left pl-1" style="padding-top:2px; color:black"></i>
+            ${member.grades[session_index] < 0 ? '-' : member.grades[session_index] }
+          </td>
+        `).appendTo(tr);
+        } else {
+          $(`
+          <td class="grade changable" id="${member._id}_${session_index}" member_id="${member._id}" session_index="${session_index}" x="${countMember}" y="${session_index + 1}" attendance="-1">
             ${member.grades[session_index] < 0 ? '-' : member.grades[session_index] }
           </td>
         `).appendTo(tr);
@@ -303,7 +333,6 @@ const renderGrades = () => {
 // Render control panel
 const renderControlPanel = () => {
   if(context.submittable) {
-    // $('#tbl_grade_body .grade').addClass('changable');
     $('#btn_grade').text('Submit');
     $('#btn_grade').removeClass('btn-secondary');
     $('#btn_grade').addClass('btn-primary');
@@ -311,7 +340,6 @@ const renderControlPanel = () => {
     $('#input_grade').css('background-color', '');
   }
   else {
-    // $('#tbl_grade_body .grade').removeClass('changable');
     $('#btn_grade').text('Enable Grade');
     $('#btn_grade').addClass('btn-secondary');
     $('#btn_grade').removeClass('btn-primary');
@@ -411,7 +439,42 @@ const initGradeCellSelection = () => {
     const oldRow = $(`#${oldMemberID}`)
     hightLight(oldColumn, oldRow, column, row)
 
-    if($(`#${tdId}`)[0].children.length === 1) {
+    context.selectedGrade.attendance = parseInt($(`#${tdId}`).attr('attendance'));
+    console.log(context.selectedGrade.attendance);
+    
+    if(context.selectedGrade.attendance === 0) {
+      $('#check_circle').css({
+        "background-color": "",
+        "color": "black",
+        "border-radius": "0%"
+      });
+      $('#times_circle').css({
+        "background-color": "black",
+        "color": "white",
+        "border-radius": "100%"
+      });
+      $('#times_circle').hover(
+        function() {
+          $(this).css({backgroundColor: "black",
+            color: "white",
+            borderRadius: "100%"})
+        }
+      );
+      $('#check_circle').hover(
+        function() {
+          $(this).css({backgroundColor: "black",
+            color: "white",
+            borderRadius: "100%"})
+        },
+        function() {
+          $(this).css({backgroundColor: "",
+            color: "black",
+            borderRadius: "0%"})
+        }
+      );
+    } else if (context.selectedGrade.attendance === -1){
+      attendanceIcons();
+    } else {
       $('#check_circle').css({
         "background-color": "black",
         "color": "white",
@@ -441,40 +504,35 @@ const initGradeCellSelection = () => {
         "color": "black",
         "border-radius": "0%"
       })
-    } else {
-      $('#check_circle').css({
-        "background-color": "",
-        "color": "black",
-        "border-radius": "0%"
-      });
-      $('#times_circle').css({
-        "background-color": "black",
-        "color": "white",
-        "border-radius": "100%"
-      });
-      $('#times_circle').hover(
-        function() {
-          $(this).css({backgroundColor: "black",
-            color: "white",
-            borderRadius: "100%"})
-        }
-      );
-      $('#check_circle').hover(
-        function() {
-          $(this).css({backgroundColor: "black",
-            color: "white",
-            borderRadius: "100%"})
-        },
-        function() {
-          $(this).css({backgroundColor: "",
-            color: "black",
-            borderRadius: "0%"})
-        }
-      );
-    }
+    } 
   });
 }
 
+// attendance icons
+const attendanceIcons = () => {
+  $('#check_circle').css({
+    "background-color": "",
+    "color": "black",
+    "border-radius": "0%"
+  });
+  $('#times_circle').css({
+    "background-color": "",
+    "color": "black",
+    "border-radius": "0%"
+  });
+  $('#times_circle, #check_circle').hover(
+    function() {
+      $(this).css({backgroundColor: "black",
+        color: "white",
+        borderRadius: "100%"})
+    },
+    function() {
+      $(this).css({backgroundColor: "",
+        color: "black",
+        borderRadius: "0%"})
+    }
+  );
+}
 
 // click Attendance
 const checkBox = () => {
@@ -488,18 +546,20 @@ const checkBox = () => {
     if($(`#${tdId}`)[0].children.length === 1) {
       jumpTd();
     } else {
-      $('#check_circle').css({
-        "background-color": "black",
-        "color": "white",
-        "border-radius": "100%"
-      });
-      $('#times_circle').css({
-        "background-color": "",
-        "color": "black",
-        "border-radius": "0%"
-      });
-      $(`<i class="fas fa-check-circle float-left pl-1" style="padding-top:2px; color:black"></i>`).appendTo($(`#${tdId}`));        
-      attendance[context.currentSession - 1] = 1;
+      if(parseInt($(`#${tdId}`).attr('y')) === context.sessionMax - 1) {
+        attendance[context.currentSession - 1] = 2;
+        context.selectedGrade.attendance = 2;
+        $(`#${tdId}`).attr('attendance', 2);
+      } else if (parseInt($(`#${tdId}`).attr('y')) === context.sessionMax) {
+        attendance[context.currentSession - 1] = 3;
+        context.selectedGrade.attendance = 3;
+        $(`#${tdId}`).attr('attendance', 3);
+      } else {
+        attendance[context.currentSession - 1] = 1;
+        context.selectedGrade.attendance = 1;
+        $(`#${tdId}`).attr('attendance', 1);
+      }
+      $(`<i class="fas fa-check-circle float-left pl-1" style="padding-top:2px; color:black"></i>`).appendTo($(`#${tdId}`));            
       attendanceJSON = JSON.stringify({
         member_id: memberID,
         classroom_id: classroomID,
@@ -528,17 +588,16 @@ const checkBox = () => {
         "border-radius": "0%"
       });
       $(`#${tdId} i`).remove();
-      attendance[context.currentSession - 1] = 0;
-      attendanceJSON = JSON.stringify({
-        member_id: memberID,
-        classroom_id: classroomID,
-        attendance: attendance
-      });
-      submitAttendance(attendanceJSON);
-    } else {
-      jumpTd();
     }
-    
+    attendance[context.currentSession - 1] = 0;
+    context.selectedGrade.attendance = 0;
+    $(`#${tdId}`).attr('attendance', 0);
+    attendanceJSON = JSON.stringify({
+      member_id: memberID,
+      classroom_id: classroomID,
+      attendance: attendance
+    });
+    submitAttendance(attendanceJSON);
   });
 }
 
@@ -559,10 +618,8 @@ const handleGradeInput = (event) => {
     $(tdId).prevObject[0].all[tdId].firstChild.data = "-";    
   } else {
     if (inputVal < 0) {
-      // $('#input_grade').val() = 0;
       context.selectedGrade.value = 0;
     } else if (inputVal > 10) {
-      // $('#input_grade').val() = 10;
       context.selectedGrade.value = 10;
     } else {
       context.selectedGrade.value = inputVal;  
