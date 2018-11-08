@@ -440,7 +440,6 @@ const initGradeCellSelection = () => {
     hightLight(oldColumn, oldRow, column, row)
 
     context.selectedGrade.attendance = parseInt($(`#${tdId}`).attr('attendance'));
-    console.log(context.selectedGrade.attendance);
     
     if(context.selectedGrade.attendance === 0) {
       $('#check_circle').css({
