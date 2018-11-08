@@ -28,7 +28,7 @@ $(document).ready(async () => {
   renderGrades(); // Render empty grade tables
   initClassroomSelection(); // Config classroom => when users select classrooms
   initGradeCellSelection(); // Config grade cell => when users select grade
-  initGradeProcess(); // Config grading: CLick start => Edit grade => Submit
+  // initGradeProcess(); // Config grading: CLick start => Edit grade => Submit
   await fetchClassrooms(); // Load classrooms
   checkAdmin();
   initSelectOptions();  
@@ -147,13 +147,13 @@ const setLoading = (loading) => {
     $('#loading_indicator')[0].innerHTML = "";
     $('#loading_indicator').removeClass("invisible");
     $('.ui.dropdown').addClass("disabled");
-    $('#btn_grade').attr('disabled', true);
+    // $('#btn_grade').attr('disabled', true);
     $('#check_circle').off('click');
     $('#times_circle').off('click');
   } else {
     checkBox();
     $('.ui.dropdown').removeClass("disabled");
-    $('#btn_grade').attr('disabled', false);
+    // $('#btn_grade').attr('disabled', false);
     if (context.role === 0) {
       adminUI();
     } else {
@@ -165,7 +165,7 @@ const setLoading = (loading) => {
 
 // Login with role admin
 const adminUI = () => {
-  $('#btn_grade').hide();
+  // $('#btn_grade').hide();
   $('#input_grade').hide();
   $('#time').hide();
   $('#loading_indicator').removeClass('ui active indeterminate inline loader');
@@ -333,18 +333,18 @@ const renderGrades = () => {
 // Render control panel
 const renderControlPanel = () => {
   if(context.submittable) {
-    $('#btn_grade').text('Submit');
-    $('#btn_grade').removeClass('btn-secondary');
-    $('#btn_grade').addClass('btn-primary');
-    $('#input_grade').attr('disabled', false);
-    $('#input_grade').css('background-color', '');
+    // $('#btn_grade').text('Submit');
+    // $('#btn_grade').removeClass('btn-secondary');
+    // $('#btn_grade').addClass('btn-primary');
+    // $('#input_grade').attr('disabled', false);
+    // $('#input_grade').css('background-color', '');
   }
   else {
-    $('#btn_grade').text('Enable Grade');
-    $('#btn_grade').addClass('btn-secondary');
-    $('#btn_grade').removeClass('btn-primary');
-    $('#input_grade').attr('disabled', true);
-    $('#input_grade').css('background-color', '#b5b5b5');
+    // $('#btn_grade').text('Enable Grade');
+    // $('#btn_grade').addClass('btn-secondary');
+    // $('#btn_grade').removeClass('btn-primary');
+    // $('#input_grade').attr('disabled', true);
+    // $('#input_grade').css('background-color', '#b5b5b5');
     $('#input_grade').val('');
   }
 }
@@ -397,7 +397,7 @@ const initGradeProcess = () => {
       context.submittable = true;
       context.timeRunning = true;
     }
-    stopWatch($('#time'));
+    // stopWatch($('#time'));
     renderControlPanel();
   });
 }
@@ -640,6 +640,7 @@ const handleGradeInput = (event) => {
       member.grades[tdIndex] = tdValue;
     }
   })
+  submit(context.selectedClassroom._id, JSON.stringify(context.selectedClassroom));
 }
 
 
@@ -658,7 +659,7 @@ const editGrade = (memberID, gradeID, xTd, yTd, inputValue) => {
 const initClassroomSelection = () => {
   $('#slt_classrooms').on('change', () => {
     if(context.timeRunning) {
-      $('#btn_grade').click();
+      // $('#btn_grade').click();
       $('#time')[0].innerText = "00:00:00";
     }
     if ($('#slt_classrooms')[0].value !== "...") {
