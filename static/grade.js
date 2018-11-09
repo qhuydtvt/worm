@@ -562,7 +562,8 @@ const checkBox = () => {
       attendanceJSON = JSON.stringify({
         member_id: memberID,
         classroom_id: classroomID,
-        attendance: attendance
+        attendance: attendance,
+        currentIndex: context.currentSession - 1
       });
       submitAttendance(attendanceJSON);
     }
@@ -594,7 +595,8 @@ const checkBox = () => {
     attendanceJSON = JSON.stringify({
       member_id: memberID,
       classroom_id: classroomID,
-      attendance: attendance
+      attendance: attendance,
+      currentIndex: context.currentSession - 1
     });
     submitAttendance(attendanceJSON);
   });
