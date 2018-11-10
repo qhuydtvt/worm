@@ -218,13 +218,6 @@ def get_log(grade_log):
   return data
 
 
-def send_gmail(fullname, class_name, phone_number, link_fb, days_off):
-  send_mail('Mach leo',
-            f'''
-            Học viên {fullname} lớp {class_name} đã nghỉ học buổi {days_off[0]} và {days_off[1]}.
-            Contact:
-            Số điện thoại: {phone_number}
-            Link facebook: {link_fb}
-            ''',
-            'inform.techkidsvn@gmail.com', ['qc.techkidsvn@gmail.com']
-            )
+def send_gmail(fullname, class_name, phone_number, link_fb,  days_off):
+  send_mail('Mach leo', f'thằng {fullname} lớp {class_name} đã nghỉ học buổi {days_off[0]} và {days_off[1]}',
+            'inform.techkidsvn@gmail.com', ['qc.techkidsvn@gmail.com'])
