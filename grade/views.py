@@ -13,6 +13,7 @@ from . import controller
 from django.core.cache import cache
 from django.core.mail import send_mail
 
+
 def get_token(request):
   TOKEN = cache.get('access_token')
   if TOKEN is None:
@@ -219,7 +220,7 @@ def get_log(grade_log):
 
 
 def send_gmail(fullname, class_name, phone_number, link_fb, days_off):
-  send_mail('Mach leo',
+  send_mail('Thông báo học viên nghỉ học liên tiếp 2 buổi',
             f'''
             Học viên {fullname} lớp {class_name} đã nghỉ học buổi {days_off[0]} và {days_off[1]}.
             Contact:
