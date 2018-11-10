@@ -11,11 +11,12 @@ from addict import Dict
 import datetime
 from . import controller
 from django.core.cache import cache
-from gmail import GMail, Message
+from django.core.mail import send_mail
 
 def get_token(request):
   TOKEN = cache.get('access_token')
   if TOKEN is None:
+    logout(request)
     return TOKEN
   else:
     headers = {"access_token": TOKEN}
@@ -51,12 +52,7 @@ def get_user_lms(request):
 
 @login_required
 def grade(request):
-  data = get_classroom_lms(request)
-  if "data" not in data:
-    logout(request)
-    return HttpResponseRedirect('/worm/login/logout')
-  else:
-    return render(request, "grade.html")
+  return render(request, "grade.html")
 
 
 @login_required
@@ -147,7 +143,7 @@ def api_atten_post(request):
     if current_index > 0:
       if new_atten.attendances[current_index] == 0:
         if new_atten.attendances[current_index - 1] == 0 or new_atten.attendances[current_index - 1] == -1:
-          send_mail()
+          send_gmail()
 
     return JsonResponse({"message": "data saved"})
   else:
@@ -190,7 +186,7 @@ def api_grade_log(request):
       return JsonResponse({"total_days": day.days,
                            "teachers": teacher_info,
                            "classrooms": class_info,
-                          })
+                           })
     else:
       return JsonResponse({"success": 0, "message": 'Could not find logs', })
 
@@ -217,8 +213,6 @@ def get_log(grade_log):
   return data
 
 
-def send_mail():
-  gmail = GMail('boykolz969@gmail.com', '0941211291')
-  msg = Message('Mach leo', to='minhduc.096.99@gmail.com>',
-              text='dcm m co di hoc k??')
-  gmail.send(msg)
+def send_gmail():
+  send_mail('Mach leo', 'this is a message',
+            'inform.techkidsvn@gmail.com', ['qc.techkidsvn@gmail.com',])

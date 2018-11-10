@@ -540,6 +540,7 @@ const checkBox = () => {
     memberID = context.selectedMemberID;
     memberIndex = $(`#${tdId}`)[0].parentNode.sectionRowIndex;
     attendance = context.selectedClassroom.members[memberIndex].attendance;
+    fullName = context.selectedClassroom.members[memberIndex].fullName;
 
     classroomID = context.selectedClassroom._id;
     if($(`#${tdId}`)[0].children.length === 1) {
@@ -561,9 +562,10 @@ const checkBox = () => {
       $(`<i class="fas fa-check-circle float-left pl-1" style="padding-top:2px; color:black"></i>`).appendTo($(`#${tdId}`));            
       attendanceJSON = JSON.stringify({
         member_id: memberID,
+        member_fullname: fullName,
         classroom_id: classroomID,
         attendance: attendance,
-        currentIndex: context.currentSession - 1
+        currentIndex: context.currentSession - 1,
       });
       submitAttendance(attendanceJSON);
     }
@@ -574,7 +576,8 @@ const checkBox = () => {
     memberID = context.selectedMemberID;
     memberIndex = $(`#${tdId}`)[0].parentNode.sectionRowIndex;
     attendance = context.selectedClassroom.members[memberIndex].attendance;
-
+    fullName = context.selectedClassroom.members[memberIndex].fullName;
+    
     classroomID = context.selectedClassroom._id;
     if($(`#${tdId}`)[0].children.length === 1) {
       $('#times_circle').css({
@@ -594,6 +597,7 @@ const checkBox = () => {
     $(`#${tdId}`).attr('attendance', 0);
     attendanceJSON = JSON.stringify({
       member_id: memberID,
+      member_fullname: fullName,
       classroom_id: classroomID,
       attendance: attendance,
       currentIndex: context.currentSession - 1

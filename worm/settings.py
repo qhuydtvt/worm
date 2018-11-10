@@ -176,3 +176,9 @@ MESSAGE_TAGS = {
     messages.WARNING: 'text-danger',
     messages.ERROR: 'alert-warning',
 }
+
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'inform.techkidsvn@gmail.com'
+EMAIL_HOST_PASSWORD = 'tradethecol@thanhcong'
+EMAIL_USE_TLS = True
