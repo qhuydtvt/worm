@@ -150,7 +150,9 @@ const setLoading = (loading) => {
     // $('#btn_grade').attr('disabled', true);
     $('#check_circle').off('click');
     $('#times_circle').off('click');
+    $('#tbl_grade_body').off('click');
   } else {
+    initGradeCellSelection();
     checkBox();
     $('.ui.dropdown').removeClass("disabled");
     // $('#btn_grade').attr('disabled', false);
