@@ -23,7 +23,7 @@ def index(request):
       if r.json()['success'] == 1:
         if r.json()['data']['user']['role'] in (1,2):
           request.session['teacher_id'] = r.json()['data']['user']['id']
-          cache.set("access_token", r.json()['data']['access_token'])
+          request.session["TOKEN"] = r.json()['data']['access_token']
           user, create = User.objects.get_or_create(username=username,
                                                     password=password,
                                                     is_staff=True)

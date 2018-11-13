@@ -9,16 +9,16 @@ from django.db import transaction
 import json
 from addict import Dict
 import datetime
-from . import controller
+# from . import controller
 from django.core.cache import cache
 from django.core.mail import send_mail
 
 
 def get_token(request):
-  TOKEN = cache.get('access_token')
+  TOKEN = request.session["TOKEN"]
   if TOKEN is None:
     logout(request)
-    return TOKEN
+    return HttpResponseRedirect("/login/logout")
   else:
     headers = {"access_token": TOKEN}
     return headers
@@ -156,67 +156,67 @@ def api_atten_post(request):
     return JsonResponse({"message": "notthing to do here"})
 
 
-def api_grade_log(request):
-  start_time = request.GET['start_time']
-  stop_time = request.GET['stop_time']
-  start_time = datetime.datetime.strptime(start_time, "%Y-%m-%d")
-  stop_time = datetime.datetime.strptime(stop_time, "%Y-%m-%d")
-  day = stop_time - start_time
-  time_plus = stop_time + datetime.timedelta(days=1)
+# def api_grade_log(request):
+#   start_time = request.GET['start_time']
+#   stop_time = request.GET['stop_time']
+#   start_time = datetime.datetime.strptime(start_time, "%Y-%m-%d")
+#   stop_time = datetime.datetime.strptime(stop_time, "%Y-%m-%d")
+#   day = stop_time - start_time
+#   time_plus = stop_time + datetime.timedelta(days=1)
 
-  if request.user.is_authenticated:
-    grade_log = GradeLog.objects.filter(grade_day__range=[start_time, time_plus])
-    if len(grade_log) > 0:
-      # teachers
-      log = get_log(grade_log)
-      teacher_time = controller.cal_teacher_time(log, day.days)
-      teacher_info = get_user_lms(request)
-      # classrooms
-      classroom_time = controller.cal_classroom_time(log, day.days)
-      class_info_response = get_classroom_lms(request)
-      class_info = class_info_response["data"]['class']
+#   if request.user.is_authenticated:
+#     grade_log = GradeLog.objects.filter(grade_day__range=[start_time, time_plus])
+#     if len(grade_log) > 0:
+#       # teachers
+#       log = get_log(grade_log)
+#       teacher_time = controller.cal_teacher_time(log, day.days)
+#       teacher_info = get_user_lms(request)
+#       # classrooms
+#       classroom_time = controller.cal_classroom_time(log, day.days)
+#       class_info_response = get_classroom_lms(request)
+#       class_info = class_info_response["data"]['class']
 
-      for index, user in enumerate(teacher_info):
-        if user["_id"] in teacher_time:
-          teacher_info[index]["time"] = teacher_time[user["_id"]]
-        else:
-          teacher_info[index]["time"] = None
-      for index, classroom in enumerate(class_info):
-        class_info[index].pop('teachers', None)
-        class_info[index].pop('playlists', None)
-        if classroom["_id"] in classroom_time:
-          class_info[index]["time"] = classroom_time[classroom["_id"]]
-        else:
-          class_info[index]["time"] = None
+#       for index, user in enumerate(teacher_info):
+#         if user["_id"] in teacher_time:
+#           teacher_info[index]["time"] = teacher_time[user["_id"]]
+#         else:
+#           teacher_info[index]["time"] = None
+#       for index, classroom in enumerate(class_info):
+#         class_info[index].pop('teachers', None)
+#         class_info[index].pop('playlists', None)
+#         if classroom["_id"] in classroom_time:
+#           class_info[index]["time"] = classroom_time[classroom["_id"]]
+#         else:
+#           class_info[index]["time"] = None
 
-      return JsonResponse({"total_days": day.days,
-                           "teachers": teacher_info,
-                           "classrooms": class_info,
-                           })
-    else:
-      return JsonResponse({"success": 0, "message": 'Could not find logs', })
+#       return JsonResponse({"total_days": day.days,
+#                            "teachers": teacher_info,
+#                            "classrooms": class_info,
+#                            })
+#     else:
+#       return JsonResponse({"success": 0, "message": 'Could not find logs', })
 
-  else:
-    return JsonResponse({"success": 0, "message:": "method not allowed"})
+#   else:
+#     return JsonResponse({"success": 0, "message:": "method not allowed"})
 
 
-def get_log(grade_log):
-  data = {}
-  for log in grade_log:
-    data_dict = {"classroom": log.classroom_id,
-                 "teacher": log.teacher_id,
-                 "time": log.grade_time,
-                 "created_day": log.grade_day,
-                 }
-    if log.teacher_id not in data:
-      data[log.teacher_id] = [data_dict]
-    else:
-      data[log.teacher_id].append(data_dict)
-    if log.classroom_id not in data:
-      data[log.classroom_id] = [data_dict]
-    else:
-      data[log.classroom_id].append(data_dict)
-  return data
+# def get_log(grade_log):
+#   data = {}
+#   for log in grade_log:
+#     data_dict = {"classroom": log.classroom_id,
+#                  "teacher": log.teacher_id,
+#                  "time": log.grade_time,
+#                  "created_day": log.grade_day,
+#                  }
+#     if log.teacher_id not in data:
+#       data[log.teacher_id] = [data_dict]
+#     else:
+#       data[log.teacher_id].append(data_dict)
+#     if log.classroom_id not in data:
+#       data[log.classroom_id] = [data_dict]
+#     else:
+#       data[log.classroom_id].append(data_dict)
+#   return data
 
 
 def send_gmail(fullname, class_name, phone_number, link_fb, days_off):
