@@ -100,6 +100,7 @@ const submit = async (classroom_id, gradeJSON) => {
   });
   setLoading(false);
   submitUI();
+  jumpTd();
 }
 
 
@@ -301,7 +302,7 @@ const renderGrades = () => {
         } else if(member.attendance[session_index] === 0){
           $(`
           <td class="grade changable" id="${member._id}_${session_index}" member_id="${member._id}" session_index="${session_index}" x="${countMember}" y="${session_index + 1}" attendance="0">
-            ${member.grades[session_index] < 0 ? '-' : member.grades[session_index] }
+            ${member.grades[session_index] < 0 ? '' : member.grades[session_index] }
           </td>
         `).appendTo(tr);
         } else if (member.attendance[session_index] === 2) {
@@ -593,8 +594,9 @@ const checkBox = () => {
         "color": "black",
         "border-radius": "0%"
       });
-      $(`#${tdId} i`).remove();
+      // $(`#${tdId} i`).remove();
     }
+    $(`#${tdId}`).empty();
     attendance[context.currentSession - 1] = 0;
     context.selectedGrade.attendance = 0;
     $(`#${tdId}`).attr('attendance', 0);
@@ -651,7 +653,10 @@ const handleGradeInput = (event) => {
       member.grades[tdIndex] = tdValue;
     }
   })
-  submit(context.selectedClassroom._id, JSON.stringify(context.selectedClassroom));
+  if (event.keyCode === 13) {
+    submit(context.selectedClassroom._id, JSON.stringify(context.selectedClassroom));
+    
+  }
 }
 
 
@@ -662,7 +667,13 @@ const editGrade = (memberID, gradeID, xTd, yTd, inputValue) => {
   context.selectedGrade.yTd = yTd;
   context.selectedGrade.value = inputValue;
   context.selectedMemberID = memberID;
-  $("#input_grade").on("input", handleGradeInput);
+  // $("#input_grade").on("keyup", (event => {
+  //   if (event.keyCode === 13) {
+  //     // Trigger the button element with a click
+  //     console.log("Aaa")
+  //   }
+  // }));
+  $('#input_grade').on('keyup', handleGradeInput);
 }
 
 
