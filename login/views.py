@@ -17,11 +17,12 @@ def index(request):
 
       data = {"username": username,
               "password": password}
-      r = TKRest('https://learn.techkids.vn/api/')
+      r = TKRest('https://lms-api-test.herokuapp.com/api')
       r = r.auth.post(data)
 
       if r.json()['success'] == 1:
-        if r.json()['data']['user']['role'] in (1,2):
+        if r.json()['data']['user']['role'] in (2, 3):
+          print(r.json()['data']['user']['role'])
           request.session['teacher_id'] = r.json()['data']['user']['id']
           request.session["TOKEN"] = r.json()['data']['access_token']
           user, create = User.objects.get_or_create(username=username,
