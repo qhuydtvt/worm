@@ -29,7 +29,7 @@ SECRET_KEY = '%yz*_8ws2dbw0pkr%%=n!i!j!i3fp@duby222bwv6hd!kn4zph'
 DEBUG = True
 
 ALLOWED_HOSTS = [
-    'worm-dev.herokuapp.com',
+    'dev-worm.herokuapp.com',
     'worm-test.herokuapp.com',
     'worm-d.herokuapp.com',
     'localhost',
@@ -71,9 +71,11 @@ CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_CREDENTIALS = True
 CORS_ORIGIN_WHITELIST = (
     'localhost:3000',
+    'learn.techkids.vn',
 )
 CORS_ORIGIN_REGEX_WHITELIST = (
     'localhost:3000',
+    'learn.techkids.vn',
 )
 
 MIDDLEWARE_CLASSES = [
@@ -114,15 +116,14 @@ CACHES = {
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': get_env_variable("MYSQL_WORM_DB_NAME"),
-        'USER': get_env_variable("MYSQL_USERNAME"),
-        'PASSWORD': get_env_variable("MYSQL_PASSWORD"),
-        'HOST': get_env_variable("MYSQL_HOST"),
-        'PORT': get_env_variable("MYSQL_PORT"),
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': get_env_variable("PSQL_WORM_DB_NAME"),
+        'USER': get_env_variable("PSQL_USERNAME"),
+        'PASSWORD': get_env_variable("PSQL_PASSWORD"),
+        'HOST': get_env_variable("PSQL_HOST"),
+        'PORT': get_env_variable("PSQL_PORT"),
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/2.1/ref/settings/#auth-password-validators
@@ -176,3 +177,9 @@ MESSAGE_TAGS = {
     messages.WARNING: 'text-danger',
     messages.ERROR: 'alert-warning',
 }
+
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'inform.techkidsvn@gmail.com'
+EMAIL_HOST_PASSWORD = 'tradethecol@thanhcong'
+EMAIL_USE_TLS = True

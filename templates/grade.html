@@ -29,27 +29,37 @@
 <body class="mt-5">
      <div class="container ">
         <div id="control_panel" class="d-flex">
-            <select class="ui dropdown" id="slt_classrooms" data-dropdown="#dropdown-standard">
+            <select class="ui dropdown" id="slt_classrooms" style="width: 180px" data-dropdown="#dropdown-standard">
                 <option>...</option>
             </select>
 
-            <button id="btn_grade" type="button" class="btn btn-secondary ml-3">
-                Enable Grade
-            </button>
-            <input type="number" class="ml-3" disabled="true" id="input_grade" max="10" min="0" maxlength="2">
+            <!-- <button id="btn_grade" type="button" class="btn btn-primary ml-3">
+                Submit
+            </button> -->
+            <input type="number" class="ml-3" id="input_grade" max="10" min="0" maxlength="2">
             <div>
                 <i id="check_circle" class="far fa-check-circle fa-2x"></i>
                 <i id="times_circle" class="far fa-times-circle fa-2x"></i>
             </div>
-            <div class="ml-1 mt-2">
-                <!-- <input type="checkbox" id="check_point" style="width: 22px; height: 22px;"> -->
+            <!-- <div class="ml-1 mt-2">
+                <input type="checkbox" id="check_point" style="width: 22px; height: 22px;">
                 
                 <span id="time" class="" style="font-weight: bold;">
                     00:00:00
                 </span>
-            </div>
+            </div> -->
             
             <div class="ml-auto d-flex">
+                <!-- <div class="mr-3">
+                    <button id="btn_hackathon" type="button" class="btn btn-secondary" style="height: 41px; width: 100px;">
+                        Hackathon
+                    </button>
+                </div>
+                <div class="mr-3">
+                    <button id="btn_demoday" type="button" class="btn btn-secondary" style="height: 41px; width: 100px;">
+                        Demo Day
+                    </button>
+                </div> -->
                 <div class="mr-3">
                     <a href="{% url 'grade:summary' %}">
                         <button type="button" class="btn btn-secondary" style="height: 41px; width: 100px;">
@@ -69,10 +79,9 @@
         <div id="loading_indicator" class="invisible"></div>
 
 
-        <span id="form"></span>
-        <span id="time"></span>
 
-        <table class="table-bordered table-striped mt-1" id="tbl_grade">
+
+        <table class="table-bordered table-striped" id="tbl_grade">
             <thead>
                 <tr id="tbl_grade_row_sessions">
                     <th class="table-dark">Name</th>
