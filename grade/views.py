@@ -12,6 +12,7 @@ import datetime
 # from . import controller
 from django.core.cache import cache
 from django.core.mail import send_mail
+import threading
 
 
 def get_token(request):
@@ -149,8 +150,9 @@ def api_atten_post(request):
           link_fb = data["member_fb"]
           class_name = data["member_class"]
           days_off = (current_index, current_index + 1)
-          send_gmail(fullname, class_name, phone_number, link_fb, days_off)
-
+          task = threading.Thread(target=send_gmail, args=[fullname, class_name, phone_number, link_fb, days_off])
+          task.setDaemon(True)
+          task.start()
     return JsonResponse({"message": "data saved"})
   else:
     return JsonResponse({"message": "notthing to do here"})
