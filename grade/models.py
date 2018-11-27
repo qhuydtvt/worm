@@ -27,7 +27,7 @@ class Attendance(models.Model):
 
 
 class GradeLog(models.Model):
-  classroom_id = models.CharField(max_length=50)
+  classroom_id = models.CharField(max_length=500)
   teacher_id = models.CharField(max_length=50)
   grade_day = models.DateTimeField(default=timezone.now)
   grade_time = models.CharField(max_length=50)
