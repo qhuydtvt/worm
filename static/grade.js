@@ -420,6 +420,7 @@ const initGradeCellSelection = () => {
     
     const text = $(event.target).text();
     const grade = text.trim() === "-" ? 0 : parseFloat(text);
+    $('#input_grade').unbind();
     $('#input_grade').val(grade);
     $('#input_grade').focus();
     $('#input_grade').select();
@@ -659,6 +660,8 @@ const handleGradeInput = (event) => {
   
   if (event.keyCode === 13) {
     $('#input_grade').unbind();
+    console.log("dcm");
+    
     submit(context.selectedClassroom._id, JSON.stringify(context.selectedClassroom));
   }
 }
@@ -685,6 +688,7 @@ const editGrade = (memberID, gradeID, xTd, yTd, inputValue) => {
 // Select classroom
 const initClassroomSelection = () => {
   $('#slt_classrooms').on('change', () => {
+    $('#input_grade').unbind();
     if(context.timeRunning) {
       // $('#btn_grade').click();
       $('#time')[0].innerText = "00:00:00";
