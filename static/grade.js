@@ -152,10 +152,12 @@ const setLoading = (loading) => {
     $('#check_circle').off('click');
     $('#times_circle').off('click');
     $('#tbl_grade_body').off('click');
+    $('#input_grade').attr('disabled', true);
   } else {
     initGradeCellSelection();
     checkBox();
     $('.ui.dropdown').removeClass("disabled");
+    $('#input_grade').attr('disabled', false);
     // $('#btn_grade').attr('disabled', false);
     if (context.role === 0) {
       adminUI();
@@ -653,9 +655,11 @@ const handleGradeInput = (event) => {
       member.grades[tdIndex] = tdValue;
     }
   })
+  // console.log(event);
+  
   if (event.keyCode === 13) {
+    $('#input_grade').unbind();
     submit(context.selectedClassroom._id, JSON.stringify(context.selectedClassroom));
-    
   }
 }
 
@@ -669,6 +673,7 @@ const editGrade = (memberID, gradeID, xTd, yTd, inputValue) => {
   context.selectedMemberID = memberID;
   // $("#input_grade").on("keyup", (event => {
   //   if (event.keyCode === 13) {
+  //     jumpTd();
   //     // Trigger the button element with a click
   //     console.log("Aaa")
   //   }
