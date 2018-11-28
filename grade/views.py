@@ -121,14 +121,7 @@ def api_grade_post(request, classroom_id):
     grade.grades = [float(point) for point in member['grades']]
     grade.save()
 
-  try:
-    new_grade_log = GradeLog(teacher_id=request.session['teacher_id'],
-                             classroom_id=classroom_id,
-                             grade_time=grades_json['time'])
-    new_grade_log.save()
     return JsonResponse({"success": 1, "message": "data saved"})
-  except BaseException:
-    return JsonResponse({"success": 0, "message": "session expired"})
 
 
 @csrf_exempt
@@ -144,18 +137,30 @@ def api_atten_post(request):
     current_index = data["currentIndex"]
     if current_index > 0:
       if new_atten.attendances[current_index] == 0:
-        if new_atten.attendances[current_index - 1] == 0 or new_atten.attendances[current_index - 1] == -1:
-          fullname = data["member_fullname"]
-          phone_number = data["member_phone"]
-          link_fb = data["member_fb"]
-          class_name = data["member_class"]
-          days_off = (current_index, current_index + 1)
-          task = threading.Thread(target=send_gmail, args=[fullname, class_name, phone_number, link_fb, days_off])
-          task.setDaemon(True)
-          task.start()
+        # if new_atten.attendances[current_index - 1] == 0 or new_atten.attendances[current_index - 1] == -1:
+        fullname = data["member_fullname"]
+        phone_number = data["member_phone"]
+        link_fb = data["member_fb"]
+        class_name = data["member_class"]
+        days_off = (current_index, current_index + 1)
+        task = threading.Thread(target=send_gmail, args=[fullname, class_name, phone_number, link_fb, days_off])
+        task.setDaemon(True)
+        task.start()
     return JsonResponse({"message": "data saved"})
   else:
     return JsonResponse({"message": "notthing to do here"})
+
+
+def send_gmail(fullname, class_name, phone_number, link_fb, days_off):
+  send_mail('Thông báo học viên nghỉ học',
+            f'''
+            Học viên {fullname} lớp {class_name} đã nghỉ học buổi số {days_off[0]}.
+            Contact:
+            Số điện thoại: {phone_number}
+            Link facebook: {link_fb}
+            ''',
+            'inform.techkidsvn@gmail.com', ['qc.techkidsvn@gmail.com']
+            )
 
 
 # def api_grade_log(request):
@@ -221,13 +226,3 @@ def api_atten_post(request):
 #   return data
 
 
-def send_gmail(fullname, class_name, phone_number, link_fb, days_off):
-  send_mail('Thông báo học viên nghỉ học liên tiếp 2 buổi',
-            f'''
-            Học viên {fullname} lớp {class_name} đã nghỉ học buổi {days_off[0]} và {days_off[1]}.
-            Contact:
-            Số điện thoại: {phone_number}
-            Link facebook: {link_fb}
-            ''',
-            'inform.techkidsvn@gmail.com', ['qc.techkidsvn@gmail.com']
-            )
