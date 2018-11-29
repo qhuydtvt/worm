@@ -117,8 +117,10 @@ def api_grade_get(request, classroom_id, headers):
 def api_grade_post(request, classroom_id):
   grades_json = json.loads(request.body)
   for member in grades_json['members']:
-    grade = Grade.objects.filter(member_id=member['_id'], classroom_id=classroom_id)[0]
-    if not grade:
+    grade = None
+    try:
+      grade = Grade.objects.filter(member_id=member['_id'], classroom_id=classroom_id)[0]
+    except IndexError:
       grade = Grade.objects.create(member_id=member['_id'], classroom_id=classroom_id)
 
     grade.grades = [float(point) for point in member['grades']]
