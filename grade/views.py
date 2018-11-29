@@ -117,18 +117,16 @@ def api_grade_get(request, classroom_id, headers):
 def api_grade_post(request, classroom_id):
   grades_json = json.loads(request.body)
   for member in grades_json['members']:
-    grade = Grade.objects.get_or_create(member_id=member['_id'], classroom_id=classroom_id)[0]
+    grade = None
+    try:
+      grade = Grade.objects.filter(member_id=member['_id'], classroom_id=classroom_id)[0]
+    except IndexError:
+      grade = Grade.objects.create(member_id=member['_id'], classroom_id=classroom_id)
+
     grade.grades = [float(point) for point in member['grades']]
     grade.save()
 
-  try:
-    new_grade_log = GradeLog(teacher_id=request.session['teacher_id'],
-                             classroom_id=classroom_id,
-                             grade_time=grades_json['time'])
-    new_grade_log.save()
-    return JsonResponse({"success": 1, "message": "data saved"})
-  except BaseException:
-    return JsonResponse({"success": 0, "message": "session expired"})
+  return JsonResponse({"success": 1, "message": "data saved"})
 
 
 @csrf_exempt
@@ -161,7 +159,7 @@ def api_atten_post(request):
 def send_gmail(fullname, class_name, phone_number, link_fb, days_off):
   send_mail('Thông báo học viên nghỉ học',
             f'''
-            Học viên {fullname} lớp {class_name} đã nghỉ học buổi số {days_off[0]}.
+            Học viên {fullname} lớp {class_name} đã nghỉ học buổi số {days_off[1]}.
             Contact:
             Số điện thoại: {phone_number}
             Link facebook: {link_fb}
