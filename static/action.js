@@ -31,23 +31,23 @@ const stopWatch = (timeVal) => {
 
 
 // Grade process
-const initGradeProcess = () => {
-  $('#btn_grade').on('click', (event) => {
-    if (context.submittable) {
-      context.submittable = false;
-      context.gradeDisabled = true;
-      context.timeRunning = false;
-      context.selectedClassroom.time = context.time.hours + ":" + context.time.minutes + ":" + context.time.seconds;
-      submit(context.selectedClassroom._id, JSON.stringify(context.selectedClassroom));
-    }
-    else {
-      context.submittable = true;
-      context.timeRunning = true;
-    }
-    // stopWatch($('#time'));
-    renderControlPanel();
-  });
-}
+// const initGradeProcess = () => {
+//   $('#btn_grade').on('click', (event) => {
+//     if (context.submittable) {
+//       context.submittable = false;
+//       context.gradeDisabled = true;
+//       context.timeRunning = false;
+//       context.selectedClassroom.time = context.time.hours + ":" + context.time.minutes + ":" + context.time.seconds;
+//       submit(context.selectedClassroom._id, JSON.stringify(context.selectedClassroom));
+//     }
+//     else {
+//       context.submittable = true;
+//       context.timeRunning = true;
+//     }
+//     // stopWatch($('#time'));
+//     renderControlPanel();
+//   });
+// }
 
 
 // Cell selections
@@ -59,10 +59,9 @@ const initGradeCellSelection = () => {
     const tdId = event.target.id;
     const xTd = parseInt(event.target.attributes[4].nodeValue);
     const yTd = parseInt(event.target.attributes[5].nodeValue);
-    console.log(xTd, yTd);
     
     const text = $(event.target).text();
-    const grade = text.trim() === "-" ? 0 : parseFloat(text);
+    const grade = text.trim() === "-" ? "" : parseFloat(text);
     $('#input_grade').unbind();
     $('#input_grade').val(grade);
     $('#input_grade').focus();
@@ -249,8 +248,10 @@ const initInput = () => {
 const handleGradeInput = (event) => {
   const tdId = context.selectedGrade.tdId;
   const inputVal = $('#input_grade').val();
+
   if (inputVal === ""){
-    $(tdId).prevObject[0].all[tdId].firstChild.data = "-";    
+    context.selectedGrade.value = "-";
+
   } else {
     if (inputVal < 0) {
       context.selectedGrade.value = 0;
@@ -259,46 +260,56 @@ const handleGradeInput = (event) => {
     } else {
       context.selectedGrade.value = inputVal;  
     }
-    tdValue = context.selectedGrade.value;
-    if($(`#${tdId}`)[0].children.length === 1) {
-      $(tdId).prevObject[0].all[tdId].innerHTML = '<i class="fas fa-check-circle float-left pl-1" style="padding-top:2px; color:black"></i>' + parseFloat(tdValue)
+  }
+  tdValue = context.selectedGrade.value;
+  
+  
+  if($(`#${tdId}`)[0].children.length === 1) {
+    if(tdValue === "-") {
+      $(tdId).prevObject[0].all[tdId].innerHTML = '<i class="fas fa-check-circle float-left pl-1" style="padding-top:2px; color:black"></i>' + "-";
+    } else {
+      $(tdId).prevObject[0].all[tdId].innerHTML = '<i class="fas fa-check-circle float-left pl-1" style="padding-top:2px; color:black"></i>' + parseFloat(tdValue);
     }
-    
-    else $(tdId).prevObject[0].all[tdId].innerHTML = parseFloat(tdValue);
+  }
+  
+  else { 
+    $(tdId).prevObject[0].all[tdId].innerHTML = tdValue; 
   }
   tdIndex = parseInt(tdId.split("_")[1]);
-  context.selectedClassroom.time = context.time.hours + ":" + context.time.minutes + ":" + context.time.seconds;
+  // context.selectedClassroom.time = context.time.hours + ":" + context.time.minutes + ":" + context.time.seconds;
   
   members = context.selectedClassroom.members;
   members.forEach((member) => {
     if (member._id === context.selectedMemberID) {
-      member.grades[tdIndex] = tdValue;
+      if (tdValue === "-") {
+        member.grades[tdIndex] = -1;        
+      } else {
+        member.grades[tdIndex] = tdValue;
+      }
     }
   })
-  // console.log(event);
   
   if (event.keyCode === 13) {
     $('#input_grade').unbind();
-    submit(context.selectedClassroom._id, JSON.stringify(context.selectedClassroom)).then(() => {
+    if (!context.selectedGrade.submitted) {
+      submit(context.selectedClassroom._id, JSON.stringify(context.selectedClassroom)).then(() => {
+        jumpTd();
+        context.selectedGrade.submitted = true;
+      });
+    } else {
       jumpTd();
-    });
+    }
   } 
-  // else {
-  //   setTimeout(() => {
-  //       $('#input_grade').unbind();
-  //       submit(context.selectedClassroom._id, JSON.stringify(context.selectedClassroom)).then(() => {
-  //         $(`[x|='${context.selectedGrade.xTd}'][y|='${context.selectedGrade.yTd}']`).click();
-  //       });
-  //       if (event.keyCode === 13) {
-  //         $('#input_grade').unbind();
-  //         // submit(context.selectedClassroom._id, JSON.stringify(context.selectedClassroom)).then(() => {
-  //           console.log("hihi");
-            
-  //           jumpTd();
-  //         // });
-  //       } 
-  //     }, 1000);
-  // }
+  else {
+    setTimeout(() => {
+        $('#input_grade').unbind();
+        submit(context.selectedClassroom._id, JSON.stringify(context.selectedClassroom))
+        .then(() => {
+          context.selectedGrade.submitted = true;
+          $(`[x|='${context.selectedGrade.xTd}'][y|='${context.selectedGrade.yTd}']`).click();
+        });
+      }, 1000);
+  }
 }
 
 

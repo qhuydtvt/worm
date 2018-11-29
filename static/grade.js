@@ -11,6 +11,7 @@ const context = {
     yTd: 0,
     value: "",
     attendance: -1,
+    submitted: false
   },
   time: {
     seconds: 0,
