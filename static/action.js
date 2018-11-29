@@ -53,6 +53,7 @@ const stopWatch = (timeVal) => {
 // Cell selections
 const initGradeCellSelection = () => {
   $('#tbl_grade_body').on('click', 'td.grade.changable', (event) => {
+    
     context.currentSession = event.currentTarget.cellIndex;
     context.currentMembIndex = event.target.parentElement.rowIndex;
     
@@ -246,6 +247,7 @@ const initInput = () => {
 
 // Input
 const handleGradeInput = (event) => {
+  context.selectedGrade.submitted = false;
   const tdId = context.selectedGrade.tdId;
   const inputVal = $('#input_grade').val();
 
@@ -289,8 +291,12 @@ const handleGradeInput = (event) => {
     }
   })
   
+  console.log(context.selectedGrade.tdId);
+  
+
   if (event.keyCode === 13) {
     $('#input_grade').unbind();
+    console.log(context.selectedGrade.submitted);
     if (!context.selectedGrade.submitted) {
       submit(context.selectedClassroom._id, JSON.stringify(context.selectedClassroom)).then(() => {
         jumpTd();
@@ -308,7 +314,7 @@ const handleGradeInput = (event) => {
           context.selectedGrade.submitted = true;
           $(`[x|='${context.selectedGrade.xTd}'][y|='${context.selectedGrade.yTd}']`).click();
         });
-      }, 1000);
+      }, 2000);
   }
 }
 
