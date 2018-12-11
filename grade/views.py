@@ -97,7 +97,7 @@ def api_grade_get(request, classroom_id, headers):
   grades = Grade.objects.filter(classroom_id=classroom_id)
   grade_dict = {g.member_id: json.loads(g.grades) for g in grades}
   for member in classroom_data.members:
-    attendance = Attendance.objects.filter(member__member_id=member._id)
+    attendance = Attendance.objects.filter(member__classroom_id=classroom_id, member__member_id=member._id)
     attendance_dict = {member._id: json.loads(att.attendances) for att in attendance}
     grades = grade_dict.get(member._id, [-1] * session)
     atten = attendance_dict.get(member._id, [-1] * session)
